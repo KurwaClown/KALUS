@@ -15,6 +15,7 @@ using System.Windows.Threading;
 using KurwApp.Modules;
 using System.Windows.Controls;
 using KurwApp;
+using System.Windows.Media;
 
 namespace League
 {
@@ -209,6 +210,7 @@ namespace League
 		internal static async Task<JArray> GetRecommendedRunesById(int champId)
 		{
 			var runesRecommendation = JArray.Parse(await Client_Request.GetRecommendedRunes());
+			
 			JArray champRunes = runesRecommendation
 				.Where(obj => (int)obj["championId"] == champId)
 				.Select(obj => (JArray)obj["runeRecommendations"]).First();
@@ -235,6 +237,44 @@ namespace League
 			runesObject["subStyleId"] = runes["secondaryPerkStyleId"];
 			runesObject["selectedPerkIds"] = runes["perkIds"];
 			return runesObject.ToString();
+		}
+
+		internal static async Task<int> GetAppRunePageId()
+		{
+			var pages = await Client_Request.GetRunePages();
+			var kurwappRunes = JArray.Parse(pages).Where(page => page["name"].ToString() == "Kurwapp");
+			return kurwappRunes.Any() ? kurwappRunes.Select(page => (int)page["id"]).First() : 0;
+		}
+
+		internal static async Task<bool> CanCreateNewPage()
+		{
+			var inventory = JObject.Parse(await Client_Request.GetRunesInventory());
+			return (bool)inventory["canAddCustomPage"];
+		}
+
+		internal static async Task<JToken[]> GetAvailablePicks()
+		{
+
+			var actions = await GetSessionActions(await Client_Request.GetSessionInfo());
+			var availableChampion = JArray.Parse(await Client_Request.GetAvailableChampions());
+			var nonAvailableChampion = (JArray)actions.Where(action => (bool)action["completed"] == true && (string)action["type"] != "ten_bans_reveal").Select(action => action["championId"]);
+			return availableChampion.Where(championId => nonAvailableChampion.Contains(championId)).ToArray();
+		}
+
+		internal static async void SetRunesPage(int champId, MainWindow mainWindow,string position = "NONE")
+		{
+			var appPageId = await GetAppRunePageId();
+			mainWindow.ChangeTest(appPageId.ToString());
+			string newRunesPage = await FormatChampRunes(await GetChampRunesByPosition(champId));
+
+			if(appPageId == 0 && await CanCreateNewPage())
+			{
+				await Client_Request.CreateNewRunePage(newRunesPage);
+			}
+			else
+			{
+				await Client_Request.EditRunePage(appPageId, newRunesPage);
+			}
 		}
 	}
 }

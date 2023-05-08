@@ -19,6 +19,11 @@ namespace League
 			return await response.Content.ReadAsStringAsync();
 		}
 
+		internal static async Task<string> GetAvailableChampions()
+		{
+			var response = await Http_Request.GetRequest("/lol-champ-select/v1/pickable-champion-ids");
+			return await response.Content.ReadAsStringAsync();
+		}
 
 		#region Ready Check
 		internal static async Task Accept()
@@ -74,6 +79,7 @@ namespace League
 			return response;
 		}
 
+		#region Runes
 		internal static async Task<string> GetRecommendedRunes()
 		{
 			var response = await Http_Request.GetRequest($"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-rune-recommendations.json");
@@ -103,7 +109,13 @@ namespace League
 			var response = await Http_Request.PutRequest($"/lol-perks/v1/pages/{runesPageId}", newRunesPage);
 			return response;
 		}
+		#endregion
 
+		internal static async Task<int> GetCurrentChampionId()
+		{
+			var response = await Http_Request.GetRequest("/lol-champ-select/v1/current-champion");
+			return Int32.Parse(await response.Content.ReadAsStringAsync());
+		}
 
 		internal static async Task<string> GetChampionsInfo()
 		{

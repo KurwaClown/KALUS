@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,11 +17,13 @@ namespace KurwApp.Modules
         private string role;
         private string phase;
 		private int champPick;
+		private JToken[] availableChampions;
+
 		private MainWindow mainWindow;
 
         public Game(MainWindow mainWindow) {
             this.mainWindow = mainWindow;
-        }
+		}
 
         internal async void SetCurrentRole()
         {
@@ -63,15 +66,13 @@ namespace KurwApp.Modules
 						mainWindow.ChangeCharacterIcon(reset: true);
 						break;
 					case "FINALIZATION":
-						mainWindow.ChangeTest("in final");
+
 						mainWindow.EnableRandomSkinButton(true);
-						var champRunes = await Client_Control.FormatChampRunes(await Client_Control.GetChampRunesByPosition(23));
-						mainWindow.ChangeTest(champRunes.ToString());
+						Client_Control.SetRunesPage(await Client_Request.GetCurrentChampionId(), mainWindow);
 
 						//CHANGING THE ID
 
 
-						await Http_Request.PutRequest($"/lol-perks/v1/pages/{2101629519}", champRunes.ToString());
 						break;
 					//case "BAN_PICK":
 					//	string sessionInfo = await Client_Request.GetSessionInfo();
