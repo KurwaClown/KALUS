@@ -79,6 +79,14 @@ namespace League
 			return response;
 		}
 
+		internal static async Task<string> AramBenchSwap(int championId)
+		{
+			var response = await Http_Request.PostRequest($"/lol-champ-select/v1/session/bench/swap/{championId}");
+			return response;
+		}
+
+
+
 		#region Runes
 		internal static async Task<string> GetRecommendedRunes()
 		{
@@ -117,11 +125,18 @@ namespace League
 			return Int32.Parse(await response.Content.ReadAsStringAsync());
 		}
 
+		internal static async Task<string> GetLobbyInfo()
+		{
+			var response = await Http_Request.GetRequest($"/lol-lobby/v2/lobby");
+			return await response.Content.ReadAsStringAsync();
+		}
+
 		internal static async Task<string> GetChampionsInfo()
 		{
 			var response = await Http_Request.GetRequest($"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json");
 			return await response.Content.ReadAsStringAsync();
 		}
+
 
 		internal static async Task<byte[]> GetChampionImageById(int charId)
 		{

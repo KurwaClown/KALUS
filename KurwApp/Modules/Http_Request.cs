@@ -26,9 +26,7 @@ namespace League
 		internal static async Task<HttpResponseMessage> GetRequest(string endpoint)
 		{
 			SetClient();
-			
 			HttpResponseMessage result = await _httpClient.GetAsync(endpoint);
-
 			return result;
 		}
 

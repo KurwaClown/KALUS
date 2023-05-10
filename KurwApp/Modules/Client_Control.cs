@@ -45,18 +45,17 @@ namespace League
 
 				if (!authenticated)
 				{
-					Auth.SetBasicAuth(Process.GetProcessesByName("LeagueClientUx").First().MainModule.FileName);
+					if (isClientOpen) Auth.SetBasicAuth(Process.GetProcessesByName("LeagueClientUx").First().MainModule.FileName);
 					SetSummonerId();
 					mainWindow.ShowLolState(true);
-					//mainWindow.LoadAndSetCharacterList();
 				}
-				Thread.Sleep(5000);
+				Thread.Sleep(1000);
 			} while (true);
 		}
 
 		internal static bool IsClientOpen()
 		{
-			return Process.GetProcessesByName("LeagueClientUx").Length > 0;
+			return Process.GetProcessesByName("LeagueClientUxRender").Length > 3;
 		}
 
 		internal static async void ClientPhase(KurwApp.MainWindow mainWindow)
@@ -70,10 +69,10 @@ namespace League
 					switch (client_phase)
 					{
 						default:
-							mainWindow.ChangeCharacterIcon(reset: true);
+							if (!mainWindow.isIconDefault) mainWindow.SetDefaultIcon();
 							break;
 						case "ReadyCheck":
-							if (mainWindow.IsCheckboxChecked(mainWindow.autoReadySetting)) await Client_Request.Accept();
+							if (GetSettingState("autoReady")) await Client_Request.Accept();
 							break;
 						case "ChampSelect":
 							var game = new Game(mainWindow);
@@ -84,6 +83,13 @@ namespace League
 				}
 				Thread.Sleep(5000);
 			}
+		}
+
+		internal static bool GetSettingState(string settingName)
+		{
+			var settings = JObject.Parse(File.ReadAllText("Configurations/settings.json"));
+
+			return (bool)settings[settingName];
 		}
 
 		internal static void SetPreferences(MainWindow mainWindow)
@@ -148,8 +154,10 @@ namespace League
 				summonerId = string.Empty;
 				return;
 			}
-			var summonerInfo = JObject.Parse(await Client_Request.GetCurrentSummonerInfo());
-			summonerId = summonerInfo["summonerId"].ToString();
+			var summonerInfo = await Client_Request.GetCurrentSummonerInfo();
+			if (summonerInfo == "" || summonerInfo is null) return;
+
+			if(summonerInfo.Contains("summonerId"))summonerId = JObject.Parse(summonerInfo)["summonerId"].ToString();
 		}
 
 
@@ -217,7 +225,7 @@ namespace League
 			return new JArray(champRunes);
 		}
 		
-		internal static async Task<JToken> GetChampRunesByPosition(int champId, string position = "NONE")
+		internal static async Task<JToken> GetChampRunesByPosition(int champId, string position)
 		{
 			var runesRecommendation = await GetRecommendedRunesById(champId);
 
@@ -229,9 +237,10 @@ namespace League
 				return champRunesByPosition.FirstOrDefault();
 		}
 
-		internal static async Task<string> FormatChampRunes(JToken runes)
+		internal static async Task<string> FormatChampRunes(JToken runes, string champion = "")
 		{
-			string runesTemplate = "{\"current\": true,\"name\": \"Kurwapp\",\"primaryStyleId\": 0,\"subStyleId\": 0, \"selectedPerkIds\": []}";
+			string pageName = $"Kurwapp - {champion}";
+			string runesTemplate = $"{{\"current\": true,\"name\": \"{pageName}\",\"primaryStyleId\": 0,\"subStyleId\": 0, \"selectedPerkIds\": []}}";
 			JObject runesObject = JObject.Parse(runesTemplate);
 			runesObject["primaryStyleId"] = runes["primaryPerkStyleId"];
 			runesObject["subStyleId"] = runes["secondaryPerkStyleId"];
@@ -261,12 +270,13 @@ namespace League
 			return availableChampion.Where(championId => nonAvailableChampion.Contains(championId)).ToArray();
 		}
 
-		internal static async void SetRunesPage(int champId, MainWindow mainWindow,string position = "NONE")
+		internal static async void SetRunesPage(int champId, string position = "NONE")
 		{
 			var appPageId = await GetAppRunePageId();
-			mainWindow.ChangeTest(appPageId.ToString());
-			string newRunesPage = await FormatChampRunes(await GetChampRunesByPosition(champId));
+			var champions = JArray.Parse(await Client_Request.GetChampionsInfo());
+			string championName = champions.Where(champion => (int)champion["id"] == champId).Select(champion => champion["name"].ToString()).First();
 
+			string newRunesPage = await FormatChampRunes(await GetChampRunesByPosition(champId, position), championName);
 			if(appPageId == 0 && await CanCreateNewPage())
 			{
 				await Client_Request.CreateNewRunePage(newRunesPage);
