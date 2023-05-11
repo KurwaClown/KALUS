@@ -149,12 +149,7 @@ namespace KurwApp
 		} 
 		#endregion
 
-		//Returns the champion select phase name
-		internal static async Task<string> GetChampSelectPhase()
-		{
-			JObject champ_select_timer = JObject.Parse(await Client_Request.GetSessionTimer());
-			return champ_select_timer["phase"].ToString();
-		}
+
 
 		//Returns the player cellId, its position in the lobby
 		internal static async Task<int> GetCellId()
@@ -179,10 +174,17 @@ namespace KurwApp
 			return isCurrentPlayerTurn;
 		}
 
-		//Get the actions of the champion select
-		internal static async Task<IEnumerable<JObject>> GetSessionActions(string sessionInfo)
+		//Retrieves the champion select ohase name
+		internal static async Task<string> GetChampSelectPhase()
 		{
-			return JObject.Parse(sessionInfo)["actions"].SelectMany(innerArray => innerArray).OfType<JObject>();
+			var session_timer = await Client_Request.GetSessionTimer();
+			if (session_timer == "")
+			{
+				return "";
+			}
+			JObject champ_select_timer = JObject.Parse(await Client_Request.GetSessionTimer());
+
+			return champ_select_timer["phase"].ToString().ToUpper();
 		}
 
 		#region Runes
@@ -212,7 +214,7 @@ namespace KurwApp
 		}
 
 		//Format the champion runes for the rune request
-		internal static async Task<string> FormatChampRunes(JToken runes, string champion)
+		internal static string FormatChampRunes(JToken runes, string champion)
 		{
 			//Create a template for the request body
 			string runesTemplate = $"{{\"current\": true,\"name\": \"Kurwapp - {champion}\",\"primaryStyleId\": 0,\"subStyleId\": 0, \"selectedPerkIds\": []}}";
@@ -256,7 +258,7 @@ namespace KurwApp
 
 			string championName = champions.Where(champion => (int)champion["id"] == champId).Select(champion => champion["name"].ToString()).First();
 			//Get the recommended rune page
-			string recommendedRunes = await FormatChampRunes(await GetChampRunesByPosition(champId, position), championName);
+			string recommendedRunes = FormatChampRunes(await GetChampRunesByPosition(champId, position), championName);
 
 			
 			if (appPageId != 0)
