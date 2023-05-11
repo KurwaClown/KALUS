@@ -62,13 +62,13 @@ namespace KurwApp
 		//Handler of the champion selections
 		internal async void ChampSelectControl()
         {
+			sessionInfo = JObject.Parse(await Client_Request.GetSessionInfo());
 			//Set the properties
 			SetRoleAndCellId();
 			SetGameType();
 
 			do
-			{
-				sessionInfo = JObject.Parse(await Client_Request.GetSessionInfo());
+			{	
 				switch (await Client_Control.GetChampSelectPhase())
 				{
 					default:
@@ -86,6 +86,7 @@ namespace KurwApp
 					
 				}
 				Thread.Sleep(3000);
+				sessionInfo = JObject.Parse(await Client_Request.GetSessionInfo());
 			} while (true);
 		}
 
