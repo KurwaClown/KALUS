@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace League
+namespace KurwApp
 {
 	internal class Client_Request
 	{
@@ -13,17 +13,19 @@ namespace League
 			return client_phase;
 		}
 
-		internal static async Task<string> GetSummonerInformation()
+		#region Current Summoner
+		internal static async Task<string> GetSummonerAndAccountId()
 		{
 			var response = await Http_Request.GetRequest("/lol-summoner/v1/current-summoner/account-and-summoner-ids");
 			return await response.Content.ReadAsStringAsync();
 		}
 
-		internal static async Task<string> GetAvailableChampions()
+		internal static async Task<string> GetCurrentSummonerInfo()
 		{
-			var response = await Http_Request.GetRequest("/lol-champ-select/v1/pickable-champion-ids");
+			var response = await Http_Request.GetRequest("/lol-summoner/v1/current-summoner");
 			return await response.Content.ReadAsStringAsync();
-		}
+		} 
+		#endregion
 
 		#region Ready Check
 		internal static async Task Accept()
@@ -36,9 +38,11 @@ namespace League
 		}
 		#endregion
 
-		internal static async Task<string> GetCurrentSummonerInfo()
+		#region Champion Selection
+
+		internal static async Task<string> GetAvailableChampions()
 		{
-			var response = await Http_Request.GetRequest("/lol-summoner/v1/current-summoner");
+			var response = await Http_Request.GetRequest("/lol-champ-select/v1/pickable-champion-ids");
 			return await response.Content.ReadAsStringAsync();
 		}
 
@@ -50,7 +54,7 @@ namespace League
 
 		internal static async Task<string> GetSessionTimer()
 		{
-			
+
 			var response = await Http_Request.GetRequest("/lol-champ-select/v1/session/timer");
 			if (!response.IsSuccessStatusCode) return "";
 			return await response.Content.ReadAsStringAsync();
@@ -85,7 +89,12 @@ namespace League
 			return response;
 		}
 
-
+		internal static async Task<int> GetCurrentChampionId()
+			{
+				var response = await Http_Request.GetRequest("/lol-champ-select/v1/current-champion");
+				return Int32.Parse(await response.Content.ReadAsStringAsync());
+			}
+		#endregion
 
 		#region Runes
 		internal static async Task<string> GetRecommendedRunes()
@@ -118,12 +127,6 @@ namespace League
 			return response;
 		}
 		#endregion
-
-		internal static async Task<int> GetCurrentChampionId()
-		{
-			var response = await Http_Request.GetRequest("/lol-champ-select/v1/current-champion");
-			return Int32.Parse(await response.Content.ReadAsStringAsync());
-		}
 
 		internal static async Task<string> GetLobbyInfo()
 		{
