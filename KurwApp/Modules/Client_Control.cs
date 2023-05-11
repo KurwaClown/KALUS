@@ -117,7 +117,7 @@ namespace KurwApp
 			}
 
 			//Getting the current player info
-			var summonerInfo = await Client_Request.GetCurrentSummonerInfo();
+			var summonerInfo = await Client_Request.GetSummonerAndAccountId();
 			if (summonerInfo == "" || summonerInfo is null) return;
 
 			//Set player id if the token is present
