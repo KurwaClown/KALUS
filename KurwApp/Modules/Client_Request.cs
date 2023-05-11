@@ -19,12 +19,6 @@ namespace KurwApp
 			var response = await Http_Request.GetRequest("/lol-summoner/v1/current-summoner/account-and-summoner-ids");
 			return await response.Content.ReadAsStringAsync();
 		}
-
-		internal static async Task<string> GetCurrentSummonerInfo()
-		{
-			var response = await Http_Request.GetRequest("/lol-summoner/v1/current-summoner");
-			return await response.Content.ReadAsStringAsync();
-		} 
 		#endregion
 
 		#region Ready Check
