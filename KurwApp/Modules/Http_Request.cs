@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,11 +12,12 @@ namespace KurwApp
 		//Create a new HTTP Client
 		internal static HttpClient CreateClient()
 		{
-			HttpClientHandler handler = new HttpClientHandler
-			{
-				ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-			};
-
+			var certFilePath = "riotgames.pem";
+			var certCollection = new X509Certificate2Collection();
+			certCollection.Import(certFilePath);
+			var riotCert = certCollection[0];
+			HttpClientHandler handler = new();
+			handler.ClientCertificates.Add(riotCert);
 			var httpClient = new HttpClient(handler)
 			{
 				BaseAddress = new Uri($"https://127.0.0.1:{Auth.GetPort()}")
@@ -72,7 +74,8 @@ namespace KurwApp
 		}
 
 		//Default HTTP PATCH Request
-		internal static async Task<string> PatchRequest(string endpoint, string body) {
+		internal static async Task<string> PatchRequest(string endpoint, string body)
+		{
 			HttpClient client = CreateClient();
 
 			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
