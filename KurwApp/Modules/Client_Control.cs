@@ -1,83 +1,96 @@
 ﻿using System.Threading;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.Serialization;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Net;
 using System.IO;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
-using KurwApp.Modules;
 using System.Windows.Controls;
-using KurwApp;
-using System.Windows.Media;
 
-namespace League
+namespace KurwApp
 {
 	internal static class Client_Control
 	{
 		internal static string summonerId = string.Empty;
 
+		//Random variable used for getting random skins
 		internal static Random random = new();
 
-		private static bool isClientOpen = false;
 
-		internal static async void EnsureAuthentication(KurwApp.MainWindow mainWindow)
+		//Ensure that the Authentication is set
+		//Set it when client gets open or is open at startup
+		//Reset it when it gets closed or is closed at startup
+		internal static void EnsureAuthentication(MainWindow mainWindow)
 		{
 			do
 			{
-				
+				Thread.Sleep(1000);
+				//Check if the authentication is set
 				bool authenticated = Auth.IsAuthSet();
-				isClientOpen = IsClientOpen();
 
+				//Check if the client is open
+				bool isClientOpen = IsClientOpen();
+
+				// When the client is closed
 				if (!isClientOpen)
 				{
+					//Modify GroupBox style
 					mainWindow.ShowLolState(false);
+					//Reset player id
 					SetSummonerId(isReset: true);
+					//If authenticated : reset the auth
 					if(authenticated) Auth.ResetAuth();
 					continue;
 				}
 
+				//When not authenticated
 				if (!authenticated)
 				{
-					if (isClientOpen) Auth.SetBasicAuth(Process.GetProcessesByName("LeagueClientUx").First().MainModule.FileName);
-					SetSummonerId();
-					mainWindow.ShowLolState(true);
+					//If the client is open : set the authentication and player id
+					if (isClientOpen)
+					{
+						Auth.SetBasicAuth(Process.GetProcessesByName("LeagueClientUx").First().MainModule.FileName);
+						SetSummonerId();
+						mainWindow.ShowLolState(true);
+					}
 				}
-				Thread.Sleep(1000);
 			} while (true);
 		}
 
+		//Returns if client is open
 		internal static bool IsClientOpen()
 		{
+			//Checks if there is multiple UxRender to make sure the client is fully opened
 			return Process.GetProcessesByName("LeagueClientUxRender").Length > 3;
 		}
 
-		internal static async void ClientPhase(KurwApp.MainWindow mainWindow)
+		//Checks client phase every 5 seconds
+		//Is used as a worker thread for the app thread
+		internal static async void ClientPhase(MainWindow mainWindow)
 		{
 			
 			while (true)
 			{
+				//Only act if the authentication is set
 				if (Auth.IsAuthSet())
 				{
-					string client_phase = await Client_Request.GetClientPhase();
-					switch (client_phase)
+					//Checks the game phase and perform action depending on it
+					switch (await Client_Request.GetClientPhase())
 					{
-						default:
-							if (!mainWindow.isIconDefault) mainWindow.SetDefaultIcon();
-							break;
+						//On ready check
 						case "ReadyCheck":
+							//If the setting to get automatically ready is on : accept the game
 							if (GetSettingState("autoReady")) await Client_Request.Accept();
 							break;
+						//On champion selection : start and await the end of the champ select handler
 						case "ChampSelect":
-							var game = new Game(mainWindow);
-							Task gameTask = Task.Run(() => game.ChampSelectControl());
-							await gameTask;
+							await Task.Run(() => new Game(mainWindow).ChampSelectControl());
+							break;
+						//If not in any of the above game phase
+						default:
+							//Set the icon to default if it is not already
+							if (!mainWindow.isIconDefault) mainWindow.SetDefaultIcon();
 							break;
 					}
 				}
@@ -85,6 +98,7 @@ namespace League
 			}
 		}
 
+		//Returns a setting state by checking in the setting json
 		internal static bool GetSettingState(string settingName)
 		{
 			var settings = JObject.Parse(File.ReadAllText("Configurations/settings.json"));
@@ -92,139 +106,99 @@ namespace League
 			return (bool)settings[settingName];
 		}
 
-		internal static void SetPreferences(MainWindow mainWindow)
-		{
-			var preferences = JObject.Parse(File.ReadAllText("Configurations/preferences.json"));
-
-			Action<StackPanel, string> setRadioByPreference = (stack, token) =>
-			{
-				stack.Children.OfType<RadioButton>()
-					.Where(child => child.Tag.ToString() == preferences[token]["userPreference"].ToString()).First().IsChecked = true;
-				var comboboxes = stack.Children.OfType<ComboBox>();
-				if (comboboxes.Any())
-				{
-					comboboxes.First().SelectedIndex = comboboxes.First().IsEnabled ? (int)preferences[token]["OTLTimeIndex"] : -1;
-				}
-			};
-
-
-			mainWindow.Dispatcher.Invoke(() => {
-
-				setRadioByPreference(mainWindow.picksPreferences, "picks");
-				setRadioByPreference(mainWindow.bansPreferences, "bans");
-				setRadioByPreference(mainWindow.noAvailablePreferences, "noPicks");
-				setRadioByPreference(mainWindow.onSelectionPreferences, "selections");
-
-				if (mainWindow.stillAutoPickOTL.IsEnabled) { mainWindow.stillAutoPickOTL.IsChecked = (bool)preferences["selections"]["OTL"]; }
-
-				mainWindow.setPageAsActive.IsChecked = (bool)preferences["runes"]["setActive"];
-				mainWindow.overridePage.IsChecked = (bool)preferences["runes"]["overridePage"];
-
-				mainWindow.addChromas.IsChecked = (bool)preferences["randomSkin"]["addChromas"];
-				mainWindow.randomOnPick.IsChecked = (bool)preferences["randomSkin"]["randomOnPick"];
-
-				mainWindow.rightSideFlash.IsChecked = (bool)preferences["summoners"]["rightSideFlash"];
-				mainWindow.alwaysSnowball.IsChecked = (bool)preferences["summoners"]["alwaysSnowball"];
-
-			}
-			);
-		}
-
-		internal static void SetSettings(MainWindow mainWindow)
-		{
-			var settings = JObject.Parse(File.ReadAllText("Configurations/settings.json"));
-
-			mainWindow.Dispatcher.Invoke(() => {
-				mainWindow.autoPickSetting.IsChecked = (bool)settings["championPick"];
-				mainWindow.autoBanSetting.IsChecked = (bool)settings["banPick"];
-				mainWindow.autoReadySetting.IsChecked = (bool)settings["aramChampionSwap"];
-				mainWindow.autoRunesSetting.IsChecked = (bool)settings["runesSwap"];
-				mainWindow.autoSwapSetting.IsChecked = (bool)settings["autoReady"];
-				
-
-			}
-			);
-		}
-
-
+		//Set or reset the player id
 		internal static async void SetSummonerId(bool isReset = false)
 		{
+
 			if (isReset)
 			{
 				summonerId = string.Empty;
 				return;
 			}
+
+			//Getting the current player info
 			var summonerInfo = await Client_Request.GetCurrentSummonerInfo();
 			if (summonerInfo == "" || summonerInfo is null) return;
 
+			//Set player id if the token is present
 			if(summonerInfo.Contains("summonerId"))summonerId = JObject.Parse(summonerInfo)["summonerId"].ToString();
 		}
 
+		#region Random Skin
+		//Get the id of all available skins
+		internal static async Task<int[]> GetAvailableSkinsID()
+		{
+			JArray currentChampionSkins = JArray.Parse(await Client_Request.GetCurrentChampionSkins());
 
+			//Select all current champion unlocked skins
+			return currentChampionSkins.Where(j => (bool)j["unlocked"]).Select(j => (int)j["id"]).ToArray();
+		}
+
+		//Pick a random skin
 		internal static async void PickRandomSkin()
 		{
+			//Get all available skins
 			int[] skin_ids = await GetAvailableSkinsID();
+
+			//If there is any skins available : select and change the next skin randomly
 			if (skin_ids.Any())
 			{
 				int random_skin_index = random.Next(skin_ids.Length);
 				await Client_Request.ChangeSkinByID(skin_ids[random_skin_index]);
 			}
-		}
+		} 
+		#endregion
 
+		//Returns the champion select phase name
 		internal static async Task<string> GetChampSelectPhase()
 		{
 			JObject champ_select_timer = JObject.Parse(await Client_Request.GetSessionTimer());
 			return champ_select_timer["phase"].ToString();
 		}
 
+		//Returns the player cellId, its position in the lobby
 		internal static async Task<int> GetCellId()
 		{
 			JObject sessionInfo = JObject.Parse(await Client_Request.GetSessionInfo());
-			JArray myTeam = sessionInfo["myTeam"] as JArray;
-			//Return the first cellId (player position in the session) that match our summonerId
 			return (int)sessionInfo["localPlayerCellId"];
 		}
 
-		internal static async Task<int[]> GetAvailableSkinsID()
-		{
-			JArray current_champion_skins = JArray.Parse(await Client_Request.GetCurrentChampionSkins());
-			return current_champion_skins.Where(j => (bool)j["unlocked"]).Select(j => (int)j["id"]).ToArray();
-		}
-
+		//Returns if it's the player turn to act
+		//If true output the id of the action and the type (e.g : pick or ban)
 		internal static bool IsCurrentPlayerTurn(IEnumerable<JObject> actions, int cellId, out int actionId, out string type)
 		{
-
-			
+			//Get the player actions that are in progress
 			var currentPlayerAction = actions.Where(action => (int)action["actorCellId"] == cellId && (bool)action["isInProgress"] == true)
 				.Select(action => action).ToArray();
 
-			if (currentPlayerAction.Any())
-			{
-				actionId = (int)currentPlayerAction.First()["id"];
-				type = currentPlayerAction.First()["type"].ToString();
-				return true;
-			}
-			actionId = 0;
-			type = string.Empty;
-			return false;
 			
+			bool isCurrentPlayerTurn = currentPlayerAction.Any();
+
+			actionId = isCurrentPlayerTurn ? (int)currentPlayerAction.First()["id"] : 0;
+			type = isCurrentPlayerTurn ? currentPlayerAction.First()["type"].ToString() : string.Empty;
+			return isCurrentPlayerTurn;
 		}
 
+		//Get the actions of the champion select
 		internal static async Task<IEnumerable<JObject>> GetSessionActions(string sessionInfo)
 		{
 			return JObject.Parse(sessionInfo)["actions"].SelectMany(innerArray => innerArray).OfType<JObject>();
 		}
 
+		#region Runes
+		//Get the recommended runes for a champion
 		internal static async Task<JArray> GetRecommendedRunesById(int champId)
 		{
 			var runesRecommendation = JArray.Parse(await Client_Request.GetRecommendedRunes());
-			
+
 			JArray champRunes = runesRecommendation
 				.Where(obj => (int)obj["championId"] == champId)
 				.Select(obj => (JArray)obj["runeRecommendations"]).First();
-			return new JArray(champRunes);
+
+			return champRunes;
 		}
-		
+
+		//Get the recommended champion runes for a champion depending on its position
 		internal static async Task<JToken> GetChampRunesByPosition(int champId, string position)
 		{
 			var runesRecommendation = await GetRecommendedRunesById(champId);
@@ -234,57 +208,66 @@ namespace League
 			{
 				champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"].ToString() == "NONE").Select(recommendation => recommendation);
 			}
-				return champRunesByPosition.FirstOrDefault();
+			return champRunesByPosition.FirstOrDefault();
 		}
 
-		internal static async Task<string> FormatChampRunes(JToken runes, string champion = "")
+		//Format the champion runes for the rune request
+		internal static async Task<string> FormatChampRunes(JToken runes, string champion)
 		{
-			string pageName = $"Kurwapp - {champion}";
-			string runesTemplate = $"{{\"current\": true,\"name\": \"{pageName}\",\"primaryStyleId\": 0,\"subStyleId\": 0, \"selectedPerkIds\": []}}";
+			//Create a template for the request body
+			string runesTemplate = $"{{\"current\": true,\"name\": \"Kurwapp - {champion}\",\"primaryStyleId\": 0,\"subStyleId\": 0, \"selectedPerkIds\": []}}";
 			JObject runesObject = JObject.Parse(runesTemplate);
+
+			//Set the values from the recommended runes
 			runesObject["primaryStyleId"] = runes["primaryPerkStyleId"];
 			runesObject["subStyleId"] = runes["secondaryPerkStyleId"];
 			runesObject["selectedPerkIds"] = runes["perkIds"];
+
 			return runesObject.ToString();
 		}
 
+		//Get the app rune page id if it's set
 		internal static async Task<int> GetAppRunePageId()
 		{
+			//Get all pages
 			var pages = await Client_Request.GetRunePages();
-			var kurwappRunes = JArray.Parse(pages).Where(page => page["name"].ToString() == "Kurwapp");
+
+			//Get the page containing the name Kurwapp
+			var kurwappRunes = JArray.Parse(pages).Where(page => page["name"].ToString().ToLower().Contains("kurwapp"));
+
+			//Return the page id if there is a page else return 0
 			return kurwappRunes.Any() ? kurwappRunes.Select(page => (int)page["id"]).First() : 0;
 		}
 
+		//Check if we can create a new page
 		internal static async Task<bool> CanCreateNewPage()
 		{
 			var inventory = JObject.Parse(await Client_Request.GetRunesInventory());
 			return (bool)inventory["canAddCustomPage"];
 		}
 
-		internal static async Task<JToken[]> GetAvailablePicks()
-		{
-
-			var actions = await GetSessionActions(await Client_Request.GetSessionInfo());
-			var availableChampion = JArray.Parse(await Client_Request.GetAvailableChampions());
-			var nonAvailableChampion = (JArray)actions.Where(action => (bool)action["completed"] == true && (string)action["type"] != "ten_bans_reveal").Select(action => action["championId"]);
-			return availableChampion.Where(championId => nonAvailableChampion.Contains(championId)).ToArray();
-		}
-
+		//Set the recommended rune page
 		internal static async void SetRunesPage(int champId, string position = "NONE")
 		{
-			var appPageId = await GetAppRunePageId();
-			var champions = JArray.Parse(await Client_Request.GetChampionsInfo());
-			string championName = champions.Where(champion => (int)champion["id"] == champId).Select(champion => champion["name"].ToString()).First();
 
-			string newRunesPage = await FormatChampRunes(await GetChampRunesByPosition(champId, position), championName);
-			if(appPageId == 0 && await CanCreateNewPage())
+			var appPageId = await GetAppRunePageId();
+
+			var champions = JArray.Parse(await Client_Request.GetChampionsInfo());
+
+			string championName = champions.Where(champion => (int)champion["id"] == champId).Select(champion => champion["name"].ToString()).First();
+			//Get the recommended rune page
+			string recommendedRunes = await FormatChampRunes(await GetChampRunesByPosition(champId, position), championName);
+
+			
+			if (appPageId != 0)
 			{
-				await Client_Request.CreateNewRunePage(newRunesPage);
+				await Client_Request.EditRunePage(appPageId, recommendedRunes);
 			}
-			else
+			else if (await CanCreateNewPage())
 			{
-				await Client_Request.EditRunePage(appPageId, newRunesPage);
+				await Client_Request.CreateNewRunePage(recommendedRunes);
 			}
-		}
+		} 
+		#endregion
 	}
 }
