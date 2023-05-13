@@ -1,7 +1,6 @@
-﻿using League;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -10,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 
 namespace KurwApp
 {
@@ -18,22 +18,21 @@ namespace KurwApp
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		public ObservableCollection<string> champListCollection { get; set; } = new ObservableCollection<string>();
-		public ObservableCollection<string> selectedListCollection { get; set; } = new ObservableCollection<string>();
+		private ObservableCollection<ListBoxItem> ChampListCollection { get; set; } = new ObservableCollection<ListBoxItem>();
+		private ObservableCollection<ListBoxItem> UpdatedListCollection { get; set; } = new ObservableCollection<ListBoxItem>();
+		private ObservableCollection<ListBoxItem> SelectedListCollection { get; set; } = new ObservableCollection<ListBoxItem>();
 
-		internal bool IsAutoReadyOn;
-		internal int summonerId = 0;
+		internal bool isIconDefault = false;
 
 		public MainWindow()
 		{
 			InitializeComponent();
-			DataContext = this;
-			LoadAndSetCharacterList();
 
-			Thread auth_thread = new Thread(() => Client_Control.EnsureAuthentication(this));
-			Thread clientphase_thread = new Thread(() => Client_Control.ClientPhase(this));
-			clientphase_thread.Start();
-			auth_thread.Start();
+			Thread authentication = new(() => Client_Control.EnsureAuthentication(this));
+			Thread clientPhase = new(() => Client_Control.ClientPhase(this));
+
+			authentication.Start();
+			clientPhase.Start();
 		}
 
 
@@ -52,63 +51,83 @@ namespace KurwApp
 
 		internal void ChangeCharacterIcon(byte[] image)
 		{
-			BitmapImage bitmapImage = new BitmapImage();
 
-			using (MemoryStream stream = new MemoryStream(image))
+			using MemoryStream stream = new(image);
+			Dispatcher.Invoke(() =>
 			{
-				Dispatcher.Invoke(() =>
-				{
-					BitmapImage bitmapImage = new BitmapImage();
-					bitmapImage.BeginInit();
-					bitmapImage.StreamSource = stream;
-					bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-					bitmapImage.EndInit();
-					characterIcon.ImageSource = bitmapImage;
-				});
-			}
+				BitmapImage bitmapImage = new();
+				bitmapImage.BeginInit();
+				bitmapImage.StreamSource = stream;
+				bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+				bitmapImage.EndInit();
+				characterIcon.ImageSource = bitmapImage;
+			});
 
 		}
 		
-		internal void ChangeCharacterIcon(bool reset)
+		internal void SetDefaultIcon()
 		{
-			BitmapImage bitmapImage = new BitmapImage();
+			Dispatcher.Invoke(() =>
+			{
+				BitmapImage bitmapImage = new BitmapImage(new Uri("DefaultIcon.jpg", UriKind.RelativeOrAbsolute));
+				characterIcon.ImageSource = bitmapImage;
+			});
 
-
-				Dispatcher.Invoke(() =>
-				{
-					BitmapImage bitmapImage = new BitmapImage(new Uri("4285.jpg", UriKind.RelativeOrAbsolute));
-					characterIcon.ImageSource = bitmapImage;
-				});
+			isIconDefault = true;
 		}
 
 		internal async void LoadAndSetCharacterList()
 		{
-			var response = await Client_Request.GetChampionsInfo();
-			var champions = JArray.Parse(response);
-			var championNames = champions.Where(champion => (int)champion["id"]!=-1).Select(champion => champion["name"].ToString()).ToArray();
-			Array.Sort(championNames);
-			foreach (string champName in championNames)
+			var champions = JArray.Parse(await Client_Request.GetChampionsInfo());
+			Dictionary<int, string> championNames = champions.Where(champion => (int)champion["id"] != -1)
+															.ToDictionary(champion => (int)champion["id"], champion => (string)champion["name"]);
+			championNames = championNames.OrderBy(champion => champion.Value).ToDictionary(champion => champion.Key, champion => champion.Value);
+
+			Dispatcher.Invoke(() =>
 			{
-				Dispatcher.Invoke((Delegate)(()=> champListCollection.Add(champName)));
+				foreach (KeyValuePair<int, string> champName in championNames)
+				{
+					ListBoxItem championItem = new()
+					{
+						Tag = champName.Key,
+						Content = champName.Value,
+						VerticalContentAlignment = VerticalAlignment.Center,
+						HorizontalContentAlignment = HorizontalAlignment.Left
+					};
+					ChampListCollection.Add(championItem);
+				}
+			});
+
+
+			JArray blindPicks = JArray.Parse(File.ReadAllText("Picks/Blind.json")) ;
+			var champListBoxItems = ChampListCollection.Where(champion => blindPicks
+														.Select(token => (int)token).ToArray()
+														.Contains(int.Parse(champion.Tag.ToString())));
+
+			
+			foreach (var champ in champListBoxItems)
+			{
+				SelectedListCollection.Add(champ);
 			}
+
+			UpdatedListCollection = new ObservableCollection<ListBoxItem>(ChampListCollection.Except(SelectedListCollection));
+
+			champList.ItemsSource = UpdatedListCollection;
+			selectionList.ItemsSource = SelectedListCollection;
+
+			SetDefaultIcon();
 		}
 
-		internal void SavePreference(string token, bool value, string file = "preferences.json")
+		internal static void SaveConfiguration(string token, dynamic value, string file = "preferences.json")
 		{
 			JObject preferences = JObject.Parse(File.ReadAllText($"Configurations/{file}"));
 			preferences.SelectToken(token).Replace(value);
 			File.WriteAllText($"Configurations/{file}", preferences.ToString());
 		}
 
-		internal void SavePreference(string token, int value, string file = "preferences.json")
-		{
-			JObject preferences = JObject.Parse(File.ReadAllText($"Configurations/{file}"));
-			preferences.SelectToken(token).Replace(value);
-			File.WriteAllText($"Configurations/{file}", preferences.ToString());
-		}
 
 
-		private void random_btn_Click(object sender, RoutedEventArgs e)
+		private void RandomSkinClick(object sender, RoutedEventArgs e)
 		{
 			Client_Control.PickRandomSkin();
 		}
@@ -120,61 +139,89 @@ namespace KurwApp
 			Environment.Exit(0);
 		}
 
-		private async void Button_Click(object sender, RoutedEventArgs e) { 
+		private async void ClientRestart(object sender, RoutedEventArgs e) { 
 			await Client_Request.RestartLCU();
 		}
 
-		private void CheckBox_Checked(object sender, RoutedEventArgs e)
-		{
-			
-		}
-
-		internal int GetRadioStackPreference(RadioButton radioButton)
+		internal static int GetRadioStackPreference(RadioButton radioButton)
 		{
 			var parentStack = radioButton.Parent as StackPanel;
 			var preference = parentStack.Children.OfType<RadioButton>().FirstOrDefault(radio => radio.IsChecked == true);
-			return Int32.Parse(preference.Tag.ToString());
+			return int.Parse(preference.Tag.ToString());
 		}
 
-		private void selectionListAdd_Click(object sender, RoutedEventArgs e)
+		private void AddSelection(object sender, RoutedEventArgs e)
 		{
 			if (champList.SelectedItem == null) return;
-			var selection = champList.SelectedValue.ToString();
-			
-			champListCollection.Remove(selection);
-			selectedListCollection.Add(selection);
-			
+			var selection = champList.SelectedItem as ListBoxItem;
+
+			SavePicksModification(selection, removing : false);
+
+			UpdatedListCollection.Remove(selection);
+			SelectedListCollection.Add(selection);
 		}
 
-		private void selectionListRemove_Click(object sender, RoutedEventArgs e)
+		private void RemoveSelection(object sender, RoutedEventArgs e)
 		{
-			if(selectionList.SelectedItem == null) return;
-			var selection = selectionList.SelectedValue.ToString();
-			
-			champListCollection.Add(selection);
-			champListCollection = new ObservableCollection<string>(champListCollection.OrderBy(i => i));	
-			champList.ItemsSource = champListCollection;
+			if (selectionList.SelectedItem == null) return;
+			var selection = selectionList.SelectedItem as ListBoxItem;
 
-			selectedListCollection.Remove(selection);
-			
+			SavePicksModification(selection, removing : true);
+
+			//Add the removed item to the champion list and then re-order the list
+			UpdatedListCollection.Add(selection);
+
+			UpdatedListCollection = new ObservableCollection<ListBoxItem>(UpdatedListCollection.OrderBy(i => i.Content));
+
+			champList.ItemsSource = UpdatedListCollection;
+
+			_ = SelectedListCollection.Remove(selection);
+
 		}
 
-		private void randomOnPick_Checked(object sender, RoutedEventArgs e)
+		private void SavePicksModification(ListBoxItem? selection, bool removing)
 		{
-			SavePreference("randomSkin.randomOnPick", true);
+			var gameType = ((ComboBoxItem)selectionListGameType.SelectedItem).Content.ToString();
+			switch (gameType)
+			{
+				default:
+					break;
+				case "Draft":
+					var pickType = ((ComboBoxItem)selectionListType.SelectedItem).Content.ToString();
+
+					var draftFile = JObject.Parse(File.ReadAllText($"Picks/{pickType}.json"));
+
+					var position = ((ComboBoxItem)selectionListPosition.SelectedItem).Content.ToString();
+
+					var fileRole = position == "Support" ? "UTILITY" : position.ToUpper();
+
+					if (removing) ((JArray)draftFile[fileRole]).Remove(((JArray)draftFile[fileRole]).First(x => x.Value<int>() == int.Parse(selection.Tag.ToString()))); 
+					else ((JArray)draftFile[fileRole]).Add(int.Parse(selection.Tag.ToString()));
+
+					File.WriteAllText($"Picks/{pickType}.json", draftFile.ToString());
+					break;
+				case "Blind":
+				case "ARAM":
+					var file = JArray.Parse(File.ReadAllText($"Picks/{gameType}.json"));
+					if (removing) file.Remove(file.First(x => x.Value<int>() == int.Parse(selection.Tag.ToString())));
+					else file.Add(int.Parse(selection.Tag.ToString()));
+
+					File.WriteAllText($"Picks/{gameType}.json", file.ToString());
+					break;
+			}
 		}
 
 		private void OnControlInteraction(object sender, RoutedEventArgs e)
 		{
 			if(sender is CheckBox checkBox)
 			{
-				SavePreference(checkBox.Tag.ToString(), (bool)checkBox.IsChecked);
+				SaveConfiguration(checkBox.Tag.ToString(), (bool)checkBox.IsChecked);
 			}
 			else if(sender is RadioButton radioButton)
 			{
 				int radioPreference = GetRadioStackPreference(radioButton);
 				StackPanel parent = radioButton.Parent as StackPanel;
-				SavePreference(parent.Tag.ToString() + ".userPreference", radioPreference);
+				SaveConfiguration(parent.Tag.ToString() + ".userPreference", radioPreference);
 
 			}
 		}
@@ -182,7 +229,7 @@ namespace KurwApp
 		private void OnSettingsControlInteraction(object sender, RoutedEventArgs e)
 		{
 			
-			SavePreference((sender as CheckBox).Tag.ToString(), (bool)(sender as CheckBox).IsChecked, file: "settings.json");
+			SaveConfiguration((sender as CheckBox).Tag.ToString(), (bool)(sender as CheckBox).IsChecked, file: "settings.json");
 		}
 
 		private void IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -211,6 +258,59 @@ namespace KurwApp
 			}
 		}
 
+		//Set the preferences saved in the preferences.json to the ui
+		internal void SetPreferences()
+		{
+			var preferences = JObject.Parse(File.ReadAllText("Configurations/preferences.json"));
+
+			void setRadioByPreference(StackPanel stack, string token)
+			{
+				stack.Children.OfType<RadioButton>()
+					.Where(child => child.Tag.ToString() == preferences[token]["userPreference"].ToString()).First().IsChecked = true;
+				var comboboxes = stack.Children.OfType<ComboBox>();
+				if (comboboxes.Any())
+				{
+					comboboxes.First().SelectedIndex = comboboxes.First().IsEnabled ? (int)preferences[token]["OTLTimeIndex"] : -1;
+				}
+			}
+
+
+			Dispatcher.Invoke(() => {
+
+				setRadioByPreference(picksPreferences, "picks");
+				setRadioByPreference(bansPreferences, "bans");
+				setRadioByPreference(noAvailablePreferences, "noPicks");
+				setRadioByPreference(onSelectionPreferences, "selections");
+
+				if (stillAutoPickOTL.IsEnabled) { stillAutoPickOTL.IsChecked = (bool)preferences["selections"]["OTL"]; }
+
+				setPageAsActive.IsChecked = (bool)preferences["runes"]["setActive"];
+				overridePage.IsChecked = (bool)preferences["runes"]["overridePage"];
+
+				addChromas.IsChecked = (bool)preferences["randomSkin"]["addChromas"];
+				randomOnPick.IsChecked = (bool)preferences["randomSkin"]["randomOnPick"];
+
+				rightSideFlash.IsChecked = (bool)preferences["summoners"]["rightSideFlash"];
+				alwaysSnowball.IsChecked = (bool)preferences["summoners"]["alwaysSnowball"];
+
+			}
+			);
+		}
+
+		internal void SetSettings()
+		{
+			var settings = JObject.Parse(File.ReadAllText("Configurations/settings.json"));
+
+			Dispatcher.Invoke(() => {
+				autoPickSetting.IsChecked = (bool)settings["championPick"];
+				autoBanSetting.IsChecked = (bool)settings["banPick"];
+				autoReadySetting.IsChecked = (bool)settings["aramChampionSwap"];
+				autoRunesSetting.IsChecked = (bool)settings["runesSwap"];
+				autoSwapSetting.IsChecked = (bool)settings["autoReady"];
+			}
+			);
+		}
+
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			LoadAndSetCharacterList();
@@ -227,28 +327,56 @@ namespace KurwApp
 			populateComboBox(30, stillPickTimeLeft);
 
 
-			Thread preferences = new Thread(() => Client_Control.SetPreferences(this));
-			preferences.Start();
-
-			Thread settings = new Thread(()=> Client_Control.SetSettings(this));
-			settings.Start();
+			SetPreferences();
+			SetSettings();
 		}
 
-		private void ComboboxSelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void OTLChange(object sender, SelectionChangedEventArgs e)
 		{
 			if (sender is ComboBox comboBox)
 			{
-				if (comboBox.SelectedIndex == -1)
-				{
-					return;
-				}
-				SavePreference(comboBox.Tag.ToString(), comboBox.SelectedIndex);
+				if (comboBox.SelectedIndex == -1) return;
+				
+				SaveConfiguration(comboBox.Tag.ToString(), comboBox.SelectedIndex);
 			}
 		}
 
-		internal bool IsCheckboxChecked(CheckBox checkBox)
+
+		private void SelectionListChange(object sender, SelectionChangedEventArgs e)
 		{
-			return (bool)checkBox.IsChecked;
+			var gameType = ((ComboBoxItem)selectionListGameType.SelectedItem).Content.ToString();
+
+			IEnumerable<ListBoxItem> champListBoxItems;
+			
+			if (gameType == "Draft")
+			{
+				var pickType = ((ComboBoxItem)selectionListType.SelectedItem).Content.ToString();
+				var draftFile = JObject.Parse(File.ReadAllText($"Picks/{pickType}.json"));
+
+				var position = ((ComboBoxItem)selectionListPosition.SelectedItem).Content.ToString();
+				var fileRole = position == "Support" ? "UTILITY" : position.ToUpper();
+
+				var champsId = (JArray)draftFile[fileRole];
+
+				champListBoxItems = ChampListCollection.Where(champion => champsId.Select(token => (int)token).ToArray().Contains(int.Parse(champion.Tag.ToString())));
+				
+			}
+			else
+			{
+				var champsId = JArray.Parse(File.ReadAllText($"Picks/{gameType}.json"));
+				champListBoxItems = ChampListCollection.Where(champion => champsId.Select(token => (int)token).ToArray().Contains(int.Parse(champion.Tag.ToString())));
+			}
+
+
+
+			SelectedListCollection.Clear();
+			foreach (var champ in champListBoxItems)
+			{
+				SelectedListCollection.Add(champ);
+			}
+
+			UpdatedListCollection = new ObservableCollection<ListBoxItem>(ChampListCollection.Except(SelectedListCollection));
+			champList.ItemsSource = UpdatedListCollection;
 		}
 
 		internal void ChangeTest(string debug)
