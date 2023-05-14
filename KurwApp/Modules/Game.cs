@@ -32,6 +32,7 @@ namespace KurwApp
 		internal async void SetGameType()
 		{
 			JObject lobbyInfo = JObject.Parse(await Client_Request.GetLobbyInfo());
+			if (lobbyInfo.SelectToken("message") != null) return;
 			string gameMode = lobbyInfo["gameConfig"]["gameMode"].ToString();
 			bool hasPositions = (bool)lobbyInfo["gameConfig"]["showPositionSelector"];
 
@@ -62,13 +63,15 @@ namespace KurwApp
 		//Handler of the champion selections
 		internal async void ChampSelectControl()
         {
+
 			sessionInfo = JObject.Parse(await Client_Request.GetSessionInfo());
 			//Set the properties
 			SetRoleAndCellId();
 			SetGameType();
 
 			do
-			{	
+			{
+				if (sessionInfo.SelectToken("message") != null) return;
 				switch (await Client_Control.GetChampSelectPhase())
 				{
 					default:
@@ -157,6 +160,7 @@ namespace KurwApp
 			if (!aramPicks.Any()) return 0;
 
 			int[] aramBenchIds = GetAramBenchIds();
+			if (!aramBenchIds.Any()) return 0;
 			return aramPicks.Select(x => int.Parse(x.ToString()))
 												.ToArray()
 												.Where(x => aramBenchIds.Contains(x)).First();

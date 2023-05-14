@@ -14,7 +14,7 @@
             <RowDefinition Height="150"/>
         </Grid.RowDefinitions>
         <TabControl Margin="5,5,5,5">
-            <TabItem Header="Characters">
+            <TabItem Header="Characters" Margin="0,0,0,0">
                 <!-- Content for Tab 1 -->
                 <Grid>
                     <Grid.RowDefinitions>
@@ -22,20 +22,26 @@
                         <RowDefinition Height="4*"/>
                         <RowDefinition Height="4*"/>
                         <RowDefinition Height="4*"/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
-                    <ListBox x:Name="champList" ItemsSource="{Binding champListCollection}" Grid.RowSpan="3" Grid.Row="1"/>
-                    <ListBox x:Name="selectionList" ItemsSource="{Binding selectedListCollection}" Grid.Column="3" d:ItemsSource="{d:SampleData ItemCount=5}" Grid.RowSpan="3" Grid.Row="1"/>
+                    <ListBox x:Name="champList" ItemsSource="{Binding updatedListCollection}" Grid.RowSpan="3" Grid.Row="1" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"/>
+                    <ListBox x:Name="selectionList" ItemsSource="{Binding selectedListCollection}" Grid.Column="3" Grid.RowSpan="3" Grid.Row="1" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"/>
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" Width="100" MinHeight="50" MinWidth="100">
-                        <ComboBox x:Name="selectionListType" VerticalAlignment="Top">
+                        <ComboBox x:Name="selectionListGameType" SelectionChanged="SelectionListChange">
+                            <ComboBoxItem Content="Blind" IsSelected="True"/>
+                            <ComboBoxItem x:Name="draftMode" Content="Draft"/>
+                            <ComboBoxItem Content="ARAM"/>
+                        </ComboBox>
+                        <ComboBox x:Name="selectionListType" Margin="0,10,0,0" IsEnabled="{Binding IsSelected, ElementName=draftMode}" SelectionChanged="SelectionListChange">
                             <ComboBoxItem Content="Pick" IsSelected="True"/>
                             <ComboBoxItem Content="Ban"/>
                         </ComboBox>
-                        <ComboBox x:Name="selectionListPosition" Margin="0,10,0,0" VerticalAlignment="Bottom">
+                        <ComboBox x:Name="selectionListPosition" Margin="0,10,0,0" VerticalAlignment="Top" IsEnabled="{Binding IsSelected, ElementName=draftMode}"  SelectionChanged="SelectionListChange">
                             <ComboBoxItem Content="Top" IsSelected="True"/>
                             <ComboBoxItem Content="Jungle"/>
                             <ComboBoxItem Content="Middle"/>
@@ -46,8 +52,8 @@
                     <Label Content="Champions List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <Label Grid.Column="3" Content="Selected Champions" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="2" MinHeight="50" Width="100" MinWidth="100">
-                        <Button x:Name="selectionListAdd" Content="Add →" Click="selectionListAdd_Click"/>
-                        <Button x:Name="selectionListRemove" Content="← Remove " Margin="0,10,0,0" Click="selectionListRemove_Click"/>
+                        <Button x:Name="selectionListAdd" Content="Add →" Click="AddSelection"/>
+                        <Button x:Name="selectionListRemove" Content="← Remove " Margin="0,10,0,0" Click="RemoveSelection"/>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Grid.Row="3" VerticalAlignment="Center">
                         <CheckBox x:Name="autoPickSetting" Content="Auto Pick" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="championPick" VerticalAlignment="Center"/>
@@ -55,6 +61,10 @@
                         <CheckBox x:Name="autoSwapSetting" Content="Auto Swap" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="aramChampionSwap" VerticalAlignment="Center"/>
                         <CheckBox x:Name="autoRunesSetting" Content="Auto Runes" Height="15"  Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="runesSwap" VerticalAlignment="Center"/>
                         <CheckBox x:Name="autoReadySetting" Content="Auto Ready" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="autoReady" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Grid.Row="4" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Button x:Name="selectionOrderDown" Content="↓" Width="{Binding ActualHeight, ElementName=selectionOrderDown, Mode=OneWay}" Click="ReorderSelection"/>
+                        <Button x:Name="selectionOrderUp" Content="↑" Width="{Binding ActualHeight, ElementName=selectionOrderUp, Mode=OneWay}" Margin="15,0,0,0" Click="ReorderSelection"/>
                     </StackPanel>
 
                 </Grid>
@@ -96,7 +106,7 @@
                                 <RadioButton Content="Select and Wait" GroupName="picks" Height="15" Margin="0,5,0,0" Tag="1" Checked="OnControlInteraction"/>
 
                                 <RadioButton x:Name="pickOTL" Content="On time left" GroupName="picks" VerticalAlignment="Center" Tag="2" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction"/>
-                                <ComboBox x:Name="picksTimeLeft" HorizontalAlignment="Left" IsEnabled="{Binding IsChecked, ElementName=pickOTL}" IsEnabledChanged="IsEnabledChanged" SelectionChanged="ComboboxSelectionChanged" Margin="20,5,0,0" Tag="picks.OTLTimeIndex"/>
+                                <ComboBox x:Name="picksTimeLeft" HorizontalAlignment="Left" IsEnabled="{Binding IsChecked, ElementName=pickOTL}" IsEnabledChanged="IsEnabledChanged" SelectionChanged="OTLChange" Margin="20,5,0,0" Tag="picks.OTLTimeIndex"/>
                             </StackPanel>
                         </GroupBox>
                         <GroupBox Header="No Available Picks" MinHeight="85">
@@ -117,7 +127,7 @@
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="stillAutoPickOTL" Content="On time left" Tag="selections.OTL"  Grid.ColumnSpan="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction"/>
-                                    <ComboBox x:Name="stillPickTimeLeft" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" IsEnabled="{Binding IsChecked, ElementName=stillAutoPickOTL}" IsEnabledChanged="IsEnabledChanged" SelectionChanged="ComboboxSelectionChanged" Tag="selections.OTLTimeIndex"/>
+                                    <ComboBox x:Name="stillPickTimeLeft" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" IsEnabled="{Binding IsChecked, ElementName=stillAutoPickOTL}" IsEnabledChanged="IsEnabledChanged" SelectionChanged="OTLChange" Tag="selections.OTLTimeIndex"/>
                                 </Grid>
                             </StackPanel>
                         </GroupBox>
@@ -128,7 +138,7 @@
                                 <RadioButton Tag="0" Content="Instant" GroupName="bans" Checked="OnControlInteraction" Height="15"/>
                                 <RadioButton Tag="1" Content="Select and Wait" GroupName="bans" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
                                 <RadioButton x:Name="bansOTL" Tag="2" Content="On time left" GroupName="bans" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
-                                <ComboBox x:Name="bansTimeLeft" HorizontalAlignment="Left" Margin="20,5,0,0" IsEnabled="{Binding IsChecked, ElementName=bansOTL}" IsEnabledChanged="IsEnabledChanged"  SelectionChanged="ComboboxSelectionChanged" Tag="bans.OTLTimeIndex"/>
+                                <ComboBox x:Name="bansTimeLeft" HorizontalAlignment="Left" Margin="20,5,0,0" IsEnabled="{Binding IsChecked, ElementName=bansOTL}" IsEnabledChanged="IsEnabledChanged"  SelectionChanged="OTLChange" Tag="bans.OTLTimeIndex"/>
                             </StackPanel>
                         </GroupBox>
                     </StackPanel>
@@ -166,8 +176,8 @@
                 </Grid>
             </GroupBox>
             <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Margin="5,0,0,0">
-                <Button x:Name="random_btn" Content="Random Skin" Click="random_btn_Click" IsEnabled="False"/>
-                <Button Content="Reload League Client" Click="Button_Click"/>
+                <Button x:Name="random_btn" Content="Random Skin" Click="RandomSkinClick" IsEnabled="False"/>
+                <Button Content="Reload League Client" Click="ClientRestart"/>
             </StackPanel>
             <!-- Add other tools here -->
         </Grid>

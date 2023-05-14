@@ -16,7 +16,16 @@ namespace KurwApp
 			var certCollection = new X509Certificate2Collection();
 			certCollection.Import(certFilePath);
 			var riotCert = certCollection[0];
-			HttpClientHandler handler = new();
+			HttpClientHandler handler = new()
+			{
+				ClientCertificateOptions = ClientCertificateOption.Manual,
+				SslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls11 | System.Security.Authentication.SslProtocols.Tls,
+				ServerCertificateCustomValidationCallback =
+				(httpRequestMessage, cert, cetChain, policyErrors) =>
+				{
+					return true;
+				}
+			};
 			handler.ClientCertificates.Add(riotCert);
 			var httpClient = new HttpClient(handler)
 			{
