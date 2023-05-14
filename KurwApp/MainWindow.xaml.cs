@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Xml.Linq;
 
 namespace KurwApp
 {
@@ -155,18 +156,17 @@ namespace KurwApp
 			if (champList.SelectedItem == null) return;
 			var selection = champList.SelectedItem as ListBoxItem;
 
-			SavePicksModification(selection, removing : false);
-
-			UpdatedListCollection.Remove(selection);
 			SelectedListCollection.Add(selection);
+			UpdatedListCollection.Remove(selection);
+
+			SavePicksModification();
+
 		}
 
 		private void RemoveSelection(object sender, RoutedEventArgs e)
 		{
 			if (selectionList.SelectedItem == null) return;
 			var selection = selectionList.SelectedItem as ListBoxItem;
-
-			SavePicksModification(selection, removing : true);
 
 			//Add the removed item to the champion list and then re-order the list
 			UpdatedListCollection.Add(selection);
@@ -177,9 +177,10 @@ namespace KurwApp
 
 			_ = SelectedListCollection.Remove(selection);
 
+			SavePicksModification();
 		}
 
-		private void SavePicksModification(ListBoxItem? selection, bool removing)
+		private void SavePicksModification()
 		{
 			var gameType = ((ComboBoxItem)selectionListGameType.SelectedItem).Content.ToString();
 			switch (gameType)
@@ -195,17 +196,14 @@ namespace KurwApp
 
 					var fileRole = position == "Support" ? "UTILITY" : position.ToUpper();
 
-					if (removing) ((JArray)draftFile[fileRole]).Remove(((JArray)draftFile[fileRole]).First(x => x.Value<int>() == int.Parse(selection.Tag.ToString()))); 
-					else ((JArray)draftFile[fileRole]).Add(int.Parse(selection.Tag.ToString()));
+					draftFile[fileRole] = new JArray(SelectedListCollection.Select(i => new JValue (int.Parse(i.Tag.ToString()))));
 
 					File.WriteAllText($"Picks/{pickType}.json", draftFile.ToString());
 					break;
 				case "Blind":
 				case "ARAM":
 					var file = JArray.Parse(File.ReadAllText($"Picks/{gameType}.json"));
-					if (removing) file.Remove(file.First(x => x.Value<int>() == int.Parse(selection.Tag.ToString())));
-					else file.Add(int.Parse(selection.Tag.ToString()));
-
+					file = new JArray(SelectedListCollection.Select(i => new JValue(int.Parse(i.Tag.ToString()))));
 					File.WriteAllText($"Picks/{gameType}.json", file.ToString());
 					break;
 			}
@@ -382,6 +380,30 @@ namespace KurwApp
 		internal void ChangeTest(string debug)
 		{
 			Dispatcher.Invoke(() => testing.Text = debug);
+		}
+
+		private void ReorderSelection(object sender, RoutedEventArgs e)
+		{
+			if (selectionList.SelectedItem == null) return;
+			var selection = selectionList.SelectedItem as ListBoxItem;
+
+			ObservableCollection<ListBoxItem>? observableCollection = selectionList.ItemsSource as ObservableCollection<ListBoxItem>;
+			if (observableCollection == null) return;
+
+
+			int oldIndex = observableCollection.IndexOf(selection);
+			bool isPrevious = ((Button)sender).Name == "selectionOrderUp";
+				ChangeTest((isPrevious && oldIndex - 1 >= 0).ToString());
+			if (isPrevious && oldIndex - 1 >= 0)
+			{
+				observableCollection.Move(oldIndex, oldIndex - 1);
+			}
+			else if (!isPrevious && oldIndex + 1 < observableCollection.Count)
+			{
+				observableCollection.Move(oldIndex, oldIndex + 1);
+			}
+
+			SavePicksModification();
 		}
 	}
 }
