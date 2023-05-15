@@ -11,7 +11,7 @@ namespace KurwApp
 		internal static async Task<string> GetClientPhase()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-gameflow/v1/gameflow-phase");
-			
+
 			string client_phase = response.Substring(1, response.Length - 2);
 
 			return client_phase;
@@ -99,12 +99,25 @@ namespace KurwApp
 			return recommendedRunes;
 		}
 
+		internal static async Task<JObject> GetActiveRunePage()
+		{
+			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-perks/v1/currentpage");
+			var runePage = JObject.Parse(response);
+			return runePage;
+		}
+
+		internal static async Task<string> SetActiveRunePage(int runesPageId)
+		{
+			var response = await RequestQueue.Request(HttpMethod.Post, "/lol-perks/v1/currentpage", runesPageId.ToString());
+			return response;
+		}
+
 		internal static async Task<string> GetRunePages()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-perks/v1/pages");
 			return response;
 		}
-		
+
 		internal static async Task<JObject> GetRunesInventory()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-perks/v1/inventory");
@@ -117,7 +130,7 @@ namespace KurwApp
 			var response = await RequestQueue.Request(HttpMethod.Post, "/lol-perks/v1/pages", newRunesPage);
 			return response;
 		}
-		
+
 		internal static async Task<string> EditRunePage(int runesPageId, string newRunesPage)
 		{
 			var response = await RequestQueue.Request(HttpMethod.Put, $"/lol-perks/v1/pages/{runesPageId}", newRunesPage);
