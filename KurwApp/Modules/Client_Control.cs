@@ -1,12 +1,11 @@
-﻿using System.Threading;
-using System.Diagnostics;
-using System.Linq;
-using Newtonsoft.Json.Linq;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Windows.Controls;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KurwApp.Modules
 {
@@ -17,15 +16,13 @@ namespace KurwApp.Modules
 		//Random variable used for getting random skins
 		internal static Random random = new();
 
-
 		//Ensure that the Authentication is set
 		//Set it when client gets open or is open at startup
 		//Reset it when it gets closed or is closed at startup
-		internal static void EnsureAuthentication(MainWindow mainWindow)
+		internal static async void EnsureAuthentication(MainWindow mainWindow)
 		{
 			do
 			{
-				Thread.Sleep(1000);
 				//Check if the authentication is set
 				bool authenticated = Auth.IsAuthSet();
 
@@ -40,7 +37,7 @@ namespace KurwApp.Modules
 					//Reset player id
 					SetSummonerId(isReset: true);
 					//If authenticated : reset the auth
-					if(authenticated) Auth.ResetAuth();
+					if (authenticated) Auth.ResetAuth();
 					continue;
 				}
 
@@ -50,13 +47,12 @@ namespace KurwApp.Modules
 					//If the client is open : set the authentication and player id
 					if (isClientOpen)
 					{
-						Auth.SetBasicAuth(Process.GetProcessesByName("LeagueClientUx").First().MainModule.FileName);
-						Thread.Sleep(1000);
-						mainWindow.ChangeTest(Auth.GetPort().ToString());
+						await Auth.SetBasicAuth(Process.GetProcessesByName("LeagueClientUx").First().MainModule.FileName);
 						SetSummonerId();
 						mainWindow.ShowLolState(true);
 					}
 				}
+				Thread.Sleep(1000);
 			} while (true);
 		}
 
@@ -65,6 +61,15 @@ namespace KurwApp.Modules
 		{
 			//Checks if there is multiple UxRender to make sure the client is fully opened
 			return Process.GetProcessesByName("LeagueClientUxRender").Length > 3;
+		}
+
+		internal static JToken GetPreference(string token)
+		{
+			var preferences = JObject.Parse(File.ReadAllText("Configurations/preferences.json"));
+
+			var preference = preferences.SelectToken(token);
+
+			return preference;
 		}
 
 		//Checks client phase every 5 seconds
@@ -77,7 +82,6 @@ namespace KurwApp.Modules
 				//Only act if the authentication is set
 				if (Auth.IsAuthSet())
 				{
-					
 					//Checks the game phase and perform action depending on it
 					switch (await Client_Request.GetClientPhase())
 					{
@@ -88,7 +92,8 @@ namespace KurwApp.Modules
 							break;
 						//On champion selection : start and await the end of the champ select handler
 						case "ChampSelect":
-							await Task.Run(() => new Game(mainWindow).ChampSelectControl());
+							Game champSelect = new(mainWindow);
+							await champSelect.ChampSelectControl();
 							break;
 						//If not in any of the above game phase
 						default:
@@ -112,22 +117,22 @@ namespace KurwApp.Modules
 		//Set or reset the player id
 		internal static async void SetSummonerId(bool isReset = false)
 		{
-
 			if (isReset)
 			{
 				summonerId = string.Empty;
 				return;
 			}
-			
+
 			//Getting the current player info
 			var summonerInfo = await Client_Request.GetSummonerAndAccountId();
 			if (summonerInfo == "" || summonerInfo is null) return;
 
 			//Set player id if the token is present
-			if(summonerInfo.Contains("summonerId"))summonerId = JObject.Parse(summonerInfo)["summonerId"].ToString();
+			if (summonerInfo.Contains("summonerId")) summonerId = JObject.Parse(summonerInfo)["summonerId"].ToString();
 		}
 
 		#region Random Skin
+
 		//Get the id of all available skins
 		internal static async Task<int[]> GetAvailableSkinsID()
 		{
@@ -149,10 +154,9 @@ namespace KurwApp.Modules
 				int random_skin_index = random.Next(skin_ids.Length);
 				await Client_Request.ChangeSkinByID(skin_ids[random_skin_index]);
 			}
-		} 
-		#endregion
+		}
 
-
+		#endregion Random Skin
 
 		//Returns if it's the player turn to act
 		//If true output the id of the action and the type (e.g : pick or ban)
@@ -162,7 +166,6 @@ namespace KurwApp.Modules
 			var currentPlayerAction = actions.Where(action => (int)action["actorCellId"] == cellId && (bool)action["isInProgress"] == true)
 				.Select(action => action).ToArray();
 
-			
 			bool isCurrentPlayerTurn = currentPlayerAction.Any();
 
 			actionId = isCurrentPlayerTurn ? (int)currentPlayerAction.First()["id"] : 0;
@@ -184,6 +187,7 @@ namespace KurwApp.Modules
 		}
 
 		#region Runes
+
 		//Get the recommended runes for a champion
 		internal static async Task<JArray> GetRecommendedRunesById(int champId)
 		{
@@ -237,6 +241,19 @@ namespace KurwApp.Modules
 			return kurwappRunes.Any() ? kurwappRunes.Select(page => (int)page["id"]).First() : 0;
 		}
 
+		//Get current page id
+		internal static async Task<int> GetCurrentRunePageId()
+		{
+			//Get all pages
+			var pages = await Client_Request.GetRunePages();
+
+			//Get the page containing the name Kurwapp
+			var kurwappRunes = JArray.Parse(pages).First(page => (bool)page["current"] == true);
+
+			//Return the page id if there is a page else return 0
+			return kurwappRunes.Any() ? int.Parse(kurwappRunes.ToString()) : 0;
+		}
+
 		//Check if we can create a new page
 		internal static async Task<bool> CanCreateNewPage()
 		{
@@ -247,6 +264,7 @@ namespace KurwApp.Modules
 		//Set the recommended rune page
 		internal static async void SetRunesPage(int champId, string position = "NONE")
 		{
+			bool setActive = (bool)GetPreference("runes.setActive");
 
 			var appPageId = await GetAppRunePageId();
 
@@ -256,7 +274,6 @@ namespace KurwApp.Modules
 			//Get the recommended rune page
 			string recommendedRunes = FormatChampRunes(await GetChampRunesByPosition(champId, position), championName);
 
-			
 			if (appPageId != 0)
 			{
 				await Client_Request.EditRunePage(appPageId, recommendedRunes);
@@ -265,7 +282,8 @@ namespace KurwApp.Modules
 			{
 				await Client_Request.CreateNewRunePage(recommendedRunes);
 			}
-		} 
-		#endregion
+		}
+
+		#endregion Runes
 	}
 }
