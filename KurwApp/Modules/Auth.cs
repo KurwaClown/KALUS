@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace KurwApp
 {
@@ -10,7 +11,7 @@ namespace KurwApp
 
         #region Authentication Set and Reset
         //Set the basic authentication and the port for the requests
-        internal static void SetBasicAuth(string filename)
+        internal static async Task SetBasicAuth(string filename)
         {
             string[] lockfile_content = GetLockfileContent(filename);
 
@@ -24,7 +25,7 @@ namespace KurwApp
         {
             port = 0;
             basic = "";
-        } 
+        }
         #endregion
 
         //Reading the lockfile and returning each value contained as a string array
@@ -55,7 +56,7 @@ namespace KurwApp
         internal static int GetPort()
         {
             return port;
-        } 
+        }
         #endregion
 
         //Returns a bool value defining if the authentication is set
