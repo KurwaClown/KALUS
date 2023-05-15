@@ -131,7 +131,7 @@ namespace KurwApp.Modules
 		//Get the id of all available skins
 		internal static async Task<int[]> GetAvailableSkinsID()
 		{
-			JArray currentChampionSkins = JArray.Parse(await Client_Request.GetCurrentChampionSkins());
+			JArray currentChampionSkins = await Client_Request.GetCurrentChampionSkins();
 
 			//Select all current champion unlocked skins
 			return currentChampionSkins.Where(j => (bool)j["unlocked"]).Select(j => (int)j["id"]).ToArray();
@@ -178,7 +178,7 @@ namespace KurwApp.Modules
 			{
 				return "";
 			}
-			JObject champ_select_timer = JObject.Parse(await Client_Request.GetSessionTimer());
+			JObject champ_select_timer = JObject.Parse(session_timer);
 
 			return champ_select_timer["phase"].ToString().ToUpper();
 		}
@@ -187,7 +187,7 @@ namespace KurwApp.Modules
 		//Get the recommended runes for a champion
 		internal static async Task<JArray> GetRecommendedRunesById(int champId)
 		{
-			var runesRecommendation = JArray.Parse(await Client_Request.GetRecommendedRunes());
+			var runesRecommendation = await Client_Request.GetRecommendedRunes();
 
 			JArray champRunes = runesRecommendation
 				.Where(obj => (int)obj["championId"] == champId)
@@ -240,7 +240,7 @@ namespace KurwApp.Modules
 		//Check if we can create a new page
 		internal static async Task<bool> CanCreateNewPage()
 		{
-			var inventory = JObject.Parse(await Client_Request.GetRunesInventory());
+			var inventory = await Client_Request.GetRunesInventory();
 			return (bool)inventory["canAddCustomPage"];
 		}
 
@@ -250,7 +250,7 @@ namespace KurwApp.Modules
 
 			var appPageId = await GetAppRunePageId();
 
-			var champions = JArray.Parse(await Client_Request.GetChampionsInfo());
+			var champions = await Client_Request.GetChampionsInfo();
 
 			string championName = champions.Where(champion => (int)champion["id"] == champId).Select(champion => champion["name"].ToString()).First();
 			//Get the recommended rune page

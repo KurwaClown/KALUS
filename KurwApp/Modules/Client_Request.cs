@@ -38,11 +38,6 @@ namespace KurwApp
 
 		#region Champion Selection
 
-		internal static async Task<string> GetAvailableChampions()
-		{
-			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-champ-select/v1/pickable-champion-ids");
-			return response;
-		}
 
 		internal static async Task<JObject?> GetSessionInfo()
 		{
@@ -57,10 +52,11 @@ namespace KurwApp
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-champ-select/v1/session/timer");
 			return response;
 		}
-		internal static async Task<string> GetCurrentChampionSkins()
+		internal static async Task<JArray> GetCurrentChampionSkins()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-champ-select/v1/skin-carousel-skins");
-			return response;
+			var currentChampionSkins = JArray.Parse(response);
+			return currentChampionSkins;
 		}
 
 		internal static async Task<string> ChangeSkinByID(int id)
@@ -96,10 +92,11 @@ namespace KurwApp
 		#endregion
 
 		#region Runes
-		internal static async Task<string> GetRecommendedRunes()
+		internal static async Task<JArray> GetRecommendedRunes()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, $"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-rune-recommendations.json");
-			return response;
+			var recommendedRunes = JArray.Parse(response);
+			return recommendedRunes;
 		}
 
 		internal static async Task<string> GetRunePages()
@@ -108,10 +105,11 @@ namespace KurwApp
 			return response;
 		}
 		
-		internal static async Task<string> GetRunesInventory()
+		internal static async Task<JObject> GetRunesInventory()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-perks/v1/inventory");
-			return response;
+			var runesInventory = JObject.Parse(response);
+			return runesInventory;
 		}
 
 		internal static async Task<string> CreateNewRunePage(string newRunesPage)
@@ -127,16 +125,18 @@ namespace KurwApp
 		}
 		#endregion
 
-		internal static async Task<string> GetLobbyInfo()
+		internal static async Task<JObject?> GetLobbyInfo()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, $"/lol-lobby/v2/lobby");
-			return response;
+			if (response == "") return null;
+			return JObject.Parse(response);
 		}
 
-		internal static async Task<string> GetChampionsInfo()
+		internal static async Task<JArray> GetChampionsInfo()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, $"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json");
-			return response;
+			var champions = JArray.Parse(response);
+			return champions;
 		}
 
 

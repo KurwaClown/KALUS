@@ -13,7 +13,7 @@ namespace KurwApp.Modules
     {
         private string cellId;
         private string position;
-		private string gameType;
+		private string? gameType = null;
 		JObject? sessionInfo;
 
 		private MainWindow mainWindow;
@@ -32,8 +32,8 @@ namespace KurwApp.Modules
 		//Set the game type (draft, blind or aram)
 		internal async void SetGameType()
 		{
-			JObject lobbyInfo = JObject.Parse(await Client_Request.GetLobbyInfo());
-			if (lobbyInfo.SelectToken("message") != null) return;
+			JObject? lobbyInfo = await Client_Request.GetLobbyInfo();
+			if (lobbyInfo is null) return;
 			string gameMode = lobbyInfo["gameConfig"]["gameMode"].ToString();
 			bool hasPositions = (bool)lobbyInfo["gameConfig"]["showPositionSelector"];
 
@@ -72,10 +72,12 @@ namespace KurwApp.Modules
 			SetRoleAndCellId();
 			SetGameType();
 
+			if (gameType is null) return;
 			do
 			{
 				if (sessionInfo.SelectToken("message") != null) return;
-				switch (await Client_Control.GetChampSelectPhase())
+				
+				switch (sessionInfo.SelectToken("timer.phase").ToString())
 				{
 					default:
 						break;
@@ -83,6 +85,7 @@ namespace KurwApp.Modules
 						await Finalization();
 						break;
 					case "BAN_PICK":
+						mainWindow.ChangeTest("hello");
 						await PickPhase();
 						break;
 					case "GAME_STARTING":
@@ -94,9 +97,8 @@ namespace KurwApp.Modules
 				Thread.Sleep(3000);
 				
 				sessionInfo = await Client_Request.GetSessionInfo();
-				if (sessionInfo is null) return;
 				
-			} while (true);
+			} while (sessionInfo is not null);
 		}
 
 		//Act on finalization
