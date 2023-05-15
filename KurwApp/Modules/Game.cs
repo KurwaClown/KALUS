@@ -15,6 +15,7 @@ namespace KurwApp.Modules
         private string position;
 		private string? gameType = null;
 		JObject? sessionInfo;
+		bool isRunePageChanged = false;
 
 		private MainWindow mainWindow;
 
@@ -30,7 +31,7 @@ namespace KurwApp.Modules
 		}
 
 		//Set the game type (draft, blind or aram)
-		internal async void SetGameType()
+		internal async Task SetGameType()
 		{
 			JObject? lobbyInfo = await Client_Request.GetLobbyInfo();
 			if (lobbyInfo is null) return;
@@ -49,7 +50,7 @@ namespace KurwApp.Modules
 				gameType = "Draft";
 				return;
 			}
-			
+
 			//else set it to Blind
 			gameType = "Blind";
 		}
@@ -62,21 +63,17 @@ namespace KurwApp.Modules
 		}
 
 		//Handler of the champion selections
-		internal async void ChampSelectControl()
+		internal async Task ChampSelectControl()
         {
-
 			sessionInfo = await Client_Request.GetSessionInfo();
 			if (sessionInfo is null) return;
-			
 			//Set the properties
 			SetRoleAndCellId();
-			SetGameType();
-
+			await SetGameType();
 			if (gameType is null) return;
+
 			do
 			{
-				if (sessionInfo.SelectToken("message") != null) return;
-				
 				switch (sessionInfo.SelectToken("timer.phase").ToString())
 				{
 					default:
@@ -85,26 +82,25 @@ namespace KurwApp.Modules
 						await Finalization();
 						break;
 					case "BAN_PICK":
-						mainWindow.ChangeTest("hello");
 						await PickPhase();
 						break;
 					case "GAME_STARTING":
 					case "":
 						mainWindow.EnableRandomSkinButton(false);
 						return;
-					
 				}
-				Thread.Sleep(3000);
-				
+				Thread.Sleep(1000);
+
 				sessionInfo = await Client_Request.GetSessionInfo();
-				
-			} while (sessionInfo is not null);
+
+				if (sessionInfo is null) return;
+
+			} while (true);
 		}
 
 		//Act on finalization
 		private async Task Finalization()
 		{
-
 			if (gameType == "ARAM" && Client_Control.GetSettingState("aramChampionSwap"))
 			{
 				int aramPick = GetAramPick();
@@ -121,7 +117,11 @@ namespace KurwApp.Modules
 			mainWindow.EnableRandomSkinButton(true);
 
 			//Set runes if the the auto rune is toggled
-			if (Client_Control.GetSettingState("runesSwap")) Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
+			if (Client_Control.GetSettingState("runesSwap") && !isRunePageChanged)
+			{
+				Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
+				isRunePageChanged = true;
+			}
 		}
 
 		//Act on pick phase
@@ -148,6 +148,12 @@ namespace KurwApp.Modules
 					var imageBytes = await Client_Request.GetChampionImageById(champPick);
 
 					mainWindow.ChangeCharacterIcon(imageBytes);
+
+					//Set runes if the the auto rune is toggled
+					if (Client_Control.GetSettingState("runesSwap")) {
+						Client_Control.SetRunesPage(champPick, position == "" ? "NONE" : position.ToUpper());
+						isRunePageChanged = true;
+					}
 				}
 			}
 		}
@@ -199,7 +205,7 @@ namespace KurwApp.Modules
 		private async Task<int> GetChampionBan()
 		{
 			var banFile = File.ReadAllText($"Picks/Ban.json");
-			var bans = JArray.Parse(banFile);
+			var bans = JObject.Parse(banFile)[position];
 
 			if (!bans.Any()) return 0;
 
@@ -209,7 +215,7 @@ namespace KurwApp.Modules
 		}
 
 
-		//Get if it's the current player turn and output the action id and type of action 
+		//Get if it's the current player turn and output the action id and type of action
 		internal bool IsCurrentPlayerTurn(IEnumerable<JObject> actions, out int actionId, out string type)
 		{
 			var currentPlayerAction = actions.Where(action => action["actorCellId"].ToString() == cellId && (bool)action["isInProgress"] == true)
