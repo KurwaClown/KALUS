@@ -15,6 +15,7 @@ namespace KurwApp
             string[] lockfile_content = GetLockfileContent(filename);
 
             port = int.Parse(lockfile_content[2]);
+
             basic = Base64Encode($"riot:{lockfile_content[3]}");
         }
 

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Controls;
 
-namespace KurwApp
+namespace KurwApp.Modules
 {
 	internal static class Client_Control
 	{
@@ -51,6 +51,8 @@ namespace KurwApp
 					if (isClientOpen)
 					{
 						Auth.SetBasicAuth(Process.GetProcessesByName("LeagueClientUx").First().MainModule.FileName);
+						Thread.Sleep(1000);
+						mainWindow.ChangeTest(Auth.GetPort().ToString());
 						SetSummonerId();
 						mainWindow.ShowLolState(true);
 					}
@@ -69,12 +71,13 @@ namespace KurwApp
 		//Is used as a worker thread for the app thread
 		internal static async void ClientPhase(MainWindow mainWindow)
 		{
-			
+			RequestQueue.SetClient();
 			while (true)
 			{
 				//Only act if the authentication is set
 				if (Auth.IsAuthSet())
 				{
+					
 					//Checks the game phase and perform action depending on it
 					switch (await Client_Request.GetClientPhase())
 					{
@@ -94,7 +97,7 @@ namespace KurwApp
 							break;
 					}
 				}
-				Thread.Sleep(5000);
+				Thread.Sleep(1000);
 			}
 		}
 
@@ -115,7 +118,7 @@ namespace KurwApp
 				summonerId = string.Empty;
 				return;
 			}
-
+			
 			//Getting the current player info
 			var summonerInfo = await Client_Request.GetSummonerAndAccountId();
 			if (summonerInfo == "" || summonerInfo is null) return;
@@ -128,7 +131,7 @@ namespace KurwApp
 		//Get the id of all available skins
 		internal static async Task<int[]> GetAvailableSkinsID()
 		{
-			JArray currentChampionSkins = JArray.Parse(await Client_Request.GetCurrentChampionSkins());
+			JArray currentChampionSkins = await Client_Request.GetCurrentChampionSkins();
 
 			//Select all current champion unlocked skins
 			return currentChampionSkins.Where(j => (bool)j["unlocked"]).Select(j => (int)j["id"]).ToArray();
@@ -150,13 +153,6 @@ namespace KurwApp
 		#endregion
 
 
-
-		//Returns the player cellId, its position in the lobby
-		internal static async Task<int> GetCellId()
-		{
-			JObject sessionInfo = JObject.Parse(await Client_Request.GetSessionInfo());
-			return (int)sessionInfo["localPlayerCellId"];
-		}
 
 		//Returns if it's the player turn to act
 		//If true output the id of the action and the type (e.g : pick or ban)
@@ -182,7 +178,7 @@ namespace KurwApp
 			{
 				return "";
 			}
-			JObject champ_select_timer = JObject.Parse(await Client_Request.GetSessionTimer());
+			JObject champ_select_timer = JObject.Parse(session_timer);
 
 			return champ_select_timer["phase"].ToString().ToUpper();
 		}
@@ -191,7 +187,7 @@ namespace KurwApp
 		//Get the recommended runes for a champion
 		internal static async Task<JArray> GetRecommendedRunesById(int champId)
 		{
-			var runesRecommendation = JArray.Parse(await Client_Request.GetRecommendedRunes());
+			var runesRecommendation = await Client_Request.GetRecommendedRunes();
 
 			JArray champRunes = runesRecommendation
 				.Where(obj => (int)obj["championId"] == champId)
@@ -244,7 +240,7 @@ namespace KurwApp
 		//Check if we can create a new page
 		internal static async Task<bool> CanCreateNewPage()
 		{
-			var inventory = JObject.Parse(await Client_Request.GetRunesInventory());
+			var inventory = await Client_Request.GetRunesInventory();
 			return (bool)inventory["canAddCustomPage"];
 		}
 
@@ -254,7 +250,7 @@ namespace KurwApp
 
 			var appPageId = await GetAppRunePageId();
 
-			var champions = JArray.Parse(await Client_Request.GetChampionsInfo());
+			var champions = await Client_Request.GetChampionsInfo();
 
 			string championName = champions.Where(champion => (int)champion["id"] == champId).Select(champion => champion["name"].ToString()).First();
 			//Get the recommended rune page
