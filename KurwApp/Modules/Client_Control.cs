@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Controls;
 
-namespace KurwApp
+namespace KurwApp.Modules
 {
 	internal static class Client_Control
 	{
@@ -51,6 +51,8 @@ namespace KurwApp
 					if (isClientOpen)
 					{
 						Auth.SetBasicAuth(Process.GetProcessesByName("LeagueClientUx").First().MainModule.FileName);
+						Thread.Sleep(1000);
+						mainWindow.ChangeTest(Auth.GetPort().ToString());
 						SetSummonerId();
 						mainWindow.ShowLolState(true);
 					}
@@ -69,12 +71,13 @@ namespace KurwApp
 		//Is used as a worker thread for the app thread
 		internal static async void ClientPhase(MainWindow mainWindow)
 		{
-			
+			RequestQueue.SetClient();
 			while (true)
 			{
 				//Only act if the authentication is set
 				if (Auth.IsAuthSet())
 				{
+					
 					//Checks the game phase and perform action depending on it
 					switch (await Client_Request.GetClientPhase())
 					{
@@ -94,7 +97,7 @@ namespace KurwApp
 							break;
 					}
 				}
-				Thread.Sleep(5000);
+				Thread.Sleep(1000);
 			}
 		}
 
@@ -115,7 +118,7 @@ namespace KurwApp
 				summonerId = string.Empty;
 				return;
 			}
-
+			
 			//Getting the current player info
 			var summonerInfo = await Client_Request.GetSummonerAndAccountId();
 			if (summonerInfo == "" || summonerInfo is null) return;
@@ -150,13 +153,6 @@ namespace KurwApp
 		#endregion
 
 
-
-		//Returns the player cellId, its position in the lobby
-		internal static async Task<int> GetCellId()
-		{
-			JObject sessionInfo = JObject.Parse(await Client_Request.GetSessionInfo());
-			return (int)sessionInfo["localPlayerCellId"];
-		}
 
 		//Returns if it's the player turn to act
 		//If true output the id of the action and the type (e.g : pick or ban)

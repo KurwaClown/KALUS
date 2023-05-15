@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,14 +7,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KurwApp
+namespace KurwApp.Modules
 {
     class Game
     {
         private string cellId;
         private string position;
 		private string gameType;
-		JObject sessionInfo;
+		JObject? sessionInfo;
 
 		private MainWindow mainWindow;
 
@@ -64,7 +65,9 @@ namespace KurwApp
 		internal async void ChampSelectControl()
         {
 
-			sessionInfo = JObject.Parse(await Client_Request.GetSessionInfo());
+			sessionInfo = await Client_Request.GetSessionInfo();
+			if (sessionInfo is null) return;
+			
 			//Set the properties
 			SetRoleAndCellId();
 			SetGameType();
@@ -89,7 +92,10 @@ namespace KurwApp
 					
 				}
 				Thread.Sleep(3000);
-				sessionInfo = JObject.Parse(await Client_Request.GetSessionInfo());
+				
+				sessionInfo = await Client_Request.GetSessionInfo();
+				if (sessionInfo is null) return;
+				
 			} while (true);
 		}
 
@@ -106,13 +112,14 @@ namespace KurwApp
 
 			//Set the current champion image on the UI
 			var championId = await Client_Request.GetCurrentChampionId();
+			if (championId == 0) return;
 			mainWindow.ChangeCharacterIcon(await Client_Request.GetChampionImageById(championId));
 
 			//Toggle the random skin button on
 			mainWindow.EnableRandomSkinButton(true);
 
 			//Set runes if the the auto rune is toggled
-			if (Client_Control.GetSettingState("runesSwap")) Client_Control.SetRunesPage(await Client_Request.GetCurrentChampionId(), position == "" ? "NONE" : position.ToUpper());
+			if (Client_Control.GetSettingState("runesSwap")) Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
 		}
 
 		//Act on pick phase
