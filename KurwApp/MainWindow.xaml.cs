@@ -1,9 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using KurwApp.Modules;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -366,7 +368,6 @@ namespace KurwApp
 			}
 
 
-
 			SelectedListCollection.Clear();
 			foreach (var champ in champListBoxItems)
 			{
@@ -393,7 +394,6 @@ namespace KurwApp
 
 			int oldIndex = observableCollection.IndexOf(selection);
 			bool isPrevious = ((Button)sender).Name == "selectionOrderUp";
-				ChangeTest((isPrevious && oldIndex - 1 >= 0).ToString());
 			if (isPrevious && oldIndex - 1 >= 0)
 			{
 				observableCollection.Move(oldIndex, oldIndex - 1);
