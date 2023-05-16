@@ -272,7 +272,8 @@ namespace KurwApp.Modules
 
 			string championName = champions.Where(champion => (int)champion["id"] == champId).Select(champion => champion["name"].ToString()).First();
 			//Get the recommended rune page
-			string recommendedRunes = FormatChampRunes(await GetChampRunesByPosition(champId, position), championName);
+			var runesRecommendation = await GetChampRunesByPosition(champId, position);
+			string recommendedRunes = FormatChampRunes(runesRecommendation, championName);
 
 			if (appPageId != 0)
 			{
@@ -282,8 +283,24 @@ namespace KurwApp.Modules
 			{
 				await Client_Request.CreateNewRunePage(recommendedRunes);
 			}
-		}
 
+		}
 		#endregion Runes
+
+		internal static async void SetSummonerSpells(JToken recommendedRunes)
+		{
+			var spellsId = JArray.Parse(recommendedRunes.SelectToken("summonerSpellIds").ToString());
+
+			int spell1Id = int.Parse(spellsId[0].ToString());
+			int spell2Id = int.Parse(spellsId[1].ToString());
+
+			if ((bool)GetPreference("summoners.rightSideFlash") && (spell1Id == 4 || spell2Id == 4))
+			{
+				spell1Id = spell2Id;
+				spell2Id = 4;
+			}
+
+			await Client_Request.ChangeSummonerSpells(spell1Id, spell2Id);
+		}
 	}
 }
