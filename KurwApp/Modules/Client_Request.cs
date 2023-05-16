@@ -65,6 +65,12 @@ namespace KurwApp
 			return response;
 		}
 
+		internal static async Task<string> ChangeSummonerSpells(int spell1Id, int spell2Id)
+		{
+			var response = await RequestQueue.Request(HttpMethod.Patch, "/lol-champ-select/v1/session/my-selection", $"{{\"spell1Id\": {spell1Id}, \"spell2Id\" : {spell2Id}}}");
+			return response;
+		}
+
 		internal static async Task<string> SelectChampion(int actionId, int champId)
 		{
 			var response = await RequestQueue.Request(HttpMethod.Patch, $"/lol-champ-select/v1/session/actions/{actionId}", $"{{\"championId\": {champId}}}");
@@ -162,5 +168,6 @@ namespace KurwApp
 		{
 			await RequestQueue.Request(HttpMethod.Post, "/riotclient/kill-and-restart-ux");
 		}
+
 	}
 }

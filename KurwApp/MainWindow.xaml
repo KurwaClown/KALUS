@@ -55,13 +55,6 @@
                         <Button x:Name="selectionListAdd" Content="Add →" Click="AddSelection"/>
                         <Button x:Name="selectionListRemove" Content="← Remove " Margin="0,10,0,0" Click="RemoveSelection"/>
                     </StackPanel>
-                    <StackPanel Grid.Column="1" Grid.Row="3" VerticalAlignment="Center">
-                        <CheckBox x:Name="autoPickSetting" Content="Auto Pick" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="championPick" VerticalAlignment="Center"/>
-                        <CheckBox x:Name="autoBanSetting" Content="Auto Ban" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="banPick" VerticalAlignment="Center"/>
-                        <CheckBox x:Name="autoSwapSetting" Content="Auto Swap" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="aramChampionSwap" VerticalAlignment="Center"/>
-                        <CheckBox x:Name="autoRunesSetting" Content="Auto Runes" Height="15"  Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="runesSwap" VerticalAlignment="Center"/>
-                        <CheckBox x:Name="autoReadySetting" Content="Auto Ready" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="autoReady" VerticalAlignment="Center"/>
-                    </StackPanel>
                     <StackPanel Grid.Column="2" Grid.Row="4" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Button x:Name="selectionOrderDown" Content="↓" Width="{Binding ActualHeight, ElementName=selectionOrderDown, Mode=OneWay}" Click="ReorderSelection"/>
                         <Button x:Name="selectionOrderUp" Content="↑" Width="{Binding ActualHeight, ElementName=selectionOrderUp, Mode=OneWay}" Margin="15,0,0,0" Click="ReorderSelection"/>
@@ -146,12 +139,14 @@
                 <!-- Content for Tab 2 -->
             </TabItem>
         </TabControl>
-        <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="1" Margin="5">
+        <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="1" Margin="5,0,5,5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <GroupBox x:Name="statusBorder" Header="Status" BorderBrush="#FFFF0303">
+            <GroupBox x:Name="statusBorder" Header="Status" BorderBrush="#FFFF0303" Grid.ColumnSpan="2" Grid.Column="2" BorderThickness="2,2,2,2" Margin="5,0,0,0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -160,25 +155,62 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.5*"/>
-                        <ColumnDefinition Width="1.75*"/>
-                        <ColumnDefinition Width="0.75*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Ellipse Grid.Column="2" Grid.RowSpan="3" StrokeThickness="8" Stroke="#FF565656" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="50" MinHeight="50" MaxWidth="100" MaxHeight="100" Height="80" Width="80">
-                        <Ellipse.Fill>
-                            <ImageBrush x:Name="characterIcon" />
-                        </Ellipse.Fill>
-                    </Ellipse>
-                    <Label x:Name="currentChampLbl" Content="Champ Picked" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="UltraBold" FontSize="16" Grid.Column="2" Grid.Row="3"/>
-                    <Label Content="Upcoming Pick :" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Center"/>
-                    <Label Content="Banned :" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBox x:Name="testing" Grid.Column="1" Margin="0,1,0,0" TextWrapping="Wrap" Text="TextBox" Width="120" Grid.RowSpan="4"/>
+                    <Image x:Name="gameModeIcon" Grid.RowSpan="3" Width="80" Height="80"/>
+                    <GridSplitter Height="100" Grid.RowSpan="4" Width="1"/>
+                    <Grid x:Name="stylesIcon" Grid.Column="1" Grid.RowSpan="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="3*"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid HorizontalAlignment="Center" Height="81" VerticalAlignment="Center" Width="94">
+                            <Ellipse x:Name="mainStyle" StrokeThickness="6" Stroke="#FF333333" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="50" MinHeight="50" MaxWidth="100" MaxHeight="100" Height="{Binding ActualWidth, ElementName=mainStyle, Mode=OneWay}" Width="70" Panel.ZIndex="1">
+                                <Ellipse.Fill>
+                                    <ImageBrush x:Name="mainStyleIcon" />
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <Path Stroke="{Binding Stroke, ElementName=mainStyle, Mode=TwoWay}" StrokeThickness="4" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="Fill" Margin="54,41,0,0" Data="M20,20 A30,30,0,1,1,0,50">
+                                <Path.Fill>
+                                    <ImageBrush x:Name="subStyleIcon" />
+                                </Path.Fill>
+                            </Path>
+                        </Grid>
+                        <Label Content="Runes" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center"/>
+                    </Grid>
+                    <GridSplitter Height="100" Grid.RowSpan="4" Width="1" Grid.Column="1"/>
+                    <Grid Grid.Column="2" HorizontalAlignment="Center" Height="116" Grid.RowSpan="4" VerticalAlignment="Center" Width="120">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="3*"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Ellipse StrokeThickness="8" Stroke="#FF333333" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="50" MinHeight="50" MaxWidth="100" MaxHeight="100" Height="80" Width="80" Grid.RowSpan="1">
+                            <Ellipse.Fill>
+                                <ImageBrush x:Name="characterIcon" />
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <GridSplitter Height="1" Width="50" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1"/>
+                        <Label x:Name="statusLbl" Content="Champ Picked" HorizontalAlignment="Center" VerticalAlignment="Top" FontWeight="UltraBold" FontSize="16" Grid.Row="1"/>
+                    </Grid>
+                    <Label Content="Game Mode" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center"/>
                 </Grid>
             </GroupBox>
-            <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Margin="5,0,0,0">
+            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="5,0,5,0">
                 <Button x:Name="random_btn" Content="Random Skin" Click="RandomSkinClick" IsEnabled="False"/>
-                <Button Content="Reload League Client" Click="ClientRestart"/>
+                <Button Content="Reload League Client" Click="ClientRestart" Margin="0,10,0,0"/>
             </StackPanel>
+            <GroupBox Header="Automatic Utility" Grid.Column="1" Margin="5,0,0,0">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
+                    <CheckBox x:Name="autoPickSetting" Content="Pick Champion" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="championPick" VerticalAlignment="Center"/>
+                    <CheckBox x:Name="autoBanSetting" Content="Ban Champion" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="banPick" VerticalAlignment="Center" Margin="0,3,0,0"/>
+                    <CheckBox x:Name="autoSwapSetting" Content="Swap in ARAM" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="aramChampionSwap" VerticalAlignment="Center" Margin="0,3,0,0"/>
+                    <CheckBox x:Name="autoRunesSetting" Content="Set Runes" Height="15"  Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="runesSwap" VerticalAlignment="Center" Margin="0,3,0,0"/>
+                    <CheckBox x:Name="autoSpellSetting" Content="Set Summoner Spell" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="autoSummoner" VerticalAlignment="Center" Margin="0,3,0,0"/>
+                    <CheckBox x:Name="autoReadySetting" Content="Ready Check" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="autoReady" VerticalAlignment="Center" Margin="0,3,0,0"/>
+                </StackPanel>
+            </GroupBox>
             <!-- Add other tools here -->
         </Grid>
     </Grid>

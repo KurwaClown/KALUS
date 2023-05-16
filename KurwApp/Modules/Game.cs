@@ -122,6 +122,9 @@ namespace KurwApp.Modules
 				Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
 				isRunePageChanged = true;
 			}
+
+			var runesRecommendation = await Client_Control.GetChampRunesByPosition(championId, position);
+			if (Client_Control.GetSettingState("autoSummoner")) Client_Control.SetSummonerSpells(runesRecommendation);
 		}
 
 		//Act on pick phase
@@ -150,13 +153,18 @@ namespace KurwApp.Modules
 					mainWindow.ChangeCharacterIcon(imageBytes);
 
 					//Set runes if the the auto rune is toggled
-					if (Client_Control.GetSettingState("runesSwap")) {
+					if (Client_Control.GetSettingState("runesSwap"))
+					{
 						Client_Control.SetRunesPage(champPick, position == "" ? "NONE" : position.ToUpper());
 						isRunePageChanged = true;
 					}
 
 					//Random skin on pick
 					if((bool)Client_Control.GetPreference("randomSkin.randomOnPick")) Client_Control.PickRandomSkin();
+
+
+					var runesRecommendation = await Client_Control.GetChampRunesByPosition(champPick, position);
+					if (Client_Control.GetSettingState("autoSummoner")) Client_Control.SetSummonerSpells(runesRecommendation);
 				}
 			}
 		}

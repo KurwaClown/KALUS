@@ -3,5 +3,6 @@
   "banPick": false,
   "aramChampionSwap": false,
   "runesSwap": false,
-  "autoReady": false
+  "autoReady": false,
+  "autoSummoner": false
 }
