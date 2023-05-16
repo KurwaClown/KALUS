@@ -98,7 +98,7 @@ namespace KurwApp.Modules
 						//If not in any of the above game phase
 						default:
 							//Set the icon to default if it is not already
-							if (!mainWindow.isIconDefault) mainWindow.SetDefaultIcon();
+							if (!mainWindow.isIconDefault) mainWindow.SetDefaultIcons();
 							break;
 					}
 				}

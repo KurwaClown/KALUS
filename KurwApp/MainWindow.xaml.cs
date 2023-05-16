@@ -5,14 +5,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Xml.Linq;
 
 namespace KurwApp
 {
@@ -38,8 +35,6 @@ namespace KurwApp
 			clientPhase.Start();
 		}
 
-
-
 		internal void EnableRandomSkinButton(bool isEnabled)
 		{
 			Dispatcher.Invoke(() => random_btn.IsEnabled = isEnabled);
@@ -49,12 +44,11 @@ namespace KurwApp
 		{
 			Color borderColor = isEnabled ? Colors.Green : Colors.Red;
 
-			Dispatcher.Invoke(()=> statusBorder.BorderBrush = new SolidColorBrush(borderColor));
+			Dispatcher.Invoke(() => statusBorder.BorderBrush = new SolidColorBrush(borderColor));
 		}
 
 		internal void ChangeCharacterIcon(byte[] image)
 		{
-
 			using MemoryStream stream = new(image);
 			Dispatcher.Invoke(() =>
 			{
@@ -65,19 +59,27 @@ namespace KurwApp
 				bitmapImage.EndInit();
 				characterIcon.ImageSource = bitmapImage;
 			});
-
 		}
 
-		internal void SetDefaultIcon()
+		internal void SetDefaultIcons()
 		{
 			Dispatcher.Invoke(() =>
 			{
-				BitmapImage bitmapImage = new BitmapImage(new Uri("DefaultIcon.jpg", UriKind.RelativeOrAbsolute));
-				characterIcon.ImageSource = bitmapImage;
+				BitmapImage championIcon = new (new Uri("DefaultIcon.jpg", UriKind.RelativeOrAbsolute));
+				BitmapImage styleIcon = new (new Uri("Assets\\Runes Icon\\default.png", UriKind.RelativeOrAbsolute));
+				BitmapImage gameModeDefaultIcon = new (new Uri("Assets\\Gamemode Icon\\default.png", UriKind.RelativeOrAbsolute));
+
+				characterIcon.ImageSource = championIcon;
+				mainStyleIcon.ImageSource = styleIcon;
+				subStyleIcon.ImageSource = styleIcon;
+				gameModeIcon.Source = gameModeDefaultIcon;
+
 			});
 
 			isIconDefault = true;
 		}
+
+
 
 		internal async void LoadAndSetCharacterList()
 		{
@@ -101,12 +103,10 @@ namespace KurwApp
 				}
 			});
 
-
-			JArray blindPicks = JArray.Parse(File.ReadAllText("Picks/Blind.json")) ;
+			JArray blindPicks = JArray.Parse(File.ReadAllText("Picks/Blind.json"));
 			var champListBoxItems = ChampListCollection.Where(champion => blindPicks
 														.Select(token => (int)token).ToArray()
 														.Contains(int.Parse(champion.Tag.ToString())));
-
 
 			foreach (var champ in champListBoxItems)
 			{
@@ -118,7 +118,7 @@ namespace KurwApp
 			champList.ItemsSource = UpdatedListCollection;
 			selectionList.ItemsSource = SelectedListCollection;
 
-			SetDefaultIcon();
+			SetDefaultIcons();
 		}
 
 		internal static void SaveConfiguration(string token, dynamic value, string file = "preferences.json")
@@ -128,8 +128,6 @@ namespace KurwApp
 			File.WriteAllText($"Configurations/{file}", preferences.ToString());
 		}
 
-
-
 		private void RandomSkinClick(object sender, RoutedEventArgs e)
 		{
 			Client_Control.PickRandomSkin();
@@ -137,12 +135,12 @@ namespace KurwApp
 
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-
 			Application.Current.Shutdown();
 			Environment.Exit(0);
 		}
 
-		private async void ClientRestart(object sender, RoutedEventArgs e) {
+		private async void ClientRestart(object sender, RoutedEventArgs e)
+		{
 			await Client_Request.RestartLCU();
 		}
 
@@ -162,7 +160,6 @@ namespace KurwApp
 			UpdatedListCollection.Remove(selection);
 
 			SavePicksModification();
-
 		}
 
 		private void RemoveSelection(object sender, RoutedEventArgs e)
@@ -189,6 +186,7 @@ namespace KurwApp
 			{
 				default:
 					break;
+
 				case "Draft":
 					var pickType = ((ComboBoxItem)selectionListType.SelectedItem).Content.ToString();
 
@@ -198,10 +196,11 @@ namespace KurwApp
 
 					var fileRole = position == "Support" ? "UTILITY" : position.ToUpper();
 
-					draftFile[fileRole] = new JArray(SelectedListCollection.Select(i => new JValue (int.Parse(i.Tag.ToString()))));
+					draftFile[fileRole] = new JArray(SelectedListCollection.Select(i => new JValue(int.Parse(i.Tag.ToString()))));
 
 					File.WriteAllText($"Picks/{pickType}.json", draftFile.ToString());
 					break;
+
 				case "Blind":
 				case "ARAM":
 					var file = JArray.Parse(File.ReadAllText($"Picks/{gameType}.json"));
@@ -213,22 +212,20 @@ namespace KurwApp
 
 		private void OnControlInteraction(object sender, RoutedEventArgs e)
 		{
-			if(sender is CheckBox checkBox)
+			if (sender is CheckBox checkBox)
 			{
 				SaveConfiguration(checkBox.Tag.ToString(), (bool)checkBox.IsChecked);
 			}
-			else if(sender is RadioButton radioButton)
+			else if (sender is RadioButton radioButton)
 			{
 				int radioPreference = GetRadioStackPreference(radioButton);
 				StackPanel parent = radioButton.Parent as StackPanel;
 				SaveConfiguration(parent.Tag.ToString() + ".userPreference", radioPreference);
-
 			}
 		}
 
 		private void OnSettingsControlInteraction(object sender, RoutedEventArgs e)
 		{
-
 			SaveConfiguration((sender as CheckBox).Tag.ToString(), (bool)(sender as CheckBox).IsChecked, file: "settings.json");
 		}
 
@@ -274,9 +271,8 @@ namespace KurwApp
 				}
 			}
 
-
-			Dispatcher.Invoke(() => {
-
+			Dispatcher.Invoke(() =>
+			{
 				setRadioByPreference(picksPreferences, "picks");
 				setRadioByPreference(bansPreferences, "bans");
 				setRadioByPreference(noAvailablePreferences, "noPicks");
@@ -292,7 +288,6 @@ namespace KurwApp
 
 				rightSideFlash.IsChecked = (bool)preferences["summoners"]["rightSideFlash"];
 				alwaysSnowball.IsChecked = (bool)preferences["summoners"]["alwaysSnowball"];
-
 			}
 			);
 		}
@@ -301,7 +296,8 @@ namespace KurwApp
 		{
 			var settings = JObject.Parse(File.ReadAllText("Configurations/settings.json"));
 
-			Dispatcher.Invoke(() => {
+			Dispatcher.Invoke(() =>
+			{
 				autoPickSetting.IsChecked = (bool)settings["championPick"];
 				autoBanSetting.IsChecked = (bool)settings["banPick"];
 				autoReadySetting.IsChecked = (bool)settings["aramChampionSwap"];
@@ -326,9 +322,10 @@ namespace KurwApp
 			populateComboBox(30, bansTimeLeft);
 			populateComboBox(30, stillPickTimeLeft);
 
-
 			SetPreferences();
 			SetSettings();
+
+			SetDefaultIcons();
 		}
 
 		private void OTLChange(object sender, SelectionChangedEventArgs e)
@@ -340,7 +337,6 @@ namespace KurwApp
 				SaveConfiguration(comboBox.Tag.ToString(), comboBox.SelectedIndex);
 			}
 		}
-
 
 		private void SelectionListChange(object sender, SelectionChangedEventArgs e)
 		{
@@ -359,14 +355,12 @@ namespace KurwApp
 				var champsId = (JArray)draftFile[fileRole];
 
 				champListBoxItems = ChampListCollection.Where(champion => champsId.Select(token => (int)token).ToArray().Contains(int.Parse(champion.Tag.ToString())));
-
 			}
 			else
 			{
 				var champsId = JArray.Parse(File.ReadAllText($"Picks/{gameType}.json"));
 				champListBoxItems = ChampListCollection.Where(champion => champsId.Select(token => (int)token).ToArray().Contains(int.Parse(champion.Tag.ToString())));
 			}
-
 
 			SelectedListCollection.Clear();
 			foreach (var champ in champListBoxItems)
@@ -385,7 +379,6 @@ namespace KurwApp
 
 			ObservableCollection<ListBoxItem>? observableCollection = selectionList.ItemsSource as ObservableCollection<ListBoxItem>;
 			if (observableCollection == null) return;
-
 
 			int oldIndex = observableCollection.IndexOf(selection);
 			bool isPrevious = ((Button)sender).Name == "selectionOrderUp";

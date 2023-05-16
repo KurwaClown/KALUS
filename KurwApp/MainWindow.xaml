@@ -168,13 +168,31 @@
                         </Grid.RowDefinitions>
                         <Grid HorizontalAlignment="Center" Height="81" VerticalAlignment="Center" Width="94">
                             <Ellipse x:Name="mainStyle" StrokeThickness="6" Stroke="#FF333333" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="50" MinHeight="50" MaxWidth="100" MaxHeight="100" Height="{Binding ActualWidth, ElementName=mainStyle, Mode=OneWay}" Width="70" Panel.ZIndex="1">
-                                <Ellipse.Fill>
-                                    <ImageBrush x:Name="mainStyleIcon" />
+                                <Ellipse.Fill >
+                                    <ImageBrush x:Name="mainStyleIcon" Stretch="None" ViewboxUnits="RelativeToBoundingBox" >
+                                        <ImageBrush.RelativeTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleX="1.2" ScaleY="1.2"/>
+                                                <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                <RotateTransform CenterX="0.5" CenterY="0.5"/>
+                                                <TranslateTransform/>
+                                            </TransformGroup>
+                                        </ImageBrush.RelativeTransform>
+                                    </ImageBrush>
                                 </Ellipse.Fill>
                             </Ellipse>
                             <Path Stroke="{Binding Stroke, ElementName=mainStyle, Mode=TwoWay}" StrokeThickness="4" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="Fill" Margin="54,41,0,0" Data="M20,20 A30,30,0,1,1,0,50">
                                 <Path.Fill>
-                                    <ImageBrush x:Name="subStyleIcon" />
+                                    <ImageBrush x:Name="subStyleIcon" Stretch="None" >
+                                        <ImageBrush.RelativeTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleX="0.7" ScaleY="0.7"/>
+                                                <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                <RotateTransform CenterX="0.5" CenterY="0.5"/>
+                                                <TranslateTransform/>
+                                            </TransformGroup>
+                                        </ImageBrush.RelativeTransform>
+                                    </ImageBrush>
                                 </Path.Fill>
                             </Path>
                         </Grid>
