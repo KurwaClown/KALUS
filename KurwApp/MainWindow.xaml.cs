@@ -58,6 +58,8 @@ namespace KurwApp
 				bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
 				bitmapImage.EndInit();
 				characterIcon.ImageSource = bitmapImage;
+
+				MainWindow.isIconDefault = false;
 			});
 		}
 
