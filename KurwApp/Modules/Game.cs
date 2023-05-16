@@ -151,7 +151,6 @@ namespace KurwApp.Modules
 					var imageBytes = await Client_Request.GetChampionImageById(champPick);
 
 					mainWindow.ChangeCharacterIcon(imageBytes);
-					mainWindow.isIconDefault = false;
 					//Set runes if the the auto rune is toggled
 					if (Client_Control.GetSettingState("runesSwap"))
 					{
@@ -187,9 +186,12 @@ namespace KurwApp.Modules
 
 			int[] aramBenchIds = GetAramBenchIds();
 			if (!aramBenchIds.Any()) return 0;
-			return aramPicks.Select(x => int.Parse(x.ToString()))
+			var selection = aramPicks.Select(x => int.Parse(x.ToString()))
 												.ToArray()
-												.Where(x => aramBenchIds.Contains(x)).First();
+												.Where(x => aramBenchIds.Contains(x));
+			if (!selection.Any()) return 0;
+
+			return selection.First();
 		}
 
 		//Get the champion benched (their id) in aram
