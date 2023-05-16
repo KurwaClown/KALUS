@@ -61,7 +61,7 @@
                         <CheckBox x:Name="autoSwapSetting" Content="Auto Swap" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="aramChampionSwap" VerticalAlignment="Center"/>
                         <CheckBox x:Name="autoRunesSetting" Content="Auto Runes" Height="15"  Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="runesSwap" VerticalAlignment="Center"/>
                         <CheckBox x:Name="autoReadySetting" Content="Auto Ready" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="autoReady" VerticalAlignment="Center"/>
-                        <CheckBox x:Name="autoSpellSetting" Content="Auto Summoner Spell" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="autoSummoner"/>
+                        <CheckBox x:Name="autoSpellSetting" Content="Auto Summoner Spell" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="autoSummoner" VerticalAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2" Grid.Row="4" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Button x:Name="selectionOrderDown" Content="↓" Width="{Binding ActualHeight, ElementName=selectionOrderDown, Mode=OneWay}" Click="ReorderSelection"/>
