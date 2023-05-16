@@ -22,7 +22,7 @@ namespace KurwApp
 		private ObservableCollection<ListBoxItem> UpdatedListCollection { get; set; } = new ObservableCollection<ListBoxItem>();
 		private ObservableCollection<ListBoxItem> SelectedListCollection { get; set; } = new ObservableCollection<ListBoxItem>();
 
-		internal bool isIconDefault = false;
+		internal static bool isIconDefault = false;
 
 		public MainWindow()
 		{

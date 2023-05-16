@@ -151,7 +151,7 @@ namespace KurwApp.Modules
 					var imageBytes = await Client_Request.GetChampionImageById(champPick);
 
 					mainWindow.ChangeCharacterIcon(imageBytes);
-
+					mainWindow.isIconDefault = false;
 					//Set runes if the the auto rune is toggled
 					if (Client_Control.GetSettingState("runesSwap"))
 					{
