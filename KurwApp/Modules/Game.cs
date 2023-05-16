@@ -154,6 +154,9 @@ namespace KurwApp.Modules
 						Client_Control.SetRunesPage(champPick, position == "" ? "NONE" : position.ToUpper());
 						isRunePageChanged = true;
 					}
+
+					//Random skin on pick
+					if((bool)Client_Control.GetPreference("randomSkin.randomOnPick")) Client_Control.PickRandomSkin();
 				}
 			}
 		}
