@@ -67,7 +67,7 @@ namespace KurwApp
 			});
 
 		}
-		
+
 		internal void SetDefaultIcon()
 		{
 			Dispatcher.Invoke(() =>
@@ -107,7 +107,7 @@ namespace KurwApp
 														.Select(token => (int)token).ToArray()
 														.Contains(int.Parse(champion.Tag.ToString())));
 
-			
+
 			foreach (var champ in champListBoxItems)
 			{
 				SelectedListCollection.Add(champ);
@@ -137,12 +137,12 @@ namespace KurwApp
 
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			
+
 			Application.Current.Shutdown();
 			Environment.Exit(0);
 		}
 
-		private async void ClientRestart(object sender, RoutedEventArgs e) { 
+		private async void ClientRestart(object sender, RoutedEventArgs e) {
 			await Client_Request.RestartLCU();
 		}
 
@@ -228,7 +228,7 @@ namespace KurwApp
 
 		private void OnSettingsControlInteraction(object sender, RoutedEventArgs e)
 		{
-			
+
 			SaveConfiguration((sender as CheckBox).Tag.ToString(), (bool)(sender as CheckBox).IsChecked, file: "settings.json");
 		}
 
@@ -239,7 +239,7 @@ namespace KurwApp
 				if (comboBox.IsEnabled)
 				{
 					JObject preference = JObject.Parse(File.ReadAllText("Configurations/preferences.json"));
-					
+
 					comboBox.SelectedIndex = Int32.Parse(preference.SelectToken(comboBox.Tag.ToString()).ToString());
 				}
 				else
@@ -336,7 +336,7 @@ namespace KurwApp
 			if (sender is ComboBox comboBox)
 			{
 				if (comboBox.SelectedIndex == -1) return;
-				
+
 				SaveConfiguration(comboBox.Tag.ToString(), comboBox.SelectedIndex);
 			}
 		}
@@ -347,7 +347,7 @@ namespace KurwApp
 			var gameType = ((ComboBoxItem)selectionListGameType.SelectedItem).Content.ToString();
 
 			IEnumerable<ListBoxItem> champListBoxItems;
-			
+
 			if (gameType == "Draft")
 			{
 				var pickType = ((ComboBoxItem)selectionListType.SelectedItem).Content.ToString();
@@ -359,7 +359,7 @@ namespace KurwApp
 				var champsId = (JArray)draftFile[fileRole];
 
 				champListBoxItems = ChampListCollection.Where(champion => champsId.Select(token => (int)token).ToArray().Contains(int.Parse(champion.Tag.ToString())));
-				
+
 			}
 			else
 			{
@@ -376,11 +376,6 @@ namespace KurwApp
 
 			UpdatedListCollection = new ObservableCollection<ListBoxItem>(ChampListCollection.Except(SelectedListCollection));
 			champList.ItemsSource = UpdatedListCollection;
-		}
-
-		internal void ChangeTest(string debug)
-		{
-			Dispatcher.Invoke(() => testing.Text = debug);
 		}
 
 		private void ReorderSelection(object sender, RoutedEventArgs e)
