@@ -8,6 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Gamemode Icon\ARAM\champselect.png" />
+    <None Remove="Assets\Gamemode Icon\ARAM\ingame.png" />
+    <None Remove="Assets\Gamemode Icon\Classic\champselect.png" />
+    <None Remove="Assets\Gamemode Icon\Classic\ingame.png" />
+    <None Remove="Assets\Gamemode Icon\default.png" />
+    <None Remove="Assets\Runes Icon\7200.png" />
+    <None Remove="Assets\Runes Icon\7201.png" />
+    <None Remove="Assets\Runes Icon\7202.png" />
+    <None Remove="Assets\Runes Icon\7203.png" />
+    <None Remove="Assets\Runes Icon\7204.png" />
+    <None Remove="Assets\Runes Icon\default.png" />
     <None Remove="Configurations\preferences.json" />
     <None Remove="Configurations\settings.json" />
     <None Remove="Picks\ARAM.json" />
@@ -18,6 +29,39 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Assets\Gamemode Icon\ARAM\champselect.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Gamemode Icon\ARAM\ingame.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Gamemode Icon\Classic\champselect.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Gamemode Icon\Classic\ingame.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Gamemode Icon\default.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Runes Icon\7200.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Runes Icon\7201.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Runes Icon\7202.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Runes Icon\7203.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Runes Icon\7204.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Runes Icon\default.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="DefaultIcon.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -49,11 +93,6 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Assets\Gamemode Icon\Classic\" />
-    <Folder Include="Assets\Runes Icon\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
