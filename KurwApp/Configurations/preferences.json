@@ -1,22 +1,22 @@
 {
   "runes": {
     "setActive": false,
-    "overridePage": true
+    "overridePage": false
   },
   "randomSkin": {
     "addChromas": false,
-    "randomOnPick": true
+    "randomOnPick": false
   },
   "summoners": {
     "rightSideFlash": false,
-    "alwaysSnowball": true
+    "alwaysSnowball": false
   },
   "picks": {
-    "userPreference": 2,
+    "userPreference": 0,
     "OTLTimeIndex": 0
   },
   "noPicks": {
-    "userPreference": 1
+    "userPreference": 0
   },
   "selections": {
     "userPreference": 0,
@@ -24,7 +24,7 @@
     "OTLTimeIndex": 0
   },
   "bans": {
-    "userPreference": 1,
+    "userPreference": 0,
     "OTLTimeIndex": 0
   }
 }
