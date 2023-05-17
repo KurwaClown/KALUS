@@ -213,6 +213,18 @@ namespace KurwApp.Modules
 			return champRunesByPosition.FirstOrDefault();
 		}
 
+		//Get the recommended champion spells for a champion depending on its position and the game mode
+		internal static async Task<JToken> GetSpellsRecommendationByPosition(int champId, string position)
+		{
+			var runesRecommendation = await GetRecommendedRunesById(champId);
+			IEnumerable<JToken>? champRunesByPosition = null;
+
+			if (position != "") champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"].ToString() == position);
+			if (position == "" || !champRunesByPosition.Any()) champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"].ToString() != "NONE");
+
+			return champRunesByPosition.Select(recommendation => recommendation["summonerSpellIds"]).First(); ;
+		}
+
 		//Format the champion runes for the rune request
 		internal static string FormatChampRunes(JToken runes, string champion)
 		{
@@ -287,14 +299,13 @@ namespace KurwApp.Modules
 		}
 		#endregion Runes
 
-		internal static async void SetSummonerSpells(JToken recommendedRunes)
+		internal static async void SetSummonerSpells(JArray recommendedRunes)
 		{
-			var spellsId = JArray.Parse(recommendedRunes.SelectToken("summonerSpellIds").ToString());
 
-			int spell1Id = int.Parse(spellsId[0].ToString());
-			int spell2Id = int.Parse(spellsId[1].ToString());
+			int spell1Id = int.Parse(recommendedRunes[0].ToString());
+			int spell2Id = int.Parse(recommendedRunes[1].ToString());
 
-			if ((bool)GetPreference("summoners.rightSideFlash") && (spell1Id == 4 || spell2Id == 4))
+			if ((bool)GetPreference("summoners.rightSideFlash") && spell1Id == 4)
 			{
 				spell1Id = spell2Id;
 				spell2Id = 4;

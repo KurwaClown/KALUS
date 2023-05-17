@@ -31,7 +31,7 @@ namespace KurwApp.Modules
 		internal void SetRoleAndCellId()
 		{
 			cellId = sessionInfo["localPlayerCellId"].ToString();
-			position = sessionInfo["myTeam"].Where(player => player["cellId"].ToString() == cellId).Select(player => player["assignedPosition"].ToString()).First();
+			position = sessionInfo["myTeam"].Where(player => player["cellId"].ToString() == cellId).Select(player => player["assignedPosition"].ToString()).First().ToUpper();
 		}
 
 		//Set the game type (draft, blind or aram)
@@ -73,8 +73,8 @@ namespace KurwApp.Modules
 			sessionInfo = await Client_Request.GetSessionInfo();
 			if (sessionInfo is null) return;
 			//Set the properties
-			SetRoleAndCellId();
 			await SetGameType();
+			SetRoleAndCellId();
 			if (gameType is null) return;
 
 			mainWindow.ChangeGamemodeName(gameType);
@@ -132,8 +132,16 @@ namespace KurwApp.Modules
 				isRunePageChanged = true;
 			}
 
-			var runesRecommendation = await Client_Control.GetChampRunesByPosition(championId, position);
-			if (Client_Control.GetSettingState("autoSummoner")) Client_Control.SetSummonerSpells(runesRecommendation);
+			if (Client_Control.GetSettingState("autoSummoner"))
+			{
+				string positionForSpells = "";
+				if (gameType == "Draft") positionForSpells = position;
+				if (gameType == "ARAM") positionForSpells = "NONE";
+				mainWindow.ChangeGamemodeName(positionForSpells);
+				var runesRecommendation = await Client_Control.GetSpellsRecommendationByPosition(championId, positionForSpells);
+				var spellsId = JArray.Parse(runesRecommendation.ToString());
+				Client_Control.SetSummonerSpells(spellsId);
+			}
 		}
 
 		//Act on pick phase
@@ -174,8 +182,15 @@ namespace KurwApp.Modules
 					//Random skin on pick
 					if ((bool)Client_Control.GetPreference("randomSkin.randomOnPick")) Client_Control.PickRandomSkin();
 
-					var runesRecommendation = await Client_Control.GetChampRunesByPosition(championId, position);
-					if (Client_Control.GetSettingState("autoSummoner")) Client_Control.SetSummonerSpells(runesRecommendation);
+					if (Client_Control.GetSettingState("autoSummoner"))
+					{
+						string positionForSpells = "";
+						if (gameType == "Draft") positionForSpells = position;
+						if (gameType == "ARAM") positionForSpells = "NONE";
+						var runesRecommendation = await Client_Control.GetSpellsRecommendationByPosition(championId, positionForSpells);
+						var spellsId = JArray.Parse(runesRecommendation.ToString());
+						Client_Control.SetSummonerSpells(spellsId);
+					}
 
 					postPickActionDone = true;
 				}
