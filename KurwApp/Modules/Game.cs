@@ -71,9 +71,9 @@ namespace KurwApp.Modules
 			SetRoleAndCellId();
 			await SetGameType();
 			if (gameType is null) return;
-			//mainWindow.ChangeGamemodeName(gameType.ToString());
 
-			//mainWindow.ChangeGameModeIcon(gameType);
+			mainWindow.ChangeGamemodeName(gameType);
+			mainWindow.ChangeGameModeIcon(gameType);
 
 			do
 			{
