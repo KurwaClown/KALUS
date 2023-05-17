@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,18 +8,23 @@ using System.Threading.Tasks;
 
 namespace KurwApp.Modules
 {
-    public class Game
-    {
-        private string cellId;
-        private string position;
+	public class Game
+	{
+		private string cellId;
+		private string position;
 		private string? gameType = null;
-		JObject? sessionInfo;
-		bool isRunePageChanged = false;
+		private int championId = 0;
+		private JObject? sessionInfo;
+
+		private bool isRunePageChanged = false;
+		private bool hasPicked = false;
+		private bool postPickActionDone = false;
 
 		private MainWindow mainWindow;
 
-        public Game(MainWindow mainWindow) {
-            this.mainWindow = mainWindow;
+		public Game(MainWindow mainWindow)
+		{
+			this.mainWindow = mainWindow;
 		}
 
 		//Setting the player position and cell position id
@@ -39,7 +43,8 @@ namespace KurwApp.Modules
 			bool hasPositions = (bool)lobbyInfo["gameConfig"]["showPositionSelector"];
 
 			//if the gamemode is aram set to ARAM
-			if (gameMode == "ARAM") {
+			if (gameMode == "ARAM")
+			{
 				gameType = "ARAM";
 				return;
 			}
@@ -64,7 +69,7 @@ namespace KurwApp.Modules
 
 		//Handler of the champion selections
 		internal async Task ChampSelectControl()
-        {
+		{
 			sessionInfo = await Client_Request.GetSessionInfo();
 			if (sessionInfo is null) return;
 			//Set the properties
@@ -84,19 +89,20 @@ namespace KurwApp.Modules
 				{
 					default:
 						break;
+
 					case "FINALIZATION":
 						await Finalization();
 						break;
+
 					case "BAN_PICK":
 						await PickPhase();
 						break;
+
 					case "GAME_STARTING":
 					case "":
 						mainWindow.EnableRandomSkinButton(false);
 						return;
 				}
-
-
 				Thread.Sleep(1000);
 			}
 		}
@@ -142,32 +148,36 @@ namespace KurwApp.Modules
 					int banPick = await GetChampionBan();
 					if (banPick == 0) return;
 					await SelectionAction(actionId, banPick);
-
 				}
 
 				if (type == "pick" && Client_Control.GetSettingState("championPick"))
 				{
-					int champPick = await GetChampionPick();
-					if (champPick == 0) return;
+					championId = await GetChampionPick();
+					if (championId == 0) return;
 
-					await SelectionAction(actionId, champPick);
+					await SelectionAction(actionId, championId);
+					hasPicked = true;
+				}
 
-					var imageBytes = await Client_Request.GetChampionImageById(champPick);
+				if (hasPicked && !postPickActionDone)
+				{
+					var imageBytes = await Client_Request.GetChampionImageById(championId);
 
 					mainWindow.ChangeCharacterIcon(imageBytes);
 					//Set runes if the the auto rune is toggled
-					if (Client_Control.GetSettingState("runesSwap"))
+					if (Client_Control.GetSettingState("runesSwap") && !isRunePageChanged)
 					{
-						Client_Control.SetRunesPage(champPick, position == "" ? "NONE" : position.ToUpper());
+						Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
 						isRunePageChanged = true;
 					}
 
 					//Random skin on pick
-					if((bool)Client_Control.GetPreference("randomSkin.randomOnPick")) Client_Control.PickRandomSkin();
+					if ((bool)Client_Control.GetPreference("randomSkin.randomOnPick")) Client_Control.PickRandomSkin();
 
-
-					var runesRecommendation = await Client_Control.GetChampRunesByPosition(champPick, position);
+					var runesRecommendation = await Client_Control.GetChampRunesByPosition(championId, position);
 					if (Client_Control.GetSettingState("autoSummoner")) Client_Control.SetSummonerSpells(runesRecommendation);
+
+					postPickActionDone = true;
 				}
 			}
 		}
@@ -237,7 +247,6 @@ namespace KurwApp.Modules
 
 			return availableBans.First();
 		}
-
 
 		//Get if it's the current player turn and output the action id and type of action
 		internal bool IsCurrentPlayerTurn(IEnumerable<JObject> actions, out int actionId, out string type)
