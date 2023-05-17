@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace KurwApp
 {
@@ -49,17 +50,37 @@ namespace KurwApp
 
 		internal void ChangeCharacterIcon(byte[] image)
 		{
-			using MemoryStream stream = new(image);
+			using (MemoryStream stream = new(image))
+			{
+				Dispatcher.Invoke(() =>
+				{
+					BitmapImage bitmapImage = new();
+					bitmapImage.BeginInit();
+					bitmapImage.StreamSource = stream;
+					bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+					bitmapImage.EndInit();
+					characterIcon.ImageSource = bitmapImage;
+
+					MainWindow.isIconDefault = false;
+				});
+			}
+		}
+
+
+		internal void ChangeGameModeIcon(string gameMode, bool inGame = false)
+		{
+			var iconUrl = "Assets/Gamemode Icon/default.png";
+			iconUrl += gameMode switch
+			{
+				"Draft" or "Blind" => inGame ? "Classic/ingame.png" : "Classic/champselect.png",
+				"ARAM" => inGame ? "ARAM/ingame.png" : "ARAM/champselect.png",
+				_ => "default.png",
+			};
+
 			Dispatcher.Invoke(() =>
 			{
-				BitmapImage bitmapImage = new();
-				bitmapImage.BeginInit();
-				bitmapImage.StreamSource = stream;
-				bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-				bitmapImage.EndInit();
-				characterIcon.ImageSource = bitmapImage;
-
-				MainWindow.isIconDefault = false;
+				BitmapImage gameModeImage = new(new Uri(iconUrl, UriKind.RelativeOrAbsolute));
+				gameModeIcon.Source = gameModeImage;
 			});
 		}
 
@@ -394,6 +415,11 @@ namespace KurwApp
 			}
 
 			SavePicksModification();
+		}
+
+		internal void ChangeGamemodeName(string name)
+		{
+			Dispatcher.Invoke(() => gameModeLbl.Content = name);
 		}
 	}
 }

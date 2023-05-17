@@ -212,7 +212,7 @@
                         <GridSplitter Height="1" Width="50" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1"/>
                         <Label x:Name="statusLbl" Content="Champ Picked" HorizontalAlignment="Center" VerticalAlignment="Top" FontWeight="UltraBold" FontSize="16" Grid.Row="1"/>
                     </Grid>
-                    <Label Content="Game Mode" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center"/>
+                    <Label x:Name="gameModeLbl" Content="Game Mode" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center"/>
                 </Grid>
             </GroupBox>
             <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="5,0,5,0">
