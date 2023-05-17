@@ -75,8 +75,11 @@ namespace KurwApp.Modules
 			mainWindow.ChangeGamemodeName(gameType);
 			mainWindow.ChangeGameModeIcon(gameType);
 
-			do
+			while (Auth.IsAuthSet())
 			{
+				sessionInfo = await Client_Request.GetSessionInfo();
+
+				if (sessionInfo is null) return;
 				switch (sessionInfo.SelectToken("timer.phase").ToString())
 				{
 					default:
@@ -92,13 +95,10 @@ namespace KurwApp.Modules
 						mainWindow.EnableRandomSkinButton(false);
 						return;
 				}
+
+
 				Thread.Sleep(1000);
-
-				sessionInfo = await Client_Request.GetSessionInfo();
-
-				if (sessionInfo is null) return;
-
-			} while (true);
+			}
 		}
 
 		//Act on finalization
