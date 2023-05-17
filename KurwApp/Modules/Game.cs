@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace KurwApp.Modules
 {
-    class Game
+    public class Game
     {
         private string cellId;
         private string position;
@@ -71,6 +71,9 @@ namespace KurwApp.Modules
 			SetRoleAndCellId();
 			await SetGameType();
 			if (gameType is null) return;
+			//mainWindow.ChangeGamemodeName(gameType.ToString());
+
+			//mainWindow.ChangeGameModeIcon(gameType);
 
 			do
 			{
@@ -137,7 +140,7 @@ namespace KurwApp.Modules
 				if (type == "ban" && Client_Control.GetSettingState("banPick"))
 				{
 					int banPick = await GetChampionBan();
-
+					if (banPick == 0) return;
 					await SelectionAction(actionId, banPick);
 
 				}
@@ -145,6 +148,7 @@ namespace KurwApp.Modules
 				if (type == "pick" && Client_Control.GetSettingState("championPick"))
 				{
 					int champPick = await GetChampionPick();
+					if (champPick == 0) return;
 
 					await SelectionAction(actionId, champPick);
 
@@ -205,13 +209,16 @@ namespace KurwApp.Modules
 		{
 			var filename = gameType == "Draft" ? "Pick.json" : $"{gameType}.json";
 			var pickFile = File.ReadAllText($"Picks/{filename}");
-			var picks = gameType == "Draft" ? JObject.Parse(pickFile)[position] : JArray.Parse(pickFile);
+			var picks = gameType == "Draft" ? JObject.Parse(pickFile)[position] as JArray : JArray.Parse(pickFile);
 
 			if (!picks.Any()) return 0;
 
-			return picks.Select(x => int.Parse(x.ToString()))
+			var availablePicks = picks.Select(x => int.Parse(x.ToString()))
 												.ToArray()
-												.Except(GetNonAvailableChampions()).First();
+												.Except(GetNonAvailableChampions());
+
+			if (!availablePicks.Any()) return 0;
+			return availablePicks.First();
 		}
 
 		//Get the champion ban for draft game, if any
@@ -222,9 +229,13 @@ namespace KurwApp.Modules
 
 			if (!bans.Any()) return 0;
 
-			return bans.Select(x => int.Parse(x.ToString()))
+			var availableBans = bans.Select(x => int.Parse(x.ToString()))
 												.ToArray()
-												.Except(GetNonAvailableChampions()).First();
+												.Except(GetNonAvailableChampions());
+
+			if (!availableBans.Any()) return 0;
+
+			return availableBans.First();
 		}
 
 
