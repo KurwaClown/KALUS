@@ -421,5 +421,10 @@ namespace KurwApp
 		{
 			Dispatcher.Invoke(() => gameModeLbl.Content = name);
 		}
+
+		internal void ChangeChampionName(string championName)
+		{
+			Dispatcher.Invoke (() => championLbl.Content = championName);
+		}
 	}
 }
