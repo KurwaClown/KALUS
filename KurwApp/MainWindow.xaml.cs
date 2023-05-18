@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -69,7 +70,7 @@ namespace KurwApp
 
 		internal void ChangeGameModeIcon(string gameMode, bool inGame = false)
 		{
-			var iconUrl = "Assets/Gamemode Icon/default.png";
+			var iconUrl = "Assets/Gamemode Icon/";
 			iconUrl += gameMode switch
 			{
 				"Draft" or "Blind" => inGame ? "Classic/ingame.png" : "Classic/champselect.png",
@@ -77,9 +78,12 @@ namespace KurwApp
 				_ => "default.png",
 			};
 
+
+
 			Dispatcher.Invoke(() =>
 			{
 				BitmapImage gameModeImage = new(new Uri(iconUrl, UriKind.RelativeOrAbsolute));
+				Debug.WriteLine(gameModeImage.PixelWidth);
 				gameModeIcon.Source = gameModeImage;
 			});
 		}
