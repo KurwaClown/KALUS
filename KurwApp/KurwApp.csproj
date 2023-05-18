@@ -14,10 +14,6 @@
     <None Remove="Assets\Gamemode Icon\Classic\ingame.png" />
     <None Remove="Assets\Gamemode Icon\default.png" />
     <None Remove="Assets\Runes Icon\8000.png" />
-    <None Remove="Assets\Runes Icon\8001.png" />
-    <None Remove="Assets\Runes Icon\8002.png" />
-    <None Remove="Assets\Runes Icon\8003.png" />
-    <None Remove="Assets\Runes Icon\8004.png" />
     <None Remove="Assets\Runes Icon\8100.png" />
     <None Remove="Assets\Runes Icon\8200.png" />
     <None Remove="Assets\Runes Icon\8300.png" />
@@ -51,16 +47,16 @@
     <Content Include="Assets\Runes Icon\8000.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Runes Icon\8001.png">
+    <Content Include="Assets\Runes Icon\8100.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Runes Icon\8002.png">
+    <Content Include="Assets\Runes Icon\8200.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Runes Icon\8003.png">
+    <Content Include="Assets\Runes Icon\8300.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Runes Icon\8004.png">
+    <Content Include="Assets\Runes Icon\8400.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Runes Icon\default.png">
