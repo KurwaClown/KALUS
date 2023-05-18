@@ -126,6 +126,12 @@ namespace KurwApp.Modules
 				champSelectFinalized = true;
 			}
 
+			var currentRunePage = await Client_Request.GetActiveRunePage();
+
+			string primaryRuneId = currentRunePage["primaryStyleId"].ToString();
+			string subRuneId = currentRunePage["subStyleId"].ToString();
+
+			mainWindow.SetRunesIcons(primaryRuneId, subRuneId);
 		}
 
 		private async Task PostPickAction()

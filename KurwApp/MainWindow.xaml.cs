@@ -73,6 +73,18 @@ namespace KurwApp
 			isStatusBoxDefault = false;
 		}
 
+		internal void SetRunesIcons(string primaryRune, string subRune)
+		{
+			Dispatcher.Invoke(() =>
+			{
+				BitmapImage primaryRuneIcon = new(new Uri($"Assets\\Runes Icon\\{primaryRune}.png", UriKind.RelativeOrAbsolute));
+				BitmapImage subRuneIcon = new(new Uri($"Assets\\Runes Icon\\{subRune}.png", UriKind.RelativeOrAbsolute));
+
+				mainStyleIcon.ImageSource = primaryRuneIcon;
+				subStyleIcon.ImageSource = subRuneIcon;
+			});
+		}
+
 		internal void SetGameModeIcon(string gameMode, bool inGame = false)
 		{
 			var iconUrl = "Assets/Gamemode Icon/";
