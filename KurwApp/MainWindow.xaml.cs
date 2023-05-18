@@ -49,7 +49,7 @@ namespace KurwApp
 			Dispatcher.Invoke(() => statusBorder.BorderBrush = new SolidColorBrush(borderColor));
 		}
 
-		internal void ChangeCharacterIcon(byte[] image)
+		internal void SetChampionIcon(byte[] image)
 		{
 			using (MemoryStream stream = new(image))
 			{
@@ -67,6 +67,11 @@ namespace KurwApp
 			}
 		}
 
+		internal void SetChampionName(string championName)
+		{
+			Dispatcher.Invoke(() => championLbl.Content = championName);
+			isStatusBoxDefault = false;
+		}
 
 		internal void SetGameModeIcon(string gameMode, bool inGame = false)
 		{
@@ -83,7 +88,6 @@ namespace KurwApp
 			Dispatcher.Invoke(() =>
 			{
 				BitmapImage gameModeImage = new(new Uri(iconUrl, UriKind.RelativeOrAbsolute));
-				Debug.WriteLine(gameModeImage.PixelWidth);
 				gameModeIcon.Source = gameModeImage;
 				isStatusBoxDefault = false;
 			});

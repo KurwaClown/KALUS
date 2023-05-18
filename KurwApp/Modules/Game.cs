@@ -132,9 +132,13 @@ namespace KurwApp.Modules
 		{
 			var imageBytes = await Client_Request.GetChampionImageById(championId);
 
-			//Set the current champion image on the UI
-			mainWindow.ChangeCharacterIcon(imageBytes);
+			var champions = await Client_Request.GetChampionsInfo();
 
+			string championName = champions.Where(champion => (int)champion["id"] == championId).Select(champion => champion["name"].ToString()).First();
+
+			//Set the current champion image and name on the UI
+			mainWindow.SetChampionIcon(imageBytes);
+			mainWindow.SetChampionName(championName);
 			//Toggle the random skin button on
 			mainWindow.EnableRandomSkinButton(true);
 
