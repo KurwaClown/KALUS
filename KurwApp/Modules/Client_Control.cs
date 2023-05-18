@@ -95,10 +95,22 @@ namespace KurwApp.Modules
 							Game champSelect = new(mainWindow);
 							await champSelect.ChampSelectControl();
 							break;
+						case "GameStart":
+						case "InProgress":
+							string gameMode = mainWindow.GetGamemodeName();
+							mainWindow.SetGameModeIcon(gameMode, true);
+							mainWindow.EnableRandomSkinButton(false);
+							break;
 						//If not in any of the above game phase
 						default:
 							//Set the icon to default if it is not already
-							if (!MainWindow.isIconDefault) mainWindow.SetDefaultIcons();
+							if (!MainWindow.isStatusBoxDefault)
+							{
+								mainWindow.SetDefaultIcons();
+								mainWindow.SetDefaultLabels();
+
+								MainWindow.isStatusBoxDefault = true;
+							}
 							break;
 					}
 				}

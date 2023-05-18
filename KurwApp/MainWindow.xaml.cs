@@ -24,7 +24,7 @@ namespace KurwApp
 		private ObservableCollection<ListBoxItem> UpdatedListCollection { get; set; } = new ObservableCollection<ListBoxItem>();
 		private ObservableCollection<ListBoxItem> SelectedListCollection { get; set; } = new ObservableCollection<ListBoxItem>();
 
-		internal static bool isIconDefault = false;
+		internal static bool isStatusBoxDefault = false;
 
 		public MainWindow()
 		{
@@ -62,13 +62,13 @@ namespace KurwApp
 					bitmapImage.EndInit();
 					characterIcon.ImageSource = bitmapImage;
 
-					MainWindow.isIconDefault = false;
+					isStatusBoxDefault = false;
 				});
 			}
 		}
 
 
-		internal void ChangeGameModeIcon(string gameMode, bool inGame = false)
+		internal void SetGameModeIcon(string gameMode, bool inGame = false)
 		{
 			var iconUrl = "Assets/Gamemode Icon/";
 			iconUrl += gameMode switch
@@ -85,6 +85,7 @@ namespace KurwApp
 				BitmapImage gameModeImage = new(new Uri(iconUrl, UriKind.RelativeOrAbsolute));
 				Debug.WriteLine(gameModeImage.PixelWidth);
 				gameModeIcon.Source = gameModeImage;
+				isStatusBoxDefault = false;
 			});
 		}
 
@@ -102,8 +103,6 @@ namespace KurwApp
 				gameModeIcon.Source = gameModeDefaultIcon;
 
 			});
-
-			isIconDefault = true;
 		}
 
 
@@ -145,7 +144,6 @@ namespace KurwApp
 			champList.ItemsSource = UpdatedListCollection;
 			selectionList.ItemsSource = SelectedListCollection;
 
-			SetDefaultIcons();
 		}
 
 		internal static void SaveConfiguration(string token, dynamic value, string file = "preferences.json")
@@ -349,10 +347,20 @@ namespace KurwApp
 			populateComboBox(30, bansTimeLeft);
 			populateComboBox(30, stillPickTimeLeft);
 
-			SetPreferences();
 			SetSettings();
-
+			SetPreferences();
 			SetDefaultIcons();
+			SetDefaultLabels();
+		}
+
+		internal void SetDefaultLabels()
+		{
+			Dispatcher.Invoke(() =>
+			{
+				gameModeLbl.Content = "Lobby";
+				runesLbl.Content = "Runes";
+				championLbl.Content = "Champion";
+			});
 		}
 
 		private void OTLChange(object sender, SelectionChangedEventArgs e)
@@ -421,14 +429,26 @@ namespace KurwApp
 			SavePicksModification();
 		}
 
-		internal void ChangeGamemodeName(string name)
+		internal void SetGamemodeName(string gamemodeName)
 		{
-			Dispatcher.Invoke(() => gameModeLbl.Content = name);
+			Dispatcher.Invoke(() => {
+				gameModeLbl.Content = gamemodeName;
+				isStatusBoxDefault = false;
+			});
+		}
+		internal string GetGamemodeName()
+		{
+			string gameMode = "";
+			Dispatcher.Invoke(() => gameMode = gameModeLbl.Content.ToString());
+			return gameMode;
 		}
 
 		internal void ChangeChampionName(string championName)
 		{
-			Dispatcher.Invoke (() => championLbl.Content = championName);
+			Dispatcher.Invoke (() => {
+				championLbl.Content = championName;
+				isStatusBoxDefault = false;
+			});
 		}
 	}
 }

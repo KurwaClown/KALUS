@@ -77,8 +77,8 @@ namespace KurwApp.Modules
 			SetRoleAndCellId();
 			if (gameType is null) return;
 
-			mainWindow.ChangeGamemodeName(gameType);
-			mainWindow.ChangeGameModeIcon(gameType);
+			mainWindow.SetGamemodeName(gameType);
+			mainWindow.SetGameModeIcon(gameType);
 
 			while (Auth.IsAuthSet())
 			{
@@ -141,8 +141,6 @@ namespace KurwApp.Modules
 			//Set runes if the the auto rune is toggled
 			if (Client_Control.GetSettingState("runesSwap") && !isRunePageChanged)
 			{
-
-				mainWindow.ChangeGamemodeName(champSelectFinalized.ToString());
 				await Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
 				isRunePageChanged = true;
 			}
@@ -161,7 +159,6 @@ namespace KurwApp.Modules
 			string positionForSpells = "";
 			if (gameType == "Draft") positionForSpells = position;
 			if (gameType == "ARAM") positionForSpells = "NONE";
-			mainWindow.ChangeGamemodeName(positionForSpells);
 			var runesRecommendation = await Client_Control.GetSpellsRecommendationByPosition(championId, positionForSpells);
 			var spellsId = JArray.Parse(runesRecommendation.ToString());
 			Client_Control.SetSummonerSpells(spellsId);
