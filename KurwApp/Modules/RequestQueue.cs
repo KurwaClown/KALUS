@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -46,7 +47,7 @@ namespace KurwApp.Modules
 				}
 			};
 			handler.ClientCertificates.Add(riotCert);
-			
+
 			_httpClient = new HttpClient(handler)
 			{
 				BaseAddress = new Uri($"https://127.0.0.1:{Auth.GetPort()}")
@@ -92,6 +93,7 @@ namespace KurwApp.Modules
 
 				var response = await _httpClient.SendAsync(new HttpRequestMessage(httpMethod, endpoint) { Content = httpContent });
 				string responseString = string.Empty;
+				Debug.WriteLine(response.StatusCode);
 				if (response.IsSuccessStatusCode) responseString = await response.Content.ReadAsStringAsync();
 				return responseString;
 			};

@@ -106,6 +106,10 @@ namespace KurwApp.Modules
 							//Set the icon to default if it is not already
 							if (!MainWindow.isStatusBoxDefault)
 							{
+								var defaultChampionIcon = await Client_Request.GetChampionImageById(-1);
+
+								mainWindow.SetChampionIcon(defaultChampionIcon);
+
 								mainWindow.SetDefaultIcons();
 								mainWindow.SetDefaultLabels();
 

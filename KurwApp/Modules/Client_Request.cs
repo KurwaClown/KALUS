@@ -100,7 +100,7 @@ namespace KurwApp
 		#region Runes
 		internal static async Task<JArray> GetRecommendedRunes()
 		{
-			var response = await RequestQueue.Request(HttpMethod.Get, $"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-rune-recommendations.json");
+			var response = await RequestQueue.Request(HttpMethod.Get, $"/lol-game-data/assets/v1/champion-rune-recommendations.json");
 			var recommendedRunes = JArray.Parse(response);
 			return recommendedRunes;
 		}
@@ -153,7 +153,7 @@ namespace KurwApp
 
 		internal static async Task<JArray> GetChampionsInfo()
 		{
-			var response = await RequestQueue.Request(HttpMethod.Get, $"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json");
+			var response = await RequestQueue.Request(HttpMethod.Get, $"/lol-game-data/assets/v1/champion-summary.json");
 			var champions = JArray.Parse(response);
 			return champions;
 		}
@@ -161,13 +161,20 @@ namespace KurwApp
 
 		internal static async Task<byte[]> GetChampionImageById(int charId)
 		{
-			return await RequestQueue.GetImage($"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/{charId}.png");
+			return await RequestQueue.GetImage($"/lol-game-data/assets/v1/champion-icons/{charId}.png");
+		}
+
+		internal static async Task<string> GetRunesStyles()
+		{
+			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-game-data/assets/v1/perkstyles.json");
+			return response;
 		}
 
 		internal static async Task RestartLCU()
 		{
 			await RequestQueue.Request(HttpMethod.Post, "/riotclient/kill-and-restart-ux");
 		}
+
 
 	}
 }
