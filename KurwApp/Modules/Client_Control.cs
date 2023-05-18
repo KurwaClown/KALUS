@@ -274,7 +274,7 @@ namespace KurwApp.Modules
 		}
 
 		//Set the recommended rune page
-		internal static async void SetRunesPage(int champId, string position = "NONE")
+		internal static async Task SetRunesPage(int champId, string position = "NONE")
 		{
 			bool setActive = (bool)GetPreference("runes.setActive");
 

@@ -18,7 +18,7 @@ namespace KurwApp.Modules
 
 		private bool isRunePageChanged = false;
 		private bool hasPicked = false;
-		private bool postPickActionDone = false;
+		private bool champSelectFinalized = false;
 
 		private MainWindow mainWindow;
 
@@ -95,6 +95,7 @@ namespace KurwApp.Modules
 						break;
 
 					case "BAN_PICK":
+						if (hasPicked) goto case "FINALIZATION";
 						await PickPhase();
 						break;
 
@@ -103,24 +104,36 @@ namespace KurwApp.Modules
 						mainWindow.EnableRandomSkinButton(false);
 						return;
 				}
-				Thread.Sleep(1000);
+				int sleepTime = champSelectFinalized ? 5000 : 1000;
+				Thread.Sleep(sleepTime);
 			}
 		}
 
 		//Act on finalization
 		private async Task Finalization()
 		{
-			if (gameType == "ARAM" && Client_Control.GetSettingState("aramChampionSwap"))
+			if (gameType == "ARAM")
 			{
-				int aramPick = GetAramPick();
-
-				if (aramPick != 0) await Client_Request.AramBenchSwap(aramPick);
+				await AramFinalization();
+				return;
 			}
 
+			if (championId == 0) championId = await Client_Request.GetCurrentChampionId();
+
+			if (!champSelectFinalized)
+			{
+				await PostPickAction();
+				champSelectFinalized = true;
+			}
+
+		}
+
+		private async Task PostPickAction()
+		{
+			var imageBytes = await Client_Request.GetChampionImageById(championId);
+
 			//Set the current champion image on the UI
-			var championId = await Client_Request.GetCurrentChampionId();
-			if (championId == 0) return;
-			mainWindow.ChangeCharacterIcon(await Client_Request.GetChampionImageById(championId));
+			mainWindow.ChangeCharacterIcon(imageBytes);
 
 			//Toggle the random skin button on
 			mainWindow.EnableRandomSkinButton(true);
@@ -128,26 +141,87 @@ namespace KurwApp.Modules
 			//Set runes if the the auto rune is toggled
 			if (Client_Control.GetSettingState("runesSwap") && !isRunePageChanged)
 			{
-				Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
+
+				mainWindow.ChangeGamemodeName(champSelectFinalized.ToString());
+				await Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
 				isRunePageChanged = true;
 			}
 
+			//Random skin on pick
+			if ((bool)Client_Control.GetPreference("randomSkin.randomOnPick")) Client_Control.PickRandomSkin();
+
 			if (Client_Control.GetSettingState("autoSummoner"))
 			{
-				string positionForSpells = "";
-				if (gameType == "Draft") positionForSpells = position;
-				if (gameType == "ARAM") positionForSpells = "NONE";
-				mainWindow.ChangeGamemodeName(positionForSpells);
-				var runesRecommendation = await Client_Control.GetSpellsRecommendationByPosition(championId, positionForSpells);
-				var spellsId = JArray.Parse(runesRecommendation.ToString());
-				Client_Control.SetSummonerSpells(spellsId);
+				await ChangeSummoner();
+			}
+		}
+
+		private async Task ChangeSummoner()
+		{
+			string positionForSpells = "";
+			if (gameType == "Draft") positionForSpells = position;
+			if (gameType == "ARAM") positionForSpells = "NONE";
+			mainWindow.ChangeGamemodeName(positionForSpells);
+			var runesRecommendation = await Client_Control.GetSpellsRecommendationByPosition(championId, positionForSpells);
+			var spellsId = JArray.Parse(runesRecommendation.ToString());
+			Client_Control.SetSummonerSpells(spellsId);
+		}
+
+		private async Task AramFinalization()
+		{
+			if (Client_Control.GetSettingState("aramChampionSwap"))
+			{
+				int aramPick = GetAramPick();
+
+				if (aramPick != 0)
+				{
+					await Client_Request.AramBenchSwap(aramPick);
+					await PostPickAction();
+					championId = await Client_Request.GetCurrentChampionId();
+					if (Client_Control.GetSettingState("runesSwap") && !isRunePageChanged)
+					{
+						Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
+						isRunePageChanged = true;
+					}
+
+					if (Client_Control.GetSettingState("autoSummoner"))
+					{
+						await ChangeSummoner();
+					}
+				}
+			}
+			var currentChampionId = await Client_Request.GetCurrentChampionId();
+
+			if (currentChampionId != championId)
+			{
+				championId = currentChampionId;
+				await PostPickAction();
+				if (Client_Control.GetSettingState("runesSwap"))
+				{
+					Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
+					isRunePageChanged = true;
+				}
+
+				if (Client_Control.GetSettingState("autoSummoner"))
+				{
+					await ChangeSummoner();
+				}
 			}
 		}
 
 		//Act on pick phase
 		private async Task PickPhase()
 		{
+			if (champSelectFinalized) return;
 			var actions = GetSessionActions();
+
+			int currentChampionId = await Client_Request.GetCurrentChampionId();
+			if (currentChampionId != 0)
+			{
+				championId = currentChampionId;
+				hasPicked = true;
+				return;
+			}
 
 			if (IsCurrentPlayerTurn(actions, out int actionId, out string type))
 			{
@@ -165,34 +239,6 @@ namespace KurwApp.Modules
 
 					await SelectionAction(actionId, championId);
 					hasPicked = true;
-				}
-
-				if (hasPicked && !postPickActionDone)
-				{
-					var imageBytes = await Client_Request.GetChampionImageById(championId);
-
-					mainWindow.ChangeCharacterIcon(imageBytes);
-					//Set runes if the the auto rune is toggled
-					if (Client_Control.GetSettingState("runesSwap") && !isRunePageChanged)
-					{
-						Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
-						isRunePageChanged = true;
-					}
-
-					//Random skin on pick
-					if ((bool)Client_Control.GetPreference("randomSkin.randomOnPick")) Client_Control.PickRandomSkin();
-
-					if (Client_Control.GetSettingState("autoSummoner"))
-					{
-						string positionForSpells = "";
-						if (gameType == "Draft") positionForSpells = position;
-						if (gameType == "ARAM") positionForSpells = "NONE";
-						var runesRecommendation = await Client_Control.GetSpellsRecommendationByPosition(championId, positionForSpells);
-						var spellsId = JArray.Parse(runesRecommendation.ToString());
-						Client_Control.SetSummonerSpells(spellsId);
-					}
-
-					postPickActionDone = true;
 				}
 			}
 		}
