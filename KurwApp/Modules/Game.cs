@@ -112,6 +112,10 @@ namespace KurwApp.Modules
 		//Act on finalization
 		private async Task Finalization()
 		{
+			var currentRuneIcons = await Client_Control.GetRunesIcons();
+
+			if (currentRuneIcons is not null) mainWindow.SetRunesIcons(currentRuneIcons.Item1, currentRuneIcons.Item2); ;
+
 			if (gameType == "ARAM")
 			{
 				await AramFinalization();
@@ -126,12 +130,6 @@ namespace KurwApp.Modules
 				champSelectFinalized = true;
 			}
 
-			var currentRunePage = await Client_Request.GetActiveRunePage();
-
-			string primaryRuneId = currentRunePage["primaryStyleId"].ToString();
-			string subRuneId = currentRunePage["subStyleId"].ToString();
-
-			mainWindow.SetRunesIcons(primaryRuneId, subRuneId);
 		}
 
 		private async Task PostPickAction()

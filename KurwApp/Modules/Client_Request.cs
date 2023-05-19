@@ -105,9 +105,10 @@ namespace KurwApp
 			return recommendedRunes;
 		}
 
-		internal static async Task<JObject> GetActiveRunePage()
+		internal static async Task<JObject?> GetActiveRunePage()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-perks/v1/currentpage");
+			if(response == "") return null;
 			var runePage = JObject.Parse(response);
 			return runePage;
 		}
@@ -164,10 +165,11 @@ namespace KurwApp
 			return await RequestQueue.GetImage($"/lol-game-data/assets/v1/champion-icons/{charId}.png");
 		}
 
-		internal static async Task<string> GetRunesStyles()
+		internal static async Task<JObject> GetRunesStyles()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-game-data/assets/v1/perkstyles.json");
-			return response;
+			var runesStyles = JObject.Parse(response);
+			return runesStyles;
 		}
 
 		internal static async Task RestartLCU()

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -329,5 +330,28 @@ namespace KurwApp.Modules
 
 			await Client_Request.ChangeSummonerSpells(spell1Id, spell2Id);
 		}
+
+		internal static async Task<Tuple<byte[], byte[]>?> GetRunesIcons()
+		{
+			var perkStyles = await Client_Request.GetRunesStyles();
+			var runesSyles = JArray.FromObject(perkStyles["styles"]);
+
+			var currentRunes = await Client_Request.GetActiveRunePage();
+
+			if (currentRunes == null) return null;
+
+			string primaryRuneId = currentRunes["primaryStyleId"].ToString();
+			string subRuneId = currentRunes["subStyleId"].ToString();
+
+			var primaryRunes = runesSyles.First(rune => rune["id"].ToString() == primaryRuneId).SelectToken("iconPath").ToString();
+			var subRunes = runesSyles.First(rune => rune["id"].ToString() == subRuneId).SelectToken("iconPath").ToString();
+
+			byte[] primaryRuneIcon = await RequestQueue.GetImage(primaryRunes);
+			byte[] subRuneIcon = await RequestQueue.GetImage(subRunes);
+
+			return Tuple.Create(primaryRuneIcon, subRuneIcon);
+		}
+
+
 	}
 }
