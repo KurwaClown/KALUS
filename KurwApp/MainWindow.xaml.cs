@@ -110,7 +110,7 @@ namespace KurwApp
 
 		internal async void SetDefaultIcons()
 		{
-			var defaultChampionIcon = await Client_Request.GetChampionImageById(-1);
+			var defaultChampionIcon = await Client_Request.GetChampionImageByIdFromDataDragon(-1);
 
 			SetChampionIcon(defaultChampionIcon);
 			Dispatcher.Invoke(() =>
@@ -129,7 +129,7 @@ namespace KurwApp
 
 		internal async void LoadAndSetCharacterList()
 		{
-			var champions = await Client_Request.GetChampionsInfo();
+			var champions = await Client_Request.GetChampionsInfoFromDataDragon();
 			Dictionary<int, string> championNames = champions.Where(champion => (int)champion["id"] != -1)
 															.ToDictionary(champion => (int)champion["id"], champion => (string)champion["name"]);
 			championNames = championNames.OrderBy(champion => champion.Value).ToDictionary(champion => champion.Key, champion => champion.Value);

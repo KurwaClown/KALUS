@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KurwApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="640" Width="800"
+        Title="KurwApp" Height="640" Width="800"
         Loaded="Window_Loaded"
         Closing="Window_Closing" MinWidth="720" MinHeight="440">
     <Grid>

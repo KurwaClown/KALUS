@@ -159,10 +159,22 @@ namespace KurwApp
 			return champions;
 		}
 
+		internal static async Task<JArray> GetChampionsInfoFromDataDragon()
+		{
+			var response = await RequestQueue.Request(HttpMethod.Get, $"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json");
+			var champions = JArray.Parse(response);
+			return champions;
+		}
+
 
 		internal static async Task<byte[]> GetChampionImageById(int charId)
 		{
 			return await RequestQueue.GetImage($"/lol-game-data/assets/v1/champion-icons/{charId}.png");
+		}
+
+		internal static async Task<byte[]> GetChampionImageByIdFromDataDragon(int charId)
+		{
+			return await RequestQueue.GetImage($"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/{charId}.png");
 		}
 
 		internal static async Task<JObject> GetRunesStyles()
