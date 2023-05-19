@@ -51,6 +51,14 @@ namespace KurwApp
 
 		internal void SetChampionIcon(byte[] image)
 		{
+			ChangeImageBrush(characterIcon, image);
+
+			Dispatcher.Invoke(() =>isStatusBoxDefault = false);
+
+		}
+
+		internal void ChangeImageBrush(ImageBrush imageBrush, byte[] image)
+		{
 			using (MemoryStream stream = new(image))
 			{
 				Dispatcher.Invoke(() =>
@@ -60,9 +68,8 @@ namespace KurwApp
 					bitmapImage.StreamSource = stream;
 					bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
 					bitmapImage.EndInit();
-					characterIcon.ImageSource = bitmapImage;
+					imageBrush.ImageSource = bitmapImage;
 
-					isStatusBoxDefault = false;
 				});
 			}
 		}
@@ -73,16 +80,12 @@ namespace KurwApp
 			isStatusBoxDefault = false;
 		}
 
-		internal void SetRunesIcons(string primaryRune, string subRune)
+		internal void SetRunesIcons(byte[] primaryRune, byte[] subRune)
 		{
-			Dispatcher.Invoke(() =>
-			{
-				BitmapImage primaryRuneIcon = new(new Uri($"Assets\\Runes Icon\\{primaryRune}.png", UriKind.RelativeOrAbsolute));
-				BitmapImage subRuneIcon = new(new Uri($"Assets\\Runes Icon\\{subRune}.png", UriKind.RelativeOrAbsolute));
+			ChangeImageBrush(mainStyleIcon, primaryRune);
+			ChangeImageBrush(subStyleIcon, subRune);
 
-				mainStyleIcon.ImageSource = primaryRuneIcon;
-				subStyleIcon.ImageSource = subRuneIcon;
-			});
+			Dispatcher.Invoke(() => isStatusBoxDefault = false);
 		}
 
 		internal void SetGameModeIcon(string gameMode, bool inGame = false)
@@ -105,15 +108,16 @@ namespace KurwApp
 			});
 		}
 
-		internal void SetDefaultIcons()
+		internal async void SetDefaultIcons()
 		{
+			var defaultChampionIcon = await Client_Request.GetChampionImageById(-1);
+
+			SetChampionIcon(defaultChampionIcon);
 			Dispatcher.Invoke(() =>
 			{
-				BitmapImage championIcon = new (new Uri("DefaultIcon.jpg", UriKind.RelativeOrAbsolute));
 				BitmapImage styleIcon = new (new Uri("Assets\\Runes Icon\\default.png", UriKind.RelativeOrAbsolute));
 				BitmapImage gameModeDefaultIcon = new (new Uri("Assets\\Gamemode Icon\\default.png", UriKind.RelativeOrAbsolute));
 
-				characterIcon.ImageSource = championIcon;
 				mainStyleIcon.ImageSource = styleIcon;
 				subStyleIcon.ImageSource = styleIcon;
 				gameModeIcon.Source = gameModeDefaultIcon;
