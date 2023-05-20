@@ -188,7 +188,7 @@ namespace KurwApp
 		internal static async Task<byte[]> GetClassicMapImage(bool inGame)
 		{
 			string endpoint = "/lol-game-data/assets/content/src/leagueclient/gamemodeassets/classic_sru/img/";
-			endpoint += ingame ? "icon-victory.png" : "icon-hover.png";
+			endpoint += inGame ? "icon-victory.png" : "icon-hover.png";
 			return await RequestQueue.GetImage(endpoint);
 		}
 
