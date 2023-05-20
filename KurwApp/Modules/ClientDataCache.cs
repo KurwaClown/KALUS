@@ -34,5 +34,13 @@ namespace KurwApp.Modules
 
 			return summonerId;
 		}
+
+		internal static void ResetCachedData()
+		{
+			championsInformation = null;
+			championsRunesRecommendation = null;
+
+			summonerId = null;
+		}
 	}
 }
