@@ -142,10 +142,9 @@ namespace KurwApp.Modules
 
 			//Getting the current player info
 			var summonerInfo = await Client_Request.GetSummonerAndAccountId();
-			if (summonerInfo == "" || summonerInfo is null) return;
 
 			//Set player id if the token is present
-			if (summonerInfo.Contains("summonerId")) summonerId = JObject.Parse(summonerInfo)["summonerId"].ToString();
+			summonerId = summonerInfo["summonerId"].ToString();
 		}
 
 		#region Random Skin

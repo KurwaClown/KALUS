@@ -18,10 +18,10 @@ namespace KurwApp
 		}
 
 		#region Current Summoner
-		internal static async Task<string> GetSummonerAndAccountId()
+		internal static async Task<JObject> GetSummonerAndAccountId()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-summoner/v1/current-summoner/account-and-summoner-ids");
-			return response;
+			return JObject.Parse(response);
 		}
 		#endregion
 
