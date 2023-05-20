@@ -18,10 +18,10 @@ namespace KurwApp
 		}
 
 		#region Current Summoner
-		internal static async Task<string> GetSummonerAndAccountId()
+		internal static async Task<JObject> GetSummonerAndAccountId()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-summoner/v1/current-summoner/account-and-summoner-ids");
-			return response;
+			return JObject.Parse(response);
 		}
 		#endregion
 
@@ -119,10 +119,11 @@ namespace KurwApp
 			return response;
 		}
 
-		internal static async Task<string> GetRunePages()
+		internal static async Task<JArray> GetRunePages()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-perks/v1/pages");
-			return response;
+			var runesPages = JArray.Parse(response);
+			return runesPages;
 		}
 
 		internal static async Task<JObject> GetRunesInventory()
@@ -138,7 +139,7 @@ namespace KurwApp
 			return response;
 		}
 
-		internal static async Task<string> EditRunePage(int runesPageId, string newRunesPage)
+		internal static async Task<string> EditRunePage(string runesPageId, string newRunesPage)
 		{
 			var response = await RequestQueue.Request(HttpMethod.Put, $"/lol-perks/v1/pages/{runesPageId}", newRunesPage);
 			return response;
@@ -154,35 +155,54 @@ namespace KurwApp
 
 		internal static async Task<JArray> GetChampionsInfo()
 		{
-			var response = await RequestQueue.Request(HttpMethod.Get, $"/lol-game-data/assets/v1/champion-summary.json");
+			string request = Auth.IsAuthSet() ? "/lol-game-data/assets/v1/champion-summary.json" : "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json";
+			var response = await RequestQueue.Request(HttpMethod.Get, request);
 			var champions = JArray.Parse(response);
 			return champions;
 		}
-
-		internal static async Task<JArray> GetChampionsInfoFromDataDragon()
-		{
-			var response = await RequestQueue.Request(HttpMethod.Get, $"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json");
-			var champions = JArray.Parse(response);
-			return champions;
-		}
-
 
 		internal static async Task<byte[]> GetChampionImageById(int charId)
 		{
-			return await RequestQueue.GetImage($"/lol-game-data/assets/v1/champion-icons/{charId}.png");
+			string request = Auth.IsAuthSet() ? $"/lol-game-data/assets/v1/champion-icons/{charId}.png" : $"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/{charId}.png";
+			return await RequestQueue.GetImage(request);
 		}
 
-		internal static async Task<byte[]> GetChampionImageByIdFromDataDragon(int charId)
+		internal static async Task<byte[]> GetDefaultRuneImage()
 		{
-			return await RequestQueue.GetImage($"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/{charId}.png");
+			string request = Auth.IsAuthSet() ? $"/lol-game-data/assets/v1/perk-images/styles/runesicon.png" : "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perk-images/styles/runesicon.png";
+			return await RequestQueue.GetImage(request);
 		}
 
-		internal static async Task<JObject> GetRunesStyles()
+		internal static async Task<byte[]> GetDefaultMapImage()
 		{
-			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-game-data/assets/v1/perkstyles.json");
-			var runesStyles = JObject.Parse(response);
-			return runesStyles;
+			string request = Auth.IsAuthSet() ? $"/lol-game-data/assets/content/src/leagueclient/gamemodeassets/classic_sru/img/game-select-icon-disabled.png" : "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/gamemodeassets/classic_sru/img/game-select-icon-disabled.png";
+			return await RequestQueue.GetImage(request);
 		}
+
+		internal static async Task<byte[]> GetAramMapImage(bool inGame)
+		{
+			string endpoint = "/lol-game-data/assets/content/src/leagueclient/gamemodeassets/aram/img/";
+			endpoint += inGame ? "icon-victory.png" : "icon-hover.png";
+			return await RequestQueue.GetImage(endpoint);
+		}
+
+		internal static async Task<byte[]> GetClassicMapImage(bool inGame)
+		{
+			string endpoint = "/lol-game-data/assets/content/src/leagueclient/gamemodeassets/classic_sru/img/";
+			endpoint += inGame ? "icon-victory.png" : "icon-hover.png";
+			return await RequestQueue.GetImage(endpoint);
+		}
+
+
+
+		internal static async Task<JArray> GetRunesStyles()
+		{
+			var request = Auth.IsAuthSet() ? $"/lol-game-data/assets/v1/perkstyles.json" : "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perkstyles.json";
+			var response = await RequestQueue.Request(HttpMethod.Get, request);
+			var perksStyles = JObject.Parse(response);
+			return JArray.Parse(perksStyles["styles"].ToString());
+		}
+
 
 		internal static async Task RestartLCU()
 		{

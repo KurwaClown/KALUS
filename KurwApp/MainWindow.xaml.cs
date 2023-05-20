@@ -51,13 +51,13 @@ namespace KurwApp
 
 		internal void SetChampionIcon(byte[] image)
 		{
-			ChangeImageBrush(characterIcon, image);
+			SetImageBrush(characterIcon, image);
 
 			Dispatcher.Invoke(() =>isStatusBoxDefault = false);
 
 		}
 
-		internal void ChangeImageBrush(ImageBrush imageBrush, byte[] image)
+		internal void SetImageBrush(ImageBrush imageBrush, byte[] image)
 		{
 			using (MemoryStream stream = new(image))
 			{
@@ -73,63 +73,61 @@ namespace KurwApp
 				});
 			}
 		}
-
-		internal void SetChampionName(string championName)
+		internal void SetImageSource(Image image, byte[] imageStream)
 		{
-			Dispatcher.Invoke(() => championLbl.Content = championName);
-			isStatusBoxDefault = false;
+			using (MemoryStream stream = new(imageStream))
+			{
+				Dispatcher.Invoke(() =>
+				{
+					BitmapImage bitmapImage = new();
+					bitmapImage.BeginInit();
+					bitmapImage.StreamSource = stream;
+					bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+					bitmapImage.EndInit();
+					image.Source = bitmapImage;
+				});
+			}
 		}
 
 		internal void SetRunesIcons(byte[] primaryRune, byte[] subRune)
 		{
-			ChangeImageBrush(mainStyleIcon, primaryRune);
-			ChangeImageBrush(subStyleIcon, subRune);
+			SetImageBrush(mainStyleIcon, primaryRune);
+			SetImageBrush(subStyleIcon, subRune);
 
 			Dispatcher.Invoke(() => isStatusBoxDefault = false);
 		}
 
-		internal void SetGameModeIcon(string gameMode, bool inGame = false)
+		internal async void SetGameModeIcon(string gameMode, bool inGame = false)
 		{
-			var iconUrl = "Assets/Gamemode Icon/";
-			iconUrl += gameMode switch
+
+			byte[] icon = gameMode switch
 			{
-				"Draft" or "Blind" => inGame ? "Classic/ingame.png" : "Classic/champselect.png",
-				"ARAM" => inGame ? "ARAM/ingame.png" : "ARAM/champselect.png",
-				_ => "default.png",
+				"Draft" or "Blind" => await ClientDataCache.GetClassicMapIcon(inGame),
+				"ARAM" => await ClientDataCache.GetAramMapIcon(inGame),
+				_ => await ClientDataCache.GetDefaultMapIcon(),
 			};
 
+			SetImageSource(gameModeIcon, icon);
 
-
-			Dispatcher.Invoke(() =>
-			{
-				BitmapImage gameModeImage = new(new Uri(iconUrl, UriKind.RelativeOrAbsolute));
-				gameModeIcon.Source = gameModeImage;
-				isStatusBoxDefault = false;
-			});
+			Dispatcher.Invoke(() => isStatusBoxDefault = false);
 		}
 
 		internal async void SetDefaultIcons()
 		{
-			var defaultChampionIcon = await Client_Request.GetChampionImageByIdFromDataDragon(-1);
+			byte[] defaultRunesIcon = await ClientDataCache.GetDefaultRuneIcon();
+			SetImageBrush(mainStyleIcon, defaultRunesIcon);
+			SetImageBrush(subStyleIcon, defaultRunesIcon);
 
-			SetChampionIcon(defaultChampionIcon);
-			Dispatcher.Invoke(() =>
-			{
-				BitmapImage styleIcon = new (new Uri("Assets\\Runes Icon\\default.png", UriKind.RelativeOrAbsolute));
-				BitmapImage gameModeDefaultIcon = new (new Uri("Assets\\Gamemode Icon\\default.png", UriKind.RelativeOrAbsolute));
+			SetChampionIcon(await ClientDataCache.GetDefaultChampionIcon());
 
-				mainStyleIcon.ImageSource = styleIcon;
-				subStyleIcon.ImageSource = styleIcon;
-				gameModeIcon.Source = gameModeDefaultIcon;
-
-			});
+			SetImageSource(gameModeIcon, await ClientDataCache.GetDefaultMapIcon());
 		}
 
 
 
 		internal async void LoadAndSetCharacterList()
 		{
-			var champions = await Client_Request.GetChampionsInfoFromDataDragon();
+			var champions = await ClientDataCache.GetChampionsInformations();
 			Dictionary<int, string> championNames = champions.Where(champion => (int)champion["id"] != -1)
 															.ToDictionary(champion => (int)champion["id"], champion => (string)champion["name"]);
 			championNames = championNames.OrderBy(champion => champion.Value).ToDictionary(champion => champion.Key, champion => champion.Value);
@@ -463,7 +461,7 @@ namespace KurwApp
 			return gameMode;
 		}
 
-		internal void ChangeChampionName(string championName)
+		internal void SetChampionName(string championName)
 		{
 			Dispatcher.Invoke (() => {
 				championLbl.Content = championName;

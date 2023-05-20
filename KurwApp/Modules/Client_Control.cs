@@ -12,7 +12,6 @@ namespace KurwApp.Modules
 {
 	internal static class Client_Control
 	{
-		internal static string summonerId = string.Empty;
 
 		//Random variable used for getting random skins
 		internal static Random random = new();
@@ -35,8 +34,8 @@ namespace KurwApp.Modules
 				{
 					//Modify GroupBox style
 					mainWindow.ShowLolState(false);
-					//Reset player id
-					SetSummonerId(isReset: true);
+					//Reset cached data
+					ClientDataCache.ResetCachedData();
 					//If authenticated : reset the auth
 					if (authenticated) Auth.ResetAuth();
 					continue;
@@ -49,7 +48,6 @@ namespace KurwApp.Modules
 					if (isClientOpen)
 					{
 						Auth.SetBasicAuth(Process.GetProcessesByName("LeagueClientUx").First().MainModule.FileName);
-						SetSummonerId();
 						mainWindow.ShowLolState(true);
 					}
 				}
@@ -107,9 +105,7 @@ namespace KurwApp.Modules
 							//Set the icon to default if it is not already
 							if (!MainWindow.isStatusBoxDefault)
 							{
-								var defaultChampionIcon = await Client_Request.GetChampionImageById(-1);
-
-								mainWindow.SetChampionIcon(defaultChampionIcon);
+								mainWindow.SetChampionIcon(await ClientDataCache.GetDefaultChampionIcon());
 
 								mainWindow.SetDefaultIcons();
 								mainWindow.SetDefaultLabels();
@@ -131,22 +127,6 @@ namespace KurwApp.Modules
 			return (bool)settings[settingName];
 		}
 
-		//Set or reset the player id
-		internal static async void SetSummonerId(bool isReset = false)
-		{
-			if (isReset)
-			{
-				summonerId = string.Empty;
-				return;
-			}
-
-			//Getting the current player info
-			var summonerInfo = await Client_Request.GetSummonerAndAccountId();
-			if (summonerInfo == "" || summonerInfo is null) return;
-
-			//Set player id if the token is present
-			if (summonerInfo.Contains("summonerId")) summonerId = JObject.Parse(summonerInfo)["summonerId"].ToString();
-		}
 
 		#region Random Skin
 
@@ -208,7 +188,7 @@ namespace KurwApp.Modules
 		//Get the recommended runes for a champion
 		internal static async Task<JArray> GetRecommendedRunesById(int champId)
 		{
-			var runesRecommendation = await Client_Request.GetRecommendedRunes();
+			var runesRecommendation = await ClientDataCache.GetChampionsRunesRecommendation();
 
 			JArray champRunes = runesRecommendation
 				.Where(obj => (int)obj["championId"] == champId)
@@ -257,18 +237,6 @@ namespace KurwApp.Modules
 			return runesObject.ToString();
 		}
 
-		//Get the app rune page id if it's set
-		internal static async Task<int> GetAppRunePageId()
-		{
-			//Get all pages
-			var pages = await Client_Request.GetRunePages();
-
-			//Get the page containing the name Kurwapp
-			var kurwappRunes = JArray.Parse(pages).Where(page => page["name"].ToString().ToLower().Contains("kurwapp"));
-
-			//Return the page id if there is a page else return 0
-			return kurwappRunes.Any() ? kurwappRunes.Select(page => (int)page["id"]).First() : 0;
-		}
 
 		//Get current page id
 		internal static async Task<int> GetCurrentRunePageId()
@@ -277,7 +245,7 @@ namespace KurwApp.Modules
 			var pages = await Client_Request.GetRunePages();
 
 			//Get the page containing the name Kurwapp
-			var kurwappRunes = JArray.Parse(pages).First(page => (bool)page["current"] == true);
+			var kurwappRunes = pages.First(page => (bool)page["current"] == true);
 
 			//Return the page id if there is a page else return 0
 			return kurwappRunes.Any() ? int.Parse(kurwappRunes.ToString()) : 0;
@@ -295,16 +263,16 @@ namespace KurwApp.Modules
 		{
 			bool setActive = (bool)GetPreference("runes.setActive");
 
-			var appPageId = await GetAppRunePageId();
+			var appPageId = await ClientDataCache.GetAppRunePageId();
 
-			var champions = await Client_Request.GetChampionsInfo();
+			var champions = await ClientDataCache.GetChampionsInformations();
 
 			string championName = champions.Where(champion => (int)champion["id"] == champId).Select(champion => champion["name"].ToString()).First();
 			//Get the recommended rune page
 			var runesRecommendation = await GetChampRunesByPosition(champId, position);
 			string recommendedRunes = FormatChampRunes(runesRecommendation, championName);
 
-			if (appPageId != 0)
+			if (appPageId != null)
 			{
 				await Client_Request.EditRunePage(appPageId, recommendedRunes);
 			}
@@ -333,8 +301,7 @@ namespace KurwApp.Modules
 
 		internal static async Task<Tuple<byte[], byte[]>?> GetRunesIcons()
 		{
-			var perkStyles = await Client_Request.GetRunesStyles();
-			var runesSyles = JArray.FromObject(perkStyles["styles"]);
+			var runesStyles = await ClientDataCache.GetRunesStyleInformation();
 
 			var currentRunes = await Client_Request.GetActiveRunePage();
 
@@ -343,8 +310,8 @@ namespace KurwApp.Modules
 			string primaryRuneId = currentRunes["primaryStyleId"].ToString();
 			string subRuneId = currentRunes["subStyleId"].ToString();
 
-			var primaryRunes = runesSyles.First(rune => rune["id"].ToString() == primaryRuneId).SelectToken("iconPath").ToString();
-			var subRunes = runesSyles.First(rune => rune["id"].ToString() == subRuneId).SelectToken("iconPath").ToString();
+			var primaryRunes = runesStyles.First(rune => rune["id"].ToString() == primaryRuneId).SelectToken("iconPath").ToString();
+			var subRunes = runesStyles.First(rune => rune["id"].ToString() == subRuneId).SelectToken("iconPath").ToString();
 
 			byte[] primaryRuneIcon = await RequestQueue.GetImage(primaryRunes);
 			byte[] subRuneIcon = await RequestQueue.GetImage(subRunes);
