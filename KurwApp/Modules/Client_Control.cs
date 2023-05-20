@@ -35,8 +35,8 @@ namespace KurwApp.Modules
 				{
 					//Modify GroupBox style
 					mainWindow.ShowLolState(false);
-					//Reset player id
-					SetSummonerId(isReset: true);
+					//Reset cached data
+					ClientDataCache.ResetCachedData();
 					//If authenticated : reset the auth
 					if (authenticated) Auth.ResetAuth();
 					continue;
