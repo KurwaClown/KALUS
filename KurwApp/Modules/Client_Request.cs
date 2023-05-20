@@ -154,27 +154,16 @@ namespace KurwApp
 
 		internal static async Task<JArray> GetChampionsInfo()
 		{
-			var response = await RequestQueue.Request(HttpMethod.Get, $"/lol-game-data/assets/v1/champion-summary.json");
+			string request = Auth.IsAuthSet() ? "/lol-game-data/assets/v1/champion-summary.json" : "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json";
+			var response = await RequestQueue.Request(HttpMethod.Get, request);
 			var champions = JArray.Parse(response);
 			return champions;
 		}
-
-		internal static async Task<JArray> GetChampionsInfoFromDataDragon()
-		{
-			var response = await RequestQueue.Request(HttpMethod.Get, $"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json");
-			var champions = JArray.Parse(response);
-			return champions;
-		}
-
 
 		internal static async Task<byte[]> GetChampionImageById(int charId)
 		{
-			return await RequestQueue.GetImage($"/lol-game-data/assets/v1/champion-icons/{charId}.png");
-		}
-
-		internal static async Task<byte[]> GetChampionImageByIdFromDataDragon(int charId)
-		{
-			return await RequestQueue.GetImage($"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/{charId}.png");
+			string request = Auth.IsAuthSet() ? $"/lol-game-data/assets/v1/champion-icons/{charId}.png" : $"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/{charId}.png";
+			return await RequestQueue.GetImage(request);
 		}
 
 		internal static async Task<JObject> GetRunesStyles()
