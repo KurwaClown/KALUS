@@ -246,7 +246,7 @@ namespace KurwApp.Modules
 			var pages = await Client_Request.GetRunePages();
 
 			//Get the page containing the name Kurwapp
-			var kurwappRunes = JArray.Parse(pages).Where(page => page["name"].ToString().ToLower().Contains("kurwapp"));
+			var kurwappRunes = pages.Where(page => page["name"].ToString().ToLower().Contains("kurwapp"));
 
 			//Return the page id if there is a page else return 0
 			return kurwappRunes.Any() ? kurwappRunes.Select(page => (int)page["id"]).First() : 0;
@@ -259,7 +259,7 @@ namespace KurwApp.Modules
 			var pages = await Client_Request.GetRunePages();
 
 			//Get the page containing the name Kurwapp
-			var kurwappRunes = JArray.Parse(pages).First(page => (bool)page["current"] == true);
+			var kurwappRunes = pages.First(page => (bool)page["current"] == true);
 
 			//Return the page id if there is a page else return 0
 			return kurwappRunes.Any() ? int.Parse(kurwappRunes.ToString()) : 0;
@@ -277,7 +277,7 @@ namespace KurwApp.Modules
 		{
 			bool setActive = (bool)GetPreference("runes.setActive");
 
-			var appPageId = await GetAppRunePageId();
+			var appPageId = await ClientDataCache.GetAppRunePageId();
 
 			var champions = await ClientDataCache.GetChampionsInformations();
 
@@ -286,7 +286,7 @@ namespace KurwApp.Modules
 			var runesRecommendation = await GetChampRunesByPosition(champId, position);
 			string recommendedRunes = FormatChampRunes(runesRecommendation, championName);
 
-			if (appPageId != 0)
+			if (appPageId != null)
 			{
 				await Client_Request.EditRunePage(appPageId, recommendedRunes);
 			}

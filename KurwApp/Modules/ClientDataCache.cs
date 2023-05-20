@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace KurwApp.Modules
@@ -9,6 +10,8 @@ namespace KurwApp.Modules
 		private static JArray? championsRunesRecommendation;
 
 		private static string? summonerId;
+
+		private static string? appRunePageId;
 
 		private static byte[]? defaultChampionIcon;
 		private static byte[]? defaultRuneIcon;
@@ -43,6 +46,23 @@ namespace KurwApp.Modules
 			}
 
 			return summonerId;
+		}
+
+		internal static async Task<string?> GetAppRunePageId()
+		{
+			if (appRunePageId == null)
+			{
+				//Get all pages
+				var pages = await Client_Request.GetRunePages();
+
+				//Get the page containing the name Kurwapp
+				var kurwappRunes = pages.Where(page => page["name"].ToString().ToLower().Contains("kurwapp"));
+
+				//Assign the page id if there is a page else return 0
+				appRunePageId = kurwappRunes.Select(page => (int)page["id"]).First().ToString();
+			}
+
+			return appRunePageId;
 		}
 
 		internal static async Task<byte[]> GetDefaultChampionIcon()
@@ -97,6 +117,8 @@ namespace KurwApp.Modules
 			championsRunesRecommendation = null;
 
 			summonerId = null;
+
+			appRunePageId = null;
 
 			defaultChampionIcon = null;
 			defaultRuneIcon = null;

@@ -119,10 +119,11 @@ namespace KurwApp
 			return response;
 		}
 
-		internal static async Task<string> GetRunePages()
+		internal static async Task<JArray> GetRunePages()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-perks/v1/pages");
-			return response;
+			var runesPages = JArray.Parse(response);
+			return runesPages;
 		}
 
 		internal static async Task<JObject> GetRunesInventory()
@@ -138,7 +139,7 @@ namespace KurwApp
 			return response;
 		}
 
-		internal static async Task<string> EditRunePage(int runesPageId, string newRunesPage)
+		internal static async Task<string> EditRunePage(string runesPageId, string newRunesPage)
 		{
 			var response = await RequestQueue.Request(HttpMethod.Put, $"/lol-perks/v1/pages/{runesPageId}", newRunesPage);
 			return response;
