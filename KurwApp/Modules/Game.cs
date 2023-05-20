@@ -239,7 +239,7 @@ namespace KurwApp.Modules
 
 				if (type == "pick" && Client_Control.GetSettingState("championPick"))
 				{
-					championId = await GetChampionPick();
+					championId = GetChampionPick();
 					if (championId == 0) return;
 
 					await SelectionAction(actionId, championId);
@@ -281,7 +281,7 @@ namespace KurwApp.Modules
 		}
 
 		//Get the champion pick for blind or draft game, if any
-		private async Task<int> GetChampionPick()
+		private int GetChampionPick()
 		{
 			var filename = gameType == "Draft" ? "Pick.json" : $"{gameType}.json";
 			var pickFile = File.ReadAllText($"Picks/{filename}");

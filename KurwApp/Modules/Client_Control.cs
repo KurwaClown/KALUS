@@ -48,7 +48,7 @@ namespace KurwApp.Modules
 					//If the client is open : set the authentication and player id
 					if (isClientOpen)
 					{
-						await Auth.SetBasicAuth(Process.GetProcessesByName("LeagueClientUx").First().MainModule.FileName);
+						Auth.SetBasicAuth(Process.GetProcessesByName("LeagueClientUx").First().MainModule.FileName);
 						SetSummonerId();
 						mainWindow.ShowLolState(true);
 					}

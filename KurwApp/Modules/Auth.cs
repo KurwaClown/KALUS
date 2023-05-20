@@ -11,7 +11,7 @@ namespace KurwApp
 
         #region Authentication Set and Reset
         //Set the basic authentication and the port for the requests
-        internal static async Task SetBasicAuth(string filename)
+        internal static void SetBasicAuth(string filename)
         {
             string[] lockfile_content = GetLockfileContent(filename);
 
