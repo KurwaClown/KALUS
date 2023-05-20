@@ -190,7 +190,7 @@ namespace KurwApp.Modules
 		//Get the recommended runes for a champion
 		internal static async Task<JArray> GetRecommendedRunesById(int champId)
 		{
-			var runesRecommendation = await Client_Request.GetRecommendedRunes();
+			var runesRecommendation = await ClientDataCache.GetChampionsRunesRecommendation();
 
 			JArray champRunes = runesRecommendation
 				.Where(obj => (int)obj["championId"] == champId)
@@ -279,7 +279,7 @@ namespace KurwApp.Modules
 
 			var appPageId = await GetAppRunePageId();
 
-			var champions = await Client_Request.GetChampionsInfo();
+			var champions = await ClientDataCache.GetChampionsInformations();
 
 			string championName = champions.Where(champion => (int)champion["id"] == champId).Select(champion => champion["name"].ToString()).First();
 			//Get the recommended rune page
