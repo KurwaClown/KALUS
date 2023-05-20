@@ -105,9 +105,7 @@ namespace KurwApp.Modules
 							//Set the icon to default if it is not already
 							if (!MainWindow.isStatusBoxDefault)
 							{
-								var defaultChampionIcon = await Client_Request.GetChampionImageById(-1);
-
-								mainWindow.SetChampionIcon(defaultChampionIcon);
+								mainWindow.SetChampionIcon(await ClientDataCache.GetDefaultChampionIcon());
 
 								mainWindow.SetDefaultIcons();
 								mainWindow.SetDefaultLabels();
@@ -239,18 +237,6 @@ namespace KurwApp.Modules
 			return runesObject.ToString();
 		}
 
-		//Get the app rune page id if it's set
-		internal static async Task<int> GetAppRunePageId()
-		{
-			//Get all pages
-			var pages = await Client_Request.GetRunePages();
-
-			//Get the page containing the name Kurwapp
-			var kurwappRunes = pages.Where(page => page["name"].ToString().ToLower().Contains("kurwapp"));
-
-			//Return the page id if there is a page else return 0
-			return kurwappRunes.Any() ? kurwappRunes.Select(page => (int)page["id"]).First() : 0;
-		}
 
 		//Get current page id
 		internal static async Task<int> GetCurrentRunePageId()
@@ -315,7 +301,7 @@ namespace KurwApp.Modules
 
 		internal static async Task<Tuple<byte[], byte[]>?> GetRunesIcons()
 		{
-			var runesStyles = await Client_Request.GetRunesStyles();
+			var runesStyles = await ClientDataCache.GetRunesStyleInformation();
 
 			var currentRunes = await Client_Request.GetActiveRunePage();
 

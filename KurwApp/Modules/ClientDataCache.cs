@@ -38,7 +38,7 @@ namespace KurwApp.Modules
 			return championsRunesRecommendation;
 		}
 
-		internal static async Task<JArray> GetRunesStyleRecommendation()
+		internal static async Task<JArray> GetRunesStyleInformation()
 		{
 			runesStyleInformation ??= await Client_Request.GetRunesStyles();
 
