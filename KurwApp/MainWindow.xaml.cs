@@ -274,7 +274,7 @@ namespace KurwApp
 			SaveConfiguration((sender as CheckBox).Tag.ToString(), (bool)(sender as CheckBox).IsChecked, file: "settings.json");
 		}
 
-		private void IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+		private void IsEnabledModified(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			if (sender is ComboBox comboBox)
 			{
