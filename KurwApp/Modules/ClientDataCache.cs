@@ -8,6 +8,7 @@ namespace KurwApp.Modules
 	{
 		private static JArray? championsInformation;
 		private static JArray? championsRunesRecommendation;
+		private static JArray? runesStyleInformation;
 
 		private static string? summonerId;
 
@@ -35,6 +36,13 @@ namespace KurwApp.Modules
 			championsRunesRecommendation ??= await Client_Request.GetRecommendedRunes();
 
 			return championsRunesRecommendation;
+		}
+
+		internal static async Task<JArray> GetRunesStyleRecommendation()
+		{
+			runesStyleInformation ??= await Client_Request.GetRunesStyles();
+
+			return runesStyleInformation;
 		}
 
 		internal static async Task<string> GetSummonerId()
@@ -115,6 +123,7 @@ namespace KurwApp.Modules
 		{
 			championsInformation = null;
 			championsRunesRecommendation = null;
+			runesStyleInformation = null;
 
 			summonerId = null;
 

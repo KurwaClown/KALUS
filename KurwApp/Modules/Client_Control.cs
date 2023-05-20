@@ -315,8 +315,7 @@ namespace KurwApp.Modules
 
 		internal static async Task<Tuple<byte[], byte[]>?> GetRunesIcons()
 		{
-			var perkStyles = await Client_Request.GetRunesStyles();
-			var runesSyles = JArray.FromObject(perkStyles["styles"]);
+			var runesStyles = await Client_Request.GetRunesStyles();
 
 			var currentRunes = await Client_Request.GetActiveRunePage();
 
@@ -325,8 +324,8 @@ namespace KurwApp.Modules
 			string primaryRuneId = currentRunes["primaryStyleId"].ToString();
 			string subRuneId = currentRunes["subStyleId"].ToString();
 
-			var primaryRunes = runesSyles.First(rune => rune["id"].ToString() == primaryRuneId).SelectToken("iconPath").ToString();
-			var subRunes = runesSyles.First(rune => rune["id"].ToString() == subRuneId).SelectToken("iconPath").ToString();
+			var primaryRunes = runesStyles.First(rune => rune["id"].ToString() == primaryRuneId).SelectToken("iconPath").ToString();
+			var subRunes = runesStyles.First(rune => rune["id"].ToString() == subRuneId).SelectToken("iconPath").ToString();
 
 			byte[] primaryRuneIcon = await RequestQueue.GetImage(primaryRunes);
 			byte[] subRuneIcon = await RequestQueue.GetImage(subRunes);

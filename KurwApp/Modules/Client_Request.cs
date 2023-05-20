@@ -195,11 +195,12 @@ namespace KurwApp
 
 
 
-		internal static async Task<JObject> GetRunesStyles()
+		internal static async Task<JArray> GetRunesStyles()
 		{
-			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-game-data/assets/v1/perkstyles.json");
-			var runesStyles = JObject.Parse(response);
-			return runesStyles;
+			var request = Auth.IsAuthSet() ? $"/lol-game-data/assets/v1/perkstyles.json" : "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perkstyles.json";
+			var response = await RequestQueue.Request(HttpMethod.Get, request);
+			var perksStyles = JObject.Parse(response);
+			return JArray.Parse(perksStyles["styles"].ToString());
 		}
 
 
