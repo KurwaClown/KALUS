@@ -12,7 +12,6 @@ namespace KurwApp.Modules
 {
 	internal static class Client_Control
 	{
-		internal static string summonerId = string.Empty;
 
 		//Random variable used for getting random skins
 		internal static Random random = new();
@@ -49,7 +48,6 @@ namespace KurwApp.Modules
 					if (isClientOpen)
 					{
 						Auth.SetBasicAuth(Process.GetProcessesByName("LeagueClientUx").First().MainModule.FileName);
-						SetSummonerId();
 						mainWindow.ShowLolState(true);
 					}
 				}
@@ -131,21 +129,6 @@ namespace KurwApp.Modules
 			return (bool)settings[settingName];
 		}
 
-		//Set or reset the player id
-		internal static async void SetSummonerId(bool isReset = false)
-		{
-			if (isReset)
-			{
-				summonerId = string.Empty;
-				return;
-			}
-
-			//Getting the current player info
-			var summonerInfo = await Client_Request.GetSummonerAndAccountId();
-
-			//Set player id if the token is present
-			summonerId = summonerInfo["summonerId"].ToString();
-		}
 
 		#region Random Skin
 
