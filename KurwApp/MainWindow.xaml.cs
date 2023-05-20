@@ -103,24 +103,19 @@ namespace KurwApp
 			Dispatcher.Invoke(() => isStatusBoxDefault = false);
 		}
 
-		internal void SetGameModeIcon(string gameMode, bool inGame = false)
+		internal async void SetGameModeIcon(string gameMode, bool inGame = false)
 		{
-			var iconUrl = "Assets/Gamemode Icon/";
-			iconUrl += gameMode switch
+
+			byte[] icon = gameMode switch
 			{
-				"Draft" or "Blind" => inGame ? "Classic/ingame.png" : "Classic/champselect.png",
-				"ARAM" => inGame ? "ARAM/ingame.png" : "ARAM/champselect.png",
-				_ => "default.png",
+				"Draft" or "Blind" => await ClientDataCache.GetClassicMapIcon(inGame),
+				"ARAM" => await ClientDataCache.GetAramMapIcon(inGame),
+				_ => await ClientDataCache.GetDefaultMapIcon(),
 			};
 
+			ChangeImageSource(gameModeIcon, icon);
 
-
-			Dispatcher.Invoke(() =>
-			{
-				BitmapImage gameModeImage = new(new Uri(iconUrl, UriKind.RelativeOrAbsolute));
-				gameModeIcon.Source = gameModeImage;
-				isStatusBoxDefault = false;
-			});
+			Dispatcher.Invoke(() => isStatusBoxDefault = false);
 		}
 
 		internal async void SetDefaultIcons()

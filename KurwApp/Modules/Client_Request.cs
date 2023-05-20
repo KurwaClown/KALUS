@@ -178,6 +178,20 @@ namespace KurwApp
 			return await RequestQueue.GetImage(request);
 		}
 
+		internal static async Task<byte[]> GetAramMapImage(bool inGame)
+		{
+			string endpoint = "/lol-game-data/assets/content/src/leagueclient/gamemodeassets/aram/img/";
+			endpoint += inGame ? "icon-victory.png" : "icon-hover.png";
+			return await RequestQueue.GetImage(endpoint);
+		}
+
+		internal static async Task<byte[]> GetClassicMapImage(bool inGame)
+		{
+			string endpoint = "/lol-game-data/assets/content/src/leagueclient/gamemodeassets/classic_sru/img/";
+			endpoint += ingame ? "icon-victory.png" : "icon-hover.png";
+			return await RequestQueue.GetImage(endpoint);
+		}
+
 
 
 		internal static async Task<JObject> GetRunesStyles()
