@@ -10,6 +10,10 @@ namespace KurwApp.Modules
 
 		private static string? summonerId;
 
+		private static byte[]? defaultChampionIcon;
+		private static byte[]? defaultRuneIcon;
+		private static byte[]? defaultMapIcon;
+
 		internal static async Task<JArray> GetChampionsInformations()
 		{
 			championsInformation ??= await Client_Request.GetChampionsInfo();
@@ -33,6 +37,27 @@ namespace KurwApp.Modules
 			}
 
 			return summonerId;
+		}
+
+		internal static async Task<byte[]> GetDefaultChampionIcon()
+		{
+			defaultChampionIcon ??= await Client_Request.GetChampionImageById(-1);
+
+			return defaultChampionIcon;
+		}
+
+		internal static async Task<byte[]> GetDefaultRuneIcon()
+		{
+			defaultRuneIcon ??= await Client_Request.GetDefaultRuneImage();
+
+			return defaultRuneIcon;
+		}
+
+		internal static async Task<byte[]> GetDefaultMapIcon()
+		{
+			defaultMapIcon ??= await Client_Request.GetDefaultMapImage();
+
+			return defaultMapIcon;
 		}
 
 		internal static void ResetCachedData()

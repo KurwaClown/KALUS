@@ -166,12 +166,27 @@ namespace KurwApp
 			return await RequestQueue.GetImage(request);
 		}
 
+		internal static async Task<byte[]> GetDefaultRuneImage()
+		{
+			string request = Auth.IsAuthSet() ? $"/lol-game-data/assets/v1/perk-images/styles/runesicon.png" : "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perk-images/styles/runesicon.png";
+			return await RequestQueue.GetImage(request);
+		}
+
+		internal static async Task<byte[]> GetDefaultMapImage()
+		{
+			string request = Auth.IsAuthSet() ? $"/lol-game-data/assets/content/src/leagueclient/gamemodeassets/classic_sru/img/game-select-icon-disabled.png" : "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/gamemodeassets/classic_sru/img/game-select-icon-disabled.png";
+			return await RequestQueue.GetImage(request);
+		}
+
+
+
 		internal static async Task<JObject> GetRunesStyles()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-game-data/assets/v1/perkstyles.json");
 			var runesStyles = JObject.Parse(response);
 			return runesStyles;
 		}
+
 
 		internal static async Task RestartLCU()
 		{

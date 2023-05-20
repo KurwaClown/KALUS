@@ -73,6 +73,21 @@ namespace KurwApp
 				});
 			}
 		}
+		internal void ChangeImageSource(Image image, byte[] imageStream)
+		{
+			using (MemoryStream stream = new(imageStream))
+			{
+				Dispatcher.Invoke(() =>
+				{
+					BitmapImage bitmapImage = new();
+					bitmapImage.BeginInit();
+					bitmapImage.StreamSource = stream;
+					bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+					bitmapImage.EndInit();
+					image.Source = bitmapImage;
+				});
+			}
+		}
 
 		internal void SetChampionName(string championName)
 		{
@@ -110,19 +125,13 @@ namespace KurwApp
 
 		internal async void SetDefaultIcons()
 		{
-			var defaultChampionIcon = await Client_Request.GetChampionImageById(-1);
+			byte[] defaultRunesIcon = await ClientDataCache.GetDefaultRuneIcon();
+			ChangeImageBrush(mainStyleIcon, defaultRunesIcon);
+			ChangeImageBrush(subStyleIcon, defaultRunesIcon);
 
-			SetChampionIcon(defaultChampionIcon);
-			Dispatcher.Invoke(() =>
-			{
-				BitmapImage styleIcon = new (new Uri("Assets\\Runes Icon\\default.png", UriKind.RelativeOrAbsolute));
-				BitmapImage gameModeDefaultIcon = new (new Uri("Assets\\Gamemode Icon\\default.png", UriKind.RelativeOrAbsolute));
+			SetChampionIcon(await ClientDataCache.GetDefaultChampionIcon());
 
-				mainStyleIcon.ImageSource = styleIcon;
-				subStyleIcon.ImageSource = styleIcon;
-				gameModeIcon.Source = gameModeDefaultIcon;
-
-			});
+			ChangeImageSource(gameModeIcon, await ClientDataCache.GetDefaultMapIcon());
 		}
 
 
