@@ -60,12 +60,17 @@ namespace KurwApp.Modules
 			return defaultMapIcon;
 		}
 
+		//Reset every cached variable
 		internal static void ResetCachedData()
 		{
 			championsInformation = null;
 			championsRunesRecommendation = null;
 
 			summonerId = null;
+
+			defaultChampionIcon = null;
+			defaultRuneIcon = null;
+			defaultMapIcon = null;
 		}
 	}
 }
