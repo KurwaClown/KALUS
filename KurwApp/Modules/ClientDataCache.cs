@@ -20,8 +20,6 @@ namespace KurwApp.Modules
 		private static byte[]? ingameAramIcon;
 		private static byte[]? champSelectAramIcon;
 
-
-
 		internal static async Task<JArray> GetChampionsInformations()
 		{
 			championsInformation ??= await Client_Request.GetChampionsInfo();
@@ -61,7 +59,6 @@ namespace KurwApp.Modules
 			return defaultRuneIcon;
 		}
 
-
 		internal static async Task<byte[]> GetDefaultMapIcon()
 		{
 			defaultMapIcon ??= await Client_Request.GetDefaultMapImage();
@@ -71,27 +68,25 @@ namespace KurwApp.Modules
 
 		internal static async Task<byte[]> GetAramMapIcon(bool isInGame)
 		{
-
 			if (isInGame)
 			{
-				ingameAramIcon ??= await Client_Request.GetAramMapImage(inGame : true);
+				ingameAramIcon ??= await Client_Request.GetAramMapImage(inGame: true);
 				return ingameAramIcon;
 			}
 
-			champSelectAramIcon ??= await Client_Request.GetAramMapImage(inGame : false);
+			champSelectAramIcon ??= await Client_Request.GetAramMapImage(inGame: false);
 			return champSelectAramIcon;
 		}
 
 		internal static async Task<byte[]> GetClassicMapIcon(bool isInGame)
 		{
-
 			if (isInGame)
 			{
-				ingameClassicIcon ??= await Client_Request.GetClassicMapImage(inGame : true);
+				ingameClassicIcon ??= await Client_Request.GetClassicMapImage(inGame: true);
 				return ingameClassicIcon;
 			}
 
-			champSelectClassicIcon ??= await Client_Request.GetClassicMapImage(inGame : false);
+			champSelectClassicIcon ??= await Client_Request.GetClassicMapImage(inGame: false);
 			return champSelectClassicIcon;
 		}
 
@@ -106,6 +101,12 @@ namespace KurwApp.Modules
 			defaultChampionIcon = null;
 			defaultRuneIcon = null;
 			defaultMapIcon = null;
+
+			ingameClassicIcon = null;
+			champSelectClassicIcon = null;
+
+			ingameAramIcon = null;
+			champSelectAramIcon = null;
 		}
 	}
 }
