@@ -51,13 +51,13 @@ namespace KurwApp
 
 		internal void SetChampionIcon(byte[] image)
 		{
-			ChangeImageBrush(characterIcon, image);
+			SetImageBrush(characterIcon, image);
 
 			Dispatcher.Invoke(() =>isStatusBoxDefault = false);
 
 		}
 
-		internal void ChangeImageBrush(ImageBrush imageBrush, byte[] image)
+		internal void SetImageBrush(ImageBrush imageBrush, byte[] image)
 		{
 			using (MemoryStream stream = new(image))
 			{
@@ -73,7 +73,7 @@ namespace KurwApp
 				});
 			}
 		}
-		internal void ChangeImageSource(Image image, byte[] imageStream)
+		internal void SetImageSource(Image image, byte[] imageStream)
 		{
 			using (MemoryStream stream = new(imageStream))
 			{
@@ -89,16 +89,10 @@ namespace KurwApp
 			}
 		}
 
-		internal void SetChampionName(string championName)
-		{
-			Dispatcher.Invoke(() => championLbl.Content = championName);
-			isStatusBoxDefault = false;
-		}
-
 		internal void SetRunesIcons(byte[] primaryRune, byte[] subRune)
 		{
-			ChangeImageBrush(mainStyleIcon, primaryRune);
-			ChangeImageBrush(subStyleIcon, subRune);
+			SetImageBrush(mainStyleIcon, primaryRune);
+			SetImageBrush(subStyleIcon, subRune);
 
 			Dispatcher.Invoke(() => isStatusBoxDefault = false);
 		}
@@ -113,7 +107,7 @@ namespace KurwApp
 				_ => await ClientDataCache.GetDefaultMapIcon(),
 			};
 
-			ChangeImageSource(gameModeIcon, icon);
+			SetImageSource(gameModeIcon, icon);
 
 			Dispatcher.Invoke(() => isStatusBoxDefault = false);
 		}
@@ -121,12 +115,12 @@ namespace KurwApp
 		internal async void SetDefaultIcons()
 		{
 			byte[] defaultRunesIcon = await ClientDataCache.GetDefaultRuneIcon();
-			ChangeImageBrush(mainStyleIcon, defaultRunesIcon);
-			ChangeImageBrush(subStyleIcon, defaultRunesIcon);
+			SetImageBrush(mainStyleIcon, defaultRunesIcon);
+			SetImageBrush(subStyleIcon, defaultRunesIcon);
 
 			SetChampionIcon(await ClientDataCache.GetDefaultChampionIcon());
 
-			ChangeImageSource(gameModeIcon, await ClientDataCache.GetDefaultMapIcon());
+			SetImageSource(gameModeIcon, await ClientDataCache.GetDefaultMapIcon());
 		}
 
 
@@ -467,7 +461,7 @@ namespace KurwApp
 			return gameMode;
 		}
 
-		internal void ChangeChampionName(string championName)
+		internal void SetChampionName(string championName)
 		{
 			Dispatcher.Invoke (() => {
 				championLbl.Content = championName;
