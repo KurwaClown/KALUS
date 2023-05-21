@@ -187,13 +187,6 @@ namespace KurwApp
 			await Client_Request.RestartLCU();
 		}
 
-		internal static int GetRadioStackPreference(RadioButton radioButton)
-		{
-			var parentStack = radioButton.Parent as StackPanel;
-			var preference = parentStack.Children.OfType<RadioButton>().FirstOrDefault(radio => radio.IsChecked == true);
-			return int.Parse(preference.Tag.ToString());
-		}
-
 		private void AddSelection(object sender, RoutedEventArgs e)
 		{
 			if (champList.SelectedItem == null) return;
@@ -261,9 +254,9 @@ namespace KurwApp
 			}
 			else if (sender is RadioButton radioButton)
 			{
-				int radioPreference = GetRadioStackPreference(radioButton);
-				StackPanel parent = radioButton.Parent as StackPanel;
-				SaveConfiguration(parent.Tag.ToString() + ".userPreference", radioPreference);
+				if ((bool)!radioButton.IsChecked) return;
+				int radioPreference = int.Parse(radioButton.Tag.ToString());
+				SaveConfiguration(radioButton.GroupName, radioPreference);
 			}
 		}
 
@@ -329,7 +322,6 @@ namespace KurwApp
 				addChromas.IsChecked = (bool)preferences["randomSkin"]["addChromas"];
 				randomOnPick.IsChecked = (bool)preferences["randomSkin"]["randomOnPick"];
 
-				rightSideFlash.IsChecked = (bool)preferences["summoners"]["rightSideFlash"];
 				alwaysSnowball.IsChecked = (bool)preferences["summoners"]["alwaysSnowball"];
 			}
 			);
