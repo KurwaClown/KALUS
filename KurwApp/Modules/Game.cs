@@ -260,20 +260,23 @@ namespace KurwApp.Modules
 
 			if (!aramPicks.Any()) return 0;
 
-			int[] aramBenchIds = GetAramBenchIds();
+			List<int> aramBenchIds = GetAramBenchIds();
 			if (!aramBenchIds.Any()) return 0;
-			var selection = aramPicks.Select(x => int.Parse(x.ToString()))
-												.ToArray()
-												.Where(x => aramBenchIds.Contains(x));
-			if (!selection.Any()) return 0;
 
-			return selection.First();
+			foreach (var pick in aramPicks)
+			{
+				if (aramBenchIds.Contains(pick.Value<int>()))
+				{
+					return pick.Value<int>();
+				}
+			}
+			return 0;
 		}
 
 		//Get the champion benched (their id) in aram
-		private int[] GetAramBenchIds()
+		private List<int> GetAramBenchIds()
 		{
-			return sessionInfo["benchChampions"].Select(x => int.Parse(x["championId"].ToString())).ToArray();
+			return sessionInfo["benchChampions"].Select(x => int.Parse(x["championId"].ToString())).ToList();
 		}
 
 		//Get the champion pick for blind or draft game, if any
