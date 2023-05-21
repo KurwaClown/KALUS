@@ -136,8 +136,16 @@ namespace KurwApp.Modules
 		{
 			JArray currentChampionSkins = await Client_Request.GetCurrentChampionSkins();
 
-			//Select all current champion unlocked skins
-			return currentChampionSkins.Where(j => (bool)j["unlocked"]).Select(j => (int)j["id"]).ToArray();
+			var availableSkinsId = currentChampionSkins.Where(skin => skin.Value<bool>("unlocked"))
+														.Select(skin => skin.Value<int>("id"));
+			if ((bool)GetPreference("randomSkin.addChromas"))
+			{
+				var availableChromasId = currentChampionSkins.SelectMany(skin => skin["childSkins"]
+																		 .Where(childSkin => childSkin.Value<bool>("unlocked"))
+																			.Select(childSkin => childSkin.Value<int>("id")));
+				return availableSkinsId.Concat(availableChromasId).ToArray();
+			};
+			return availableSkinsId.ToArray();
 		}
 
 		//Pick a random skin

@@ -81,7 +81,7 @@
                         </GroupBox>
                         <GroupBox Height="100" Header="Random Skin">
                             <StackPanel x:Name="randomSkinPreferences">
-                                <CheckBox x:Name="addChromas" Content="Use random chromas" Height="15" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="randomSkin.addChromas" />
+                                <CheckBox x:Name="addChromas" Content="Add chroma skins to randomizer" Height="15" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="randomSkin.addChromas" />
                                 <CheckBox x:Name="randomOnPick" Content="Randomize skin on champion pick " Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="randomSkin.randomOnPick"/>
                             </StackPanel>
                         </GroupBox>
