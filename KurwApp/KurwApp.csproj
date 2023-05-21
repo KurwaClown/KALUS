@@ -8,17 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\Gamemode Icon\ARAM\champselect.png" />
-    <None Remove="Assets\Gamemode Icon\ARAM\ingame.png" />
-    <None Remove="Assets\Gamemode Icon\Classic\champselect.png" />
-    <None Remove="Assets\Gamemode Icon\Classic\ingame.png" />
-    <None Remove="Assets\Gamemode Icon\default.png" />
-    <None Remove="Assets\Runes Icon\8000.png" />
-    <None Remove="Assets\Runes Icon\8100.png" />
-    <None Remove="Assets\Runes Icon\8200.png" />
-    <None Remove="Assets\Runes Icon\8300.png" />
-    <None Remove="Assets\Runes Icon\8400.png" />
-    <None Remove="Assets\Runes Icon\default.png" />
     <None Remove="Configurations\preferences.json" />
     <None Remove="Configurations\settings.json" />
     <None Remove="Picks\ARAM.json" />
@@ -26,42 +15,6 @@
     <None Remove="Picks\Blind.json" />
     <None Remove="Picks\Pick.json" />
     <None Remove="riotgames.pem" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Assets\Gamemode Icon\ARAM\champselect.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Gamemode Icon\ARAM\ingame.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Gamemode Icon\Classic\champselect.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Gamemode Icon\Classic\ingame.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Gamemode Icon\default.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Runes Icon\8000.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Runes Icon\8100.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Runes Icon\8200.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Runes Icon\8300.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Runes Icon\8400.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Runes Icon\default.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
