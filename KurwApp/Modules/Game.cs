@@ -104,8 +104,7 @@ namespace KurwApp.Modules
 						mainWindow.EnableRandomSkinButton(false);
 						return;
 				}
-				int sleepTime = champSelectFinalized ? 5000 : 1000;
-				Thread.Sleep(sleepTime);
+				Thread.Sleep(1000);
 			}
 		}
 
