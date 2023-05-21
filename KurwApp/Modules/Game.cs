@@ -154,19 +154,19 @@ namespace KurwApp.Modules
 			//Random skin on pick
 			if ((bool)Client_Control.GetPreference("randomSkin.randomOnPick")) Client_Control.PickRandomSkin();
 
-			if (Client_Control.GetSettingState("autoSummoner"))
-			{
-				await ChangeSummoner();
-			}
+			if (Client_Control.GetSettingState("autoSummoner")) await ChangeSpells(gameType == "ARAM");
+
 		}
 
-		private async Task ChangeSummoner()
+		private async Task ChangeSpells(bool isAram)
 		{
 			string positionForSpells = "";
 			if (gameType == "Draft") positionForSpells = position;
 			if (gameType == "ARAM") positionForSpells = "NONE";
 			var runesRecommendation = await Client_Control.GetSpellsRecommendationByPosition(championId, positionForSpells);
 			var spellsId = runesRecommendation.ToObject<int[]>();
+
+			if (isAram && !spellsId.Contains(32)) spellsId[1] = 32;
 
 			Client_Control.SetSummonerSpells(spellsId);
 		}
@@ -191,7 +191,7 @@ namespace KurwApp.Modules
 
 					if (Client_Control.GetSettingState("autoSummoner"))
 					{
-						await ChangeSummoner();
+						await ChangeSpells(true);
 					}
 				}
 			}
@@ -208,7 +208,7 @@ namespace KurwApp.Modules
 
 				if (Client_Control.GetSettingState("autoSummoner"))
 				{
-					await ChangeSummoner();
+					await ChangeSpells(true);
 				}
 			}
 		}
