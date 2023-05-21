@@ -299,22 +299,20 @@ namespace KurwApp
 			void setRadioByPreference(StackPanel stack, string token)
 			{
 				stack.Children.OfType<RadioButton>()
-					.Where(child => child.Tag.ToString() == preferences[token]["userPreference"].ToString()).First().IsChecked = true;
-				var comboboxes = stack.Children.OfType<ComboBox>();
-				if (comboboxes.Any())
-				{
-					comboboxes.First().SelectedIndex = comboboxes.First().IsEnabled ? (int)preferences[token]["OTLTimeIndex"] : -1;
-				}
+					.Where(child => child.Tag.ToString() == preferences.SelectToken(token).ToString()).First().IsChecked = true;
+
 			}
 
 			Dispatcher.Invoke(() =>
 			{
-				setRadioByPreference(picksPreferences, "picks");
-				setRadioByPreference(bansPreferences, "bans");
-				setRadioByPreference(noAvailablePreferences, "noPicks");
-				setRadioByPreference(onSelectionPreferences, "selections");
+				setRadioByPreference(picksPreferences, "picks.userPreference");
+				setRadioByPreference(bansPreferences, "bans.userPreference");
+				setRadioByPreference(noAvailablePreferences, "noPicks.userPreference");
+				setRadioByPreference(onSelectionPreferences, "selections.userPreference");
 
-				if (stillAutoPickOTL.IsEnabled) { stillAutoPickOTL.IsChecked = (bool)preferences["selections"]["OTL"]; }
+
+
+				stillAutoPickOTL.IsChecked = stillAutoPickOTL.IsEnabled && (bool)preferences["selections"]["OTL"];
 
 				notSetPageAsActive.IsChecked = (bool)preferences["runes"]["notSetActive"];
 				overridePage.IsChecked = (bool)preferences["runes"]["overridePage"];
