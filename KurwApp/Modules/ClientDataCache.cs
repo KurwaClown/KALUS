@@ -66,8 +66,10 @@ namespace KurwApp.Modules
 				//Get the page containing the name Kurwapp
 				var kurwappRunes = pages.Where(page => page["name"].ToString().ToLower().Contains("kurwapp"));
 
-				//Assign the page id if there is a page else return 0
-				appRunePageId = kurwappRunes.Select(page => (int)page["id"]).First().ToString();
+
+				//Assign the page id if there is any
+				if (kurwappRunes.Any())appRunePageId = kurwappRunes.Select(page => (int)page["id"]).First().ToString();
+
 			}
 
 			return appRunePageId;

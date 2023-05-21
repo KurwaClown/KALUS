@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -280,8 +281,20 @@ namespace KurwApp.Modules
 			{
 				await Client_Request.CreateNewRunePage(recommendedRunes);
 			}
-
+			else if ((bool)GetPreference("runes.overridePage"))
+			{
+				await EditOldestRunePage(recommendedRunes);
+			}
 		}
+
+		private static async Task EditOldestRunePage(string newRunesPage)
+		{
+			var runesPages = await Client_Request.GetRunePages();
+			string oldestPageId = runesPages.OrderBy(page => page["lastModified"].ToString()).First()["id"].ToString();
+
+			await Client_Request.EditRunePage(oldestPageId, newRunesPage);
+		}
+
 		#endregion Runes
 
 		internal static async void SetSummonerSpells(JArray recommendedRunes)
