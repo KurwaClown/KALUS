@@ -182,17 +182,10 @@ namespace KurwApp.Modules
 					await Client_Request.AramBenchSwap(aramPick);
 					await PostPickAction();
 					championId = await Client_Request.GetCurrentChampionId();
-					if (Client_Control.GetSettingState("runesSwap") && !isRunePageChanged)
-					{
 
-						await AutoRuneSwap();
+					if (Client_Control.GetSettingState("runesSwap") && !isRunePageChanged)await AutoRuneSwap();
 
-					}
-
-					if (Client_Control.GetSettingState("autoSummoner"))
-					{
-						await ChangeSpells(true);
-					}
+					if (Client_Control.GetSettingState("autoSummoner")) await ChangeSpells(true);
 				}
 			}
 			var currentChampionId = await Client_Request.GetCurrentChampionId();
