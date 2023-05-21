@@ -75,7 +75,7 @@
                     <StackPanel x:Name="leftPanel" Grid.RowSpan="3">
                         <GroupBox Height="100" Header="Runes">
                             <StackPanel x:Name="runesPreferences">
-                                <CheckBox x:Name="setPageAsActive" Content="Set page as active" Height="15" SnapsToDevicePixels="True" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="runes.setActive"/>
+                                <CheckBox x:Name="notSetPageAsActive" Content="Do not set page as active" Height="15" SnapsToDevicePixels="True" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="runes.notSetActive"/>
                                 <CheckBox x:Name="overridePage" Content="Erase oldest page when no slot available" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="runes.overridePage"/>
                             </StackPanel>
                         </GroupBox>

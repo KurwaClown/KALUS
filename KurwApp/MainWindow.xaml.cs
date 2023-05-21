@@ -323,7 +323,7 @@ namespace KurwApp
 
 				if (stillAutoPickOTL.IsEnabled) { stillAutoPickOTL.IsChecked = (bool)preferences["selections"]["OTL"]; }
 
-				setPageAsActive.IsChecked = (bool)preferences["runes"]["setActive"];
+				notSetPageAsActive.IsChecked = (bool)preferences["runes"]["notSetActive"];
 				overridePage.IsChecked = (bool)preferences["runes"]["overridePage"];
 
 				addChromas.IsChecked = (bool)preferences["randomSkin"]["addChromas"];

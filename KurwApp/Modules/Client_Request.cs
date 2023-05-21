@@ -113,9 +113,9 @@ namespace KurwApp
 			return runePage;
 		}
 
-		internal static async Task<string> SetActiveRunePage(int runesPageId)
+		internal static async Task<string> SetActiveRunePage(string runesPageId)
 		{
-			var response = await RequestQueue.Request(HttpMethod.Post, "/lol-perks/v1/currentpage", runesPageId.ToString());
+			var response = await RequestQueue.Request(HttpMethod.Put, "/lol-perks/v1/currentpage", runesPageId.ToString());
 			return response;
 		}
 

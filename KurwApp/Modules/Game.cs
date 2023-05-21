@@ -149,8 +149,7 @@ namespace KurwApp.Modules
 			//Set runes if the the auto rune is toggled
 			if (Client_Control.GetSettingState("runesSwap") && !isRunePageChanged)
 			{
-				await Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
-				isRunePageChanged = true;
+				await AutoRuneSwap();
 			}
 
 			//Random skin on pick
@@ -185,8 +184,9 @@ namespace KurwApp.Modules
 					championId = await Client_Request.GetCurrentChampionId();
 					if (Client_Control.GetSettingState("runesSwap") && !isRunePageChanged)
 					{
-						Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
-						isRunePageChanged = true;
+
+						await AutoRuneSwap();
+
 					}
 
 					if (Client_Control.GetSettingState("autoSummoner"))
@@ -203,8 +203,7 @@ namespace KurwApp.Modules
 				await PostPickAction();
 				if (Client_Control.GetSettingState("runesSwap"))
 				{
-					Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
-					isRunePageChanged = true;
+					await AutoRuneSwap();
 				}
 
 				if (Client_Control.GetSettingState("autoSummoner"))
@@ -212,6 +211,16 @@ namespace KurwApp.Modules
 					await ChangeSummoner();
 				}
 			}
+		}
+
+		private async Task AutoRuneSwap()
+		{
+			bool isSetActive = (bool)Client_Control.GetPreference("runes.notSetActive");
+			string activeRunesPage = isSetActive ? (await Client_Request.GetActiveRunePage())["id"].ToString() : "0";
+			await Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
+			isRunePageChanged = true;
+
+			if (isSetActive) await Client_Request.SetActiveRunePage(activeRunesPage);
 		}
 
 		//Act on pick phase

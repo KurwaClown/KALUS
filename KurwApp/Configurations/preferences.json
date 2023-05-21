@@ -1,6 +1,6 @@
 {
   "runes": {
-    "setActive": false,
+    "notSetActive": false,
     "overridePage": false
   },
   "randomSkin": {
