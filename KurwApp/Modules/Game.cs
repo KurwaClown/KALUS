@@ -194,15 +194,9 @@ namespace KurwApp.Modules
 			{
 				championId = currentChampionId;
 				await PostPickAction();
-				if (Client_Control.GetSettingState("runesSwap"))
-				{
-					await AutoRuneSwap();
-				}
+				if (Client_Control.GetSettingState("runesSwap")) await AutoRuneSwap();
 
-				if (Client_Control.GetSettingState("autoSummoner"))
-				{
-					await ChangeSpells(true);
-				}
+				if (Client_Control.GetSettingState("autoSummoner")) await ChangeSpells(true);
 			}
 		}
 
