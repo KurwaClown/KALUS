@@ -166,7 +166,8 @@ namespace KurwApp.Modules
 			if (gameType == "Draft") positionForSpells = position;
 			if (gameType == "ARAM") positionForSpells = "NONE";
 			var runesRecommendation = await Client_Control.GetSpellsRecommendationByPosition(championId, positionForSpells);
-			var spellsId = JArray.Parse(runesRecommendation.ToString());
+			var spellsId = runesRecommendation.ToObject<int[]>();
+
 			Client_Control.SetSummonerSpells(spellsId);
 		}
 

@@ -65,9 +65,9 @@ namespace KurwApp
 			return response;
 		}
 
-		internal static async Task<string> ChangeSummonerSpells(int spell1Id, int spell2Id)
+		internal static async Task<string> ChangeSummonerSpells(int[] recommendedSpells)
 		{
-			var response = await RequestQueue.Request(HttpMethod.Patch, "/lol-champ-select/v1/session/my-selection", $"{{\"spell1Id\": {spell1Id}, \"spell2Id\" : {spell2Id}}}");
+			var response = await RequestQueue.Request(HttpMethod.Patch, "/lol-champ-select/v1/session/my-selection", $"{{\"spell1Id\": {recommendedSpells[0]}, \"spell2Id\" : {recommendedSpells[1]}}}");
 			return response;
 		}
 

@@ -88,14 +88,14 @@
                         <GroupBox Height="100" Header="Summoner Spells">
                             <StackPanel x:Name="summonerPreferences">
                                 <CheckBox x:Name="alwaysSnowball" Content="Always have snowball in aram" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="summoners.alwaysSnowball" />
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                                     <Label Content="Flash position :" HorizontalAlignment="Left" Margin="-3,0,0,0" VerticalAlignment="Center"/>
                                     <StackPanel x:Name="flashPosition" Width="100">
                                         <StackPanel Orientation="Horizontal">
-                                            <RadioButton Content="Left" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="1"/>
-                                            <RadioButton Content="Right" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="2" Margin="5,0,0,0"/>
+                                            <RadioButton Content="Left" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="0"/>
+                                            <RadioButton Content="Right" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="1" Margin="5,0,0,0"/>
                                         </StackPanel>
-                                        <RadioButton Content="Indifferent" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="0"/>
+                                        <RadioButton Content="Indifferent" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="2"/>
                                     </StackPanel>
                                 </StackPanel>
                             </StackPanel>

@@ -305,19 +305,18 @@ namespace KurwApp.Modules
 
 		#endregion Runes
 
-		internal static async void SetSummonerSpells(JArray recommendedRunes)
+		internal static async void SetSummonerSpells(int[] recommendedSpells)
 		{
+			int flashPosition = (int)GetPreference("summoners.flashPosition");
 
-			int spell1Id = int.Parse(recommendedRunes[0].ToString());
-			int spell2Id = int.Parse(recommendedRunes[1].ToString());
-
-			if ((bool)GetPreference("summoners.rightSideFlash") && spell1Id == 4)
+			if (flashPosition != 2 && recommendedSpells.Contains(4))
 			{
-				spell1Id = spell2Id;
-				spell2Id = 4;
+				if(Array.IndexOf(recommendedSpells, 4) != flashPosition) {
+					(recommendedSpells[1], recommendedSpells[0]) = (recommendedSpells[0], recommendedSpells[1]);
+				}
 			}
 
-			await Client_Request.ChangeSummonerSpells(spell1Id, spell2Id);
+			await Client_Request.ChangeSummonerSpells(recommendedSpells);
 		}
 
 		internal static async Task<Tuple<byte[], byte[]>?> GetRunesIcons()
