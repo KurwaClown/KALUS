@@ -265,10 +265,7 @@ namespace KurwApp.Modules
 
 			foreach (var pick in aramPicks)
 			{
-				if (aramBenchIds.Contains(pick.Value<int>()))
-				{
-					return pick.Value<int>();
-				}
+				if (aramBenchIds.Contains(pick.Value<int>())) return pick.Value<int>();
 			}
 			return 0;
 		}
