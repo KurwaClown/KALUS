@@ -87,33 +87,42 @@
                         </GroupBox>
                         <GroupBox Height="100" Header="Summoner Spells">
                             <StackPanel x:Name="summonerPreferences">
-                                <CheckBox x:Name="rightSideFlash" Content="Flash to right spell" Height="15" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="summoners.rightSideFlash" />
                                 <CheckBox x:Name="alwaysSnowball" Content="Always have snowball in aram" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="summoners.alwaysSnowball" />
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Flash position :" HorizontalAlignment="Left" Margin="-3,0,0,0" VerticalAlignment="Center"/>
+                                    <StackPanel x:Name="flashPosition" Width="100">
+                                        <StackPanel Orientation="Horizontal">
+                                            <RadioButton Content="Left" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="1"/>
+                                            <RadioButton Content="Right" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="2" Margin="5,0,0,0"/>
+                                        </StackPanel>
+                                        <RadioButton Content="Indifferent" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="0"/>
+                                    </StackPanel>
+                                </StackPanel>
                             </StackPanel>
                         </GroupBox>
                     </StackPanel>
                     <StackPanel x:Name="middlePanel" Grid.Column="1" Grid.RowSpan="3" Margin="5,0,5,0">
                         <GroupBox  Header="Picks" MinHeight="85">
                             <StackPanel x:Name="picksPreferences" UseLayoutRounding="False" VerticalAlignment="Top" Tag="picks">
-                                <RadioButton Content="Instant" GroupName="picks" Height="15"  Tag="0" Checked="OnControlInteraction"/>
-                                <RadioButton Content="Select and Wait" GroupName="picks" Height="15" Margin="0,5,0,0" Tag="1" Checked="OnControlInteraction"/>
+                                <RadioButton Content="Instant" GroupName="picks.userPreference" Height="15"  Tag="0" Checked="OnControlInteraction"/>
+                                <RadioButton Content="Select and Wait" GroupName="picks.userPreference" Height="15" Margin="0,5,0,0" Tag="1" Checked="OnControlInteraction"/>
 
-                                <RadioButton x:Name="pickOTL" Content="On time left" GroupName="picks" VerticalAlignment="Center" Tag="2" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction"/>
+                                <RadioButton x:Name="pickOTL" Content="On time left" GroupName="picks.userPreference" VerticalAlignment="Center" Tag="2" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction"/>
                                 <ComboBox x:Name="picksTimeLeft" HorizontalAlignment="Left" IsEnabled="{Binding IsChecked, ElementName=pickOTL}" IsEnabledChanged="IsEnabledModified" SelectionChanged="OTLChange" Margin="20,5,0,0" Tag="picks.OTLTimeIndex"/>
                             </StackPanel>
                         </GroupBox>
                         <GroupBox Header="No Available Picks" MinHeight="85">
                             <StackPanel x:Name="noAvailablePreferences" Tag="noPicks">
-                                <RadioButton Tag="0" GroupName="noAvailablePick" Content="Select random from current role" Checked="OnControlInteraction" Height="15"/>
-                                <RadioButton Tag="1" GroupName="noAvailablePick" Content="Select random from any role" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
-                                <RadioButton Tag="2" GroupName="noAvailablePick" Content="Do nothing (dodge)"  Checked="OnControlInteraction" Height="15" Margin="0,5,0,5"/>
+                                <RadioButton Tag="0" GroupName="noPicks.userPreference" Content="Select random from current role" Checked="OnControlInteraction" Height="15"/>
+                                <RadioButton Tag="1" GroupName="noPicks.userPreference" Content="Select random from any role" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
+                                <RadioButton Tag="2" GroupName="noPicks.userPreference" Content="Do nothing (dodge)"  Checked="OnControlInteraction" Height="15" Margin="0,5,0,5"/>
                             </StackPanel>
                         </GroupBox>
                         <GroupBox Height="100" Header="On Champion Selection" MinHeight="85">
                             <StackPanel x:Name="onSelectionPreferences" Tag="selections">
                                 <TextBlock TextWrapping="Wrap" Text="Behavior on champion selection before pick phase" FontSize="9" HorizontalAlignment="Left" Margin="5,0,0,0"/>
-                                <RadioButton Tag="0" GroupName="onSelection" Content="Do nothing" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
-                                <RadioButton Tag="1" x:Name="stillAutoPick" GroupName="onSelection" Content="Still auto pick" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
+                                <RadioButton Tag="0" GroupName="selections.userPreference" Content="Do nothing" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
+                                <RadioButton Tag="1" x:Name="stillAutoPick" GroupName="selections.userPreference" Content="Still auto pick" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
                                 <Grid x:Name="checkboxGrid" Height="20" Margin="0,3,0,0" IsEnabled="{Binding IsChecked, ElementName=stillAutoPick}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition/>
@@ -128,9 +137,9 @@
                     <StackPanel x:Name="rightPanel" Margin="0,0,12,23" Grid.Column="2">
                         <GroupBox Header="Bans">
                             <StackPanel x:Name="bansPreferences" UseLayoutRounding="False" VerticalAlignment="Center" Margin="0,0,-2,0" Tag="bans">
-                                <RadioButton Tag="0" Content="Instant" GroupName="bans" Checked="OnControlInteraction" Height="15"/>
-                                <RadioButton Tag="1" Content="Select and Wait" GroupName="bans" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
-                                <RadioButton x:Name="bansOTL" Tag="2" Content="On time left" GroupName="bans" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
+                                <RadioButton Tag="0" Content="Instant" GroupName="bans.userPreference" Checked="OnControlInteraction" Height="15"/>
+                                <RadioButton Tag="1" Content="Select and Wait" GroupName="bans.userPreference" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
+                                <RadioButton x:Name="bansOTL" Tag="2" Content="On time left" GroupName="bans.userPreference" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
                                 <ComboBox x:Name="bansTimeLeft" HorizontalAlignment="Left" Margin="20,5,0,0" IsEnabled="{Binding IsChecked, ElementName=bansOTL}" IsEnabledChanged="IsEnabledModified"  SelectionChanged="OTLChange" Tag="bans.OTLTimeIndex"/>
                             </StackPanel>
                         </GroupBox>

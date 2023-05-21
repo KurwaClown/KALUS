@@ -8,7 +8,7 @@
     "randomOnPick": false
   },
   "summoners": {
-    "rightSideFlash": false,
+    "flashPosition": 0,
     "alwaysSnowball": false
   },
   "picks": {

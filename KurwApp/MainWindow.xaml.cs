@@ -298,8 +298,24 @@ namespace KurwApp
 
 			void setRadioByPreference(StackPanel stack, string token)
 			{
-				stack.Children.OfType<RadioButton>()
-					.Where(child => child.Tag.ToString() == preferences.SelectToken(token).ToString()).First().IsChecked = true;
+				var preferences = JObject.Parse(File.ReadAllText("Configurations/preferences.json"));
+				var radioButtons = stack.Children.OfType<RadioButton>();
+				var radioButtonToCheck = radioButtons.FirstOrDefault(rb => preferences.SelectToken(token).ToString() == rb.Tag.ToString());
+				Debug.WriteLine(radioButtonToCheck);
+				if (radioButtonToCheck != null)
+				{
+					radioButtonToCheck.IsChecked = true;
+					return;
+				}
+
+				// Traverse the visual tree to check nested StackPanels
+				foreach (var child in stack.Children)
+				{
+					if (child is StackPanel nestedPanel)
+					{
+						setRadioByPreference(nestedPanel, token);
+					}
+				}
 
 			}
 
@@ -309,7 +325,7 @@ namespace KurwApp
 				setRadioByPreference(bansPreferences, "bans.userPreference");
 				setRadioByPreference(noAvailablePreferences, "noPicks.userPreference");
 				setRadioByPreference(onSelectionPreferences, "selections.userPreference");
-
+				setRadioByPreference(flashPosition, "summoners.flashPosition");
 
 
 				stillAutoPickOTL.IsChecked = stillAutoPickOTL.IsEnabled && (bool)preferences["selections"]["OTL"];
