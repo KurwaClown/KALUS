@@ -301,7 +301,6 @@ namespace KurwApp
 				var preferences = JObject.Parse(File.ReadAllText("Configurations/preferences.json"));
 				var radioButtons = stack.Children.OfType<RadioButton>();
 				var radioButtonToCheck = radioButtons.FirstOrDefault(rb => preferences.SelectToken(token).ToString() == rb.Tag.ToString());
-				Debug.WriteLine(radioButtonToCheck);
 				if (radioButtonToCheck != null)
 				{
 					radioButtonToCheck.IsChecked = true;
