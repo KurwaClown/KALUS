@@ -92,7 +92,8 @@ namespace KurwApp.Modules
 							break;
 						//On champion selection : start and await the end of the champ select handler
 						case "ChampSelect":
-							Game champSelect = new(mainWindow);
+							Game? champSelect = await Game.CreateGame(mainWindow);
+							if (champSelect == null) break;
 							await champSelect.ChampSelectControl();
 							break;
 						case "GameStart":
