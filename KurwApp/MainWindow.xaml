@@ -122,15 +122,8 @@
                             <StackPanel x:Name="onSelectionPreferences" Tag="selections">
                                 <TextBlock TextWrapping="Wrap" Text="Behavior on champion selection before pick phase" FontSize="9" HorizontalAlignment="Left" Margin="5,0,0,0"/>
                                 <RadioButton Tag="0" GroupName="selections.userPreference" Content="Do nothing" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
-                                <RadioButton Tag="1" x:Name="stillAutoPick" GroupName="selections.userPreference" Content="Still auto pick" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
-                                <Grid x:Name="checkboxGrid" Height="20" Margin="0,3,0,0" IsEnabled="{Binding IsChecked, ElementName=stillAutoPick}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <CheckBox x:Name="stillAutoPickOTL" Content="On time left" Tag="selections.OTL"  Grid.ColumnSpan="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction"/>
-                                    <ComboBox x:Name="stillPickTimeLeft" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" IsEnabled="{Binding IsChecked, ElementName=stillAutoPickOTL}" IsEnabledChanged="IsEnabledModified" SelectionChanged="OTLChange" Tag="selections.OTLTimeIndex"/>
-                                </Grid>
+                                <RadioButton Tag="1" x:Name="stillAutoPick" GroupName="selections.userPreference" Content="Still use normal auto pick" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
+                                <RadioButton Tag="2" x:Name="pickSelection" GroupName="selections.userPreference" Content="Use selection for auto pick" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
                             </StackPanel>
                         </GroupBox>
                     </StackPanel>

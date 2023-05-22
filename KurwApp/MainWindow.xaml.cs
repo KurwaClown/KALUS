@@ -327,8 +327,6 @@ namespace KurwApp
 				setRadioByPreference(flashPosition, "summoners.flashPosition");
 
 
-				stillAutoPickOTL.IsChecked = stillAutoPickOTL.IsEnabled && (bool)preferences["selections"]["OTL"];
-
 				notSetPageAsActive.IsChecked = (bool)preferences["runes"]["notSetActive"];
 				overridePage.IsChecked = (bool)preferences["runes"]["overridePage"];
 
@@ -368,7 +366,6 @@ namespace KurwApp
 			};
 			populateComboBox(30, picksTimeLeft);
 			populateComboBox(30, bansTimeLeft);
-			populateComboBox(30, stillPickTimeLeft);
 
 			SetSettings();
 			SetPreferences();

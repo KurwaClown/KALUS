@@ -11,7 +11,7 @@ namespace KurwApp.Modules
 {
 	public class Game
 	{
-		private string cellId;
+		private int cellId;
 		private string position;
 		private string? gameType = null;
 		private int championId = 0;
@@ -35,8 +35,8 @@ namespace KurwApp.Modules
 		//Setting the player position and cell position id
 		internal void SetRoleAndCellId()
 		{
-			cellId = sessionInfo["localPlayerCellId"].ToString();
-			position = sessionInfo["myTeam"].Where(player => player["cellId"].ToString() == cellId).Select(player => player["assignedPosition"].ToString()).First().ToUpper();
+			cellId = sessionInfo.Value<int>("localPlayerCellId");
+			position = sessionInfo["myTeam"].Where(player => player.Value<int>("cellId") == cellId).Select(player => player["assignedPosition"].ToString()).First().ToUpper();
 		}
 
 		//Set the game type (draft, blind or aram)
@@ -241,6 +241,25 @@ namespace KurwApp.Modules
 				if (type == "pick" && Client_Control.GetSettingState("championPick"))
 				{
 					championId = await GetChampionPick();
+					Debug.WriteLine(championId);
+					int championSelectionId = actions.First(action => action.Value<bool>("isInProgress") && action.Value<int>("actorCellId") == cellId)
+														.Value<int>("championId");
+					if (championSelectionId != championId && championSelectionId != 0)
+					{
+						switch (Client_Control.GetPreference("selections.userPreference").Value<int>())
+						{
+							default:
+								break;
+							case 0:
+								return;
+							case 1:
+								break;
+							case 2:
+								championId = championSelectionId;
+								break;
+						}
+					}
+					Debug.WriteLine(championId + " 2");
 
 					if (championId == 0)
 					{
@@ -254,6 +273,7 @@ namespace KurwApp.Modules
 								return;
 						}
 					}
+					Debug.WriteLine(championId + " 3");
 					await SelectionAction(actionId, championId, type);
 					hasPicked = true;
 
@@ -372,6 +392,7 @@ namespace KurwApp.Modules
 																	.ToArray();
 
 				var availablesChampionsForPosition = allChampionsByPosition.Intersect(availableChampions).ToArray();
+
 				return availablesChampionsForPosition[new Random().Next(maxValue:availablesChampionsForPosition.Length)];
 			}
 
@@ -400,7 +421,7 @@ namespace KurwApp.Modules
 		//Get if it's the current player turn and output the action id and type of action
 		internal bool IsCurrentPlayerTurn(IEnumerable<JObject> actions, out int actionId, out string type)
 		{
-			var currentPlayerAction = actions.Where(action => action["actorCellId"].ToString() == cellId && (bool)action["isInProgress"] == true)
+			var currentPlayerAction = actions.Where(action => action.Value<int>("actorCellId") == cellId && (bool)action["isInProgress"] == true)
 				.Select(action => action).ToArray();
 
 			bool isCurrentPlayerTurn = currentPlayerAction.Any();
