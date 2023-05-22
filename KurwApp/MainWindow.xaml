@@ -115,7 +115,7 @@
                             <StackPanel x:Name="noAvailablePreferences" Tag="noPicks">
                                 <RadioButton Tag="0" GroupName="noPicks.userPreference" Content="Select random from current role" Checked="OnControlInteraction" Height="15"/>
                                 <RadioButton Tag="1" GroupName="noPicks.userPreference" Content="Select random from any role" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
-                                <RadioButton Tag="2" GroupName="noPicks.userPreference" Content="Do nothing (dodge)"  Checked="OnControlInteraction" Height="15" Margin="0,5,0,5"/>
+                                <RadioButton Tag="2" GroupName="noPicks.userPreference" Content="Do nothing"  Checked="OnControlInteraction" Height="15" Margin="0,5,0,5"/>
                             </StackPanel>
                         </GroupBox>
                         <GroupBox Height="100" Header="On Champion Selection" MinHeight="85">

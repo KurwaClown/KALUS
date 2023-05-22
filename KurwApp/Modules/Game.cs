@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -14,6 +15,7 @@ namespace KurwApp.Modules
 		private string position;
 		private string? gameType = null;
 		private int championId = 0;
+		public bool isChampionRandom = false;
 		private JObject? sessionInfo;
 
 		private Timer? delayedPick;
@@ -239,8 +241,19 @@ namespace KurwApp.Modules
 				if (type == "pick" && Client_Control.GetSettingState("championPick"))
 				{
 					championId = GetChampionPick();
-					if (championId == 0) return;
 
+					if (championId == 0)
+					{
+						switch (Client_Control.GetPreference("noPicks.userPreference").Value<int>())
+						{
+							default:
+								championId = await GetRandomChampionPick();
+								isChampionRandom = true;
+								break;
+							case 2:
+								return;
+						}
+					}
 					await SelectionAction(actionId, championId, type);
 					hasPicked = true;
 
@@ -255,6 +268,7 @@ namespace KurwApp.Modules
 			await Client_Request.SelectChampion(actionId, championId);
 			if (type == "pick")
 			{
+				if (isChampionRandom) return;
 				await ExecutePickBanPreference("picks", actionId, type);
 			}
 
@@ -340,6 +354,29 @@ namespace KurwApp.Modules
 
 			if (!availablePicks.Any()) return 0;
 			return availablePicks.First();
+		}
+
+		private async Task<int> GetRandomChampionPick()
+		{
+			int noPicksPreferences = Client_Control.GetPreference("noPicks.userPreference").Value<int>();
+
+			var availableChampions = await Client_Request.GetAvailableChampionsPick();
+
+			//Random pick by position
+			if (noPicksPreferences == 0) {
+				var allChampionsByPosition = (await ClientDataCache.GetChampionsRunesRecommendation())
+																	.Where(item => item.Value<JArray>("runeRecommendations")
+																		.Any(rune => rune.Value<string>("position") == position && rune.Value<bool>("isDefaultPosition")))
+																	.Select(item => item.Value<int>("championId"))
+																	.ToArray();
+
+				var availablesChampionsForPosition = allChampionsByPosition.Intersect(availableChampions).ToArray();
+				return availablesChampionsForPosition[new Random().Next(maxValue:availablesChampionsForPosition.Length)];
+			}
+
+			//Random pick (no position)
+			return availableChampions[new Random().Next(maxValue:availableChampions.Length)];
+
 		}
 
 		//Get the champion ban for draft game, if any

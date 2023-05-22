@@ -1,7 +1,10 @@
 ﻿using KurwApp.Modules;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Data;
 using System.Net.Http;
+using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 
 namespace KurwApp
@@ -63,6 +66,14 @@ namespace KurwApp
 		{
 			var response = await RequestQueue.Request(HttpMethod.Patch, "/lol-champ-select/v1/session/my-selection", $"{{\"selectedSkinId\": {id}}}");
 			return response;
+		}
+
+		internal static async Task<int[]> GetAvailableChampionsPick()
+		{
+			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-champ-select/v1/pickable-champion-ids");
+			var availablePicks = JsonConvert.DeserializeObject<int[]>(response);
+			return availablePicks;
+
 		}
 
 		internal static async Task<string> ChangeSummonerSpells(int[] recommendedSpells)
