@@ -32,7 +32,7 @@ namespace KurwApp.Modules
 		internal void SetRoleAndCellId()
 		{
 			cellId = sessionInfo.Value<int>("localPlayerCellId");
-			if(isDraft)position = sessionInfo["myTeam"].Where(player => player.Value<int>("cellId") == cellId).Select(player => player["assignedPosition"].ToString()).First().ToUpper();
+			if (isDraft) position = sessionInfo["myTeam"].Where(player => player.Value<int>("cellId") == cellId).Select(player => player["assignedPosition"].ToString()).First().ToUpper();
 		}
 
 		//Handler of the champion selections
