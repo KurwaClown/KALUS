@@ -12,7 +12,7 @@ namespace KurwApp.Modules
 	public class Game
 	{
 		private int cellId;
-		private string position;
+		private string position = "NONE";
 		private string? gameType = null;
 		private int championId = 0;
 		public bool isChampionRandom = false;
@@ -37,6 +37,7 @@ namespace KurwApp.Modules
 		{
 			cellId = sessionInfo.Value<int>("localPlayerCellId");
 			position = sessionInfo["myTeam"].Where(player => player.Value<int>("cellId") == cellId).Select(player => player["assignedPosition"].ToString()).First().ToUpper();
+			if (position == "") position = "NONE";
 		}
 
 		//Set the game type (draft, blind or aram)
@@ -385,6 +386,7 @@ namespace KurwApp.Modules
 
 			//Random pick by position
 			if (noPicksPreferences == 0) {
+				Debug.WriteLine(position);
 				var allChampionsByPosition = (await ClientDataCache.GetChampionsRunesRecommendation())
 																	.Where(item => item.Value<JArray>("runeRecommendations")
 																		.Any(rune => rune.Value<string>("position") == position && rune.Value<bool>("isDefaultPosition")))
