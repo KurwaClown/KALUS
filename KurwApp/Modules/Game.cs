@@ -16,6 +16,9 @@ namespace KurwApp.Modules
 		private int championId = 0;
 		private JObject? sessionInfo;
 
+		private Timer? delayedPick;
+		private string delayedPickType = string.Empty;
+
 		private bool isRunePageChanged = false;
 		private bool hasPicked = false;
 		private bool champSelectFinalized = false;
@@ -230,7 +233,7 @@ namespace KurwApp.Modules
 				{
 					int banPick = await GetChampionBan();
 					if (banPick == 0) return;
-					await SelectionAction(actionId, banPick);
+					await SelectionAction(actionId, banPick, type);
 				}
 
 				if (type == "pick" && Client_Control.GetSettingState("championPick"))
@@ -238,20 +241,66 @@ namespace KurwApp.Modules
 					championId = GetChampionPick();
 					if (championId == 0) return;
 
-					await SelectionAction(actionId, championId);
+					await SelectionAction(actionId, championId, type);
 					hasPicked = true;
+
 				}
 			}
 		}
 
-		private static async Task SelectionAction(int actionId, int championId)
+		private async Task SelectionAction(int actionId, int championId, string type)
 		{
-			if (championId == 0) return;
+			if (championId == 0 || delayedPickType == type) return;
 
 			await Client_Request.SelectChampion(actionId, championId);
+			if (type == "pick")
+			{
+				await ExecutePickBanPreference("picks", actionId, type);
+			}
+
+			if (type == "ban")
+			{
+				await ExecutePickBanPreference("bans", actionId, type);
+			}
+
+		}
+
+		private async Task ExecutePickBanPreference(string preferenceToken, int actionId, string pickType)
+		{
+			int preference = Client_Control.GetPreference($"{preferenceToken}.userPreference").Value<int>();
+			if (preference == 1) return;
+			if (preference == 2)
+			{
+				//Return if the delayed pick has already been set to the current action type
+				if (delayedPick != null && delayedPickType == pickType) return;
+
+				//+1 to prevent index 0 (5 seconds) to be 0 seconds
+				int otlTimeIndex = Client_Control.GetPreference($"{preferenceToken}.OTLTimeIndex").Value<int>() + 1;
+				int sessionTimer = sessionInfo.SelectToken("timer.adjustedTimeLeftInPhase").Value<int>();
+
+				delayedPick = new Timer(ConfirmActionDelayed, actionId, TimeSpan.FromSeconds(sessionTimer / 1000 - (otlTimeIndex * 5)), TimeSpan.Zero);
+				delayedPickType = pickType;
+				return;
+			}
 			await Client_Request.ConfirmAction(actionId);
 		}
 
+		private async void ConfirmActionDelayed(object sender)
+		{
+			await Client_Request.ConfirmAction((int)sender);
+
+			CancelDelayedPick();
+		}
+
+		private void CancelDelayedPick()
+		{
+			if (delayedPick != null)
+			{
+				delayedPick.Dispose();
+				delayedPick = null;
+				delayedPickType = string.Empty;
+			}
+		}
 		//Get the pick the aram champion to pick if any
 		private int GetAramPick()
 		{
