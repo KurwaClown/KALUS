@@ -38,6 +38,7 @@ namespace KurwApp.Modules
 			var riotCert = certCollection[0];
 			HttpClientHandler handler = new()
 			{
+
 				ClientCertificateOptions = ClientCertificateOption.Manual,
 				SslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls11 | System.Security.Authentication.SslProtocols.Tls,
 				ServerCertificateCustomValidationCallback =
@@ -100,6 +101,7 @@ namespace KurwApp.Modules
 					Debug.WriteLine(response.StatusCode);
 					Debug.WriteLine(endpoint);
 				}
+				_httpClient.Dispose();
 				return responseString;
 			};
 
@@ -130,6 +132,7 @@ namespace KurwApp.Modules
 				var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, endpoint));
 				byte[] responseBytes = Array.Empty<byte>();
 				if (response.IsSuccessStatusCode) responseBytes = await response.Content.ReadAsByteArrayAsync();
+				_httpClient.Dispose();
 				return responseBytes;
 			};
 

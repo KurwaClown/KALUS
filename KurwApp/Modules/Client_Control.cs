@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -76,7 +74,6 @@ namespace KurwApp.Modules
 		//Is used as a worker thread for the app thread
 		internal static async void ClientPhase(MainWindow mainWindow)
 		{
-			RequestQueue.SetClient();
 			while (true)
 			{
 				//Only act if the authentication is set
@@ -126,7 +123,7 @@ namespace KurwApp.Modules
 		{
 			var settings = JObject.Parse(File.ReadAllText("Configurations/settings.json"));
 
-			return (bool)settings[settingName];
+			return settings.Value<bool>(settingName);
 		}
 
 
