@@ -35,10 +35,8 @@ namespace KurwApp.Modules
 			if (isDraft) position = sessionInfo["myTeam"].Where(player => player.Value<int>("cellId") == cellId).Select(player => player["assignedPosition"].ToString()).First().ToUpper();
 		}
 
-
-
 		//Handler of the champion selections
-		internal override async Task ChampSelectControl()
+		protected internal override async Task ChampSelectControl()
 		{
 			mainWindow.SetGamemodeName(gameType);
 			mainWindow.SetGameModeIcon(gameType);

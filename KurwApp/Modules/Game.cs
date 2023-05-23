@@ -32,7 +32,7 @@ namespace KurwApp.Modules
 		}
 
 		//Handler of the champion selections
-		internal abstract Task ChampSelectControl();
+		protected internal abstract Task ChampSelectControl();
 
 		//Act on finalization
 		protected abstract Task Finalization();

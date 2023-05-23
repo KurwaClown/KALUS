@@ -15,7 +15,7 @@ namespace KurwApp.Modules
 		}
 
 		//Handler of the champion selections
-		internal override async Task ChampSelectControl()
+		protected internal override async Task ChampSelectControl()
 		{
 			sessionInfo = await Client_Request.GetSessionInfo();
 			if (sessionInfo is null) return;
@@ -88,7 +88,7 @@ namespace KurwApp.Modules
 		}
 
 		//Get the champion benched (their id) in aram
-		protected List<int> GetAramBenchIds()
+		private List<int> GetAramBenchIds()
 		{
 			return sessionInfo["benchChampions"].Select(x => int.Parse(x["championId"].ToString())).ToList();
 		}
