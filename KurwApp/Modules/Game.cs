@@ -1,143 +1,47 @@
 ﻿using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace KurwApp.Modules
 {
-	public class Game
+	public abstract class Game
 	{
-		private int cellId;
-		private string position = "NONE";
-		private string? gameType = null;
-		private int championId = 0;
-		public bool isChampionRandom = false;
-		private JObject? sessionInfo;
+		protected int championId = 0;
 
-		private Timer? delayedPick;
-		private string delayedPickType = string.Empty;
+		protected JObject? sessionInfo;
 
-		private bool isRunePageChanged = false;
-		private bool hasPicked = false;
-		private bool champSelectFinalized = false;
+		protected bool isRunePageChanged = false;
 
-		private MainWindow mainWindow;
+		protected MainWindow mainWindow;
 
-		public Game(MainWindow mainWindow)
-		{
-			this.mainWindow = mainWindow;
-		}
-
-		//Setting the player position and cell position id
-		internal void SetRoleAndCellId()
-		{
-			cellId = sessionInfo.Value<int>("localPlayerCellId");
-			position = sessionInfo["myTeam"].Where(player => player.Value<int>("cellId") == cellId).Select(player => player["assignedPosition"].ToString()).First().ToUpper();
-			if (position == "") position = "NONE";
-		}
-
-		//Set the game type (draft, blind or aram)
-		internal async Task SetGameType()
+		internal static async Task<Game?> CreateGame(MainWindow mainWindow)
 		{
 			JObject? lobbyInfo = await Client_Request.GetLobbyInfo();
-			if (lobbyInfo is null) return;
+			if (lobbyInfo is null) return null;
 			string gameMode = lobbyInfo["gameConfig"]["gameMode"].ToString();
 			bool hasPositions = (bool)lobbyInfo["gameConfig"]["showPositionSelector"];
 
 			//if the gamemode is aram set to ARAM
-			if (gameMode == "ARAM")
-			{
-				gameType = "ARAM";
-				return;
-			}
+			if (gameMode == "ARAM") return new Aram(mainWindow);
 
 			//if it's not aram and has positions set to Draft
-			if (hasPositions)
-			{
-				gameType = "Draft";
-				return;
-			}
+			if (hasPositions) return new Classic(mainWindow, "Draft");
 
-			//else set it to Blind
-			gameType = "Blind";
-		}
-
-		//Get a list of all champions (their ids) that got banned or picked
-		internal int[] GetNonAvailableChampions()
-		{
-			return GetSessionActions().Where(action => (bool)action["completed"] && (string)action["type"] != "ten_bans_reveal")
-										.Select(action => (int)action["championId"]).ToArray();
+			return new Classic(mainWindow, "Blind");
 		}
 
 		//Handler of the champion selections
-		internal async Task ChampSelectControl()
-		{
-			sessionInfo = await Client_Request.GetSessionInfo();
-			if (sessionInfo is null) return;
-			//Set the properties
-			await SetGameType();
-			SetRoleAndCellId();
-			if (gameType is null) return;
-
-			mainWindow.SetGamemodeName(gameType);
-			mainWindow.SetGameModeIcon(gameType);
-
-			while (Auth.IsAuthSet())
-			{
-				sessionInfo = await Client_Request.GetSessionInfo();
-
-				if (sessionInfo is null) return;
-				switch (sessionInfo.SelectToken("timer.phase").ToString())
-				{
-					default:
-						break;
-
-					case "FINALIZATION":
-						await Finalization();
-						break;
-
-					case "BAN_PICK":
-						if (hasPicked) goto case "FINALIZATION";
-						await PickPhase();
-						break;
-
-					case "GAME_STARTING":
-					case "":
-						mainWindow.EnableRandomSkinButton(false);
-						return;
-				}
-				Thread.Sleep(1000);
-			}
-		}
+		internal abstract Task ChampSelectControl();
 
 		//Act on finalization
-		private async Task Finalization()
-		{
-			var currentRuneIcons = await Client_Control.GetRunesIcons();
+		protected abstract Task Finalization();
 
-			if (currentRuneIcons is not null) mainWindow.SetRunesIcons(currentRuneIcons.Item1, currentRuneIcons.Item2); ;
+		protected abstract Task ChangeSpells();
 
-			if (gameType == "ARAM")
-			{
-				await AramFinalization();
-				return;
-			}
+		protected abstract Task ChangeRunes();
 
-			if (championId == 0) championId = await Client_Request.GetCurrentChampionId();
-
-			if (!champSelectFinalized)
-			{
-				await PostPickAction();
-				champSelectFinalized = true;
-			}
-
-		}
-
-		private async Task PostPickAction()
+		protected async Task PostPickAction()
 		{
 			var imageBytes = await Client_Request.GetChampionImageById(championId);
 
@@ -154,283 +58,13 @@ namespace KurwApp.Modules
 			//Set runes if the the auto rune is toggled
 			if (Client_Control.GetSettingState("runesSwap") && !isRunePageChanged)
 			{
-				await AutoRuneSwap();
+				await ChangeRunes();
 			}
 
 			//Random skin on pick
 			if ((bool)Client_Control.GetPreference("randomSkin.randomOnPick")) Client_Control.PickRandomSkin();
 
-			if (Client_Control.GetSettingState("autoSummoner")) await ChangeSpells(gameType == "ARAM");
-
-		}
-
-		private async Task ChangeSpells(bool isAram)
-		{
-			string positionForSpells = "";
-			if (gameType == "Draft") positionForSpells = position;
-			if (gameType == "ARAM") positionForSpells = "NONE";
-			var runesRecommendation = await Client_Control.GetSpellsRecommendationByPosition(championId, positionForSpells);
-			var spellsId = runesRecommendation.ToObject<int[]>();
-
-			if (isAram && !spellsId.Contains(32)) spellsId[1] = 32;
-
-			Client_Control.SetSummonerSpells(spellsId);
-		}
-
-		private async Task AramFinalization()
-		{
-			if (Client_Control.GetSettingState("aramChampionSwap"))
-			{
-				int aramPick = GetAramPick();
-
-				if (aramPick != 0)
-				{
-					await Client_Request.AramBenchSwap(aramPick);
-					await PostPickAction();
-					championId = await Client_Request.GetCurrentChampionId();
-
-					if (Client_Control.GetSettingState("runesSwap") && !isRunePageChanged)await AutoRuneSwap();
-
-					if (Client_Control.GetSettingState("autoSummoner")) await ChangeSpells(true);
-				}
-			}
-			var currentChampionId = await Client_Request.GetCurrentChampionId();
-
-			if (currentChampionId != championId)
-			{
-				championId = currentChampionId;
-				await PostPickAction();
-				if (Client_Control.GetSettingState("runesSwap")) await AutoRuneSwap();
-
-				if (Client_Control.GetSettingState("autoSummoner")) await ChangeSpells(true);
-			}
-		}
-
-		private async Task AutoRuneSwap()
-		{
-			bool isSetActive = (bool)Client_Control.GetPreference("runes.notSetActive");
-			string activeRunesPage = isSetActive ? (await Client_Request.GetActiveRunePage())["id"].ToString() : "0";
-			await Client_Control.SetRunesPage(championId, position == "" ? "NONE" : position.ToUpper());
-			isRunePageChanged = true;
-
-			if (isSetActive) await Client_Request.SetActiveRunePage(activeRunesPage);
-		}
-
-		//Act on pick phase
-		private async Task PickPhase()
-		{
-			if (champSelectFinalized) return;
-			var actions = GetSessionActions();
-
-			int currentChampionId = await Client_Request.GetCurrentChampionId();
-			if (currentChampionId != 0)
-			{
-				championId = currentChampionId;
-				hasPicked = true;
-				return;
-			}
-
-			if (IsCurrentPlayerTurn(actions, out int actionId, out string type))
-			{
-				if (type == "ban" && Client_Control.GetSettingState("banPick"))
-				{
-					int banPick = await GetChampionBan();
-					if (banPick == 0) return;
-					await SelectionAction(actionId, banPick, type);
-				}
-
-				if (type == "pick" && Client_Control.GetSettingState("championPick"))
-				{
-					championId = await GetChampionPick();
-					Debug.WriteLine(championId);
-					int championSelectionId = actions.First(action => action.Value<bool>("isInProgress") && action.Value<int>("actorCellId") == cellId)
-														.Value<int>("championId");
-					if (championSelectionId != championId && championSelectionId != 0)
-					{
-						switch (Client_Control.GetPreference("selections.userPreference").Value<int>())
-						{
-							default:
-								break;
-							case 0:
-								return;
-							case 1:
-								break;
-							case 2:
-								championId = championSelectionId;
-								break;
-						}
-					}
-					Debug.WriteLine(championId + " 2");
-
-					if (championId == 0)
-					{
-						switch (Client_Control.GetPreference("noPicks.userPreference").Value<int>())
-						{
-							default:
-								championId = await GetRandomChampionPick();
-								isChampionRandom = true;
-								break;
-							case 2:
-								return;
-						}
-					}
-					Debug.WriteLine(championId + " 3");
-					await SelectionAction(actionId, championId, type);
-					hasPicked = true;
-
-				}
-			}
-		}
-
-		private async Task SelectionAction(int actionId, int championId, string type)
-		{
-			if (championId == 0 || delayedPickType == type) return;
-
-			await Client_Request.SelectChampion(actionId, championId);
-			if (type == "pick")
-			{
-				if (isChampionRandom) return;
-				await ExecutePickBanPreference("picks", actionId, type);
-			}
-
-			if (type == "ban")
-			{
-				await ExecutePickBanPreference("bans", actionId, type);
-			}
-
-		}
-
-		private async Task ExecutePickBanPreference(string preferenceToken, int actionId, string pickType)
-		{
-			int preference = Client_Control.GetPreference($"{preferenceToken}.userPreference").Value<int>();
-			if (preference == 1) return;
-			if (preference == 2)
-			{
-				//Return if the delayed pick has already been set to the current action type
-				if (delayedPick != null && delayedPickType == pickType) return;
-
-				//+1 to prevent index 0 (5 seconds) to be 0 seconds
-				int otlTimeIndex = Client_Control.GetPreference($"{preferenceToken}.OTLTimeIndex").Value<int>() + 1;
-				int sessionTimer = sessionInfo.SelectToken("timer.adjustedTimeLeftInPhase").Value<int>();
-
-				delayedPick = new Timer(ConfirmActionDelayed, actionId, TimeSpan.FromSeconds(sessionTimer / 1000 - (otlTimeIndex * 5)), TimeSpan.Zero);
-				delayedPickType = pickType;
-				return;
-			}
-			await Client_Request.ConfirmAction(actionId);
-		}
-
-		private async void ConfirmActionDelayed(object sender)
-		{
-			await Client_Request.ConfirmAction((int)sender);
-
-			CancelDelayedPick();
-		}
-
-		private void CancelDelayedPick()
-		{
-			if (delayedPick != null)
-			{
-				delayedPick.Dispose();
-				delayedPick = null;
-				delayedPickType = string.Empty;
-			}
-		}
-		//Get the pick the aram champion to pick if any
-		private int GetAramPick()
-		{
-			var filename = "ARAM.json";
-			var aramPicks = JArray.Parse(File.ReadAllText($"Picks/{filename}"));
-
-			if (!aramPicks.Any()) return 0;
-
-			List<int> aramBenchIds = GetAramBenchIds();
-			if (!aramBenchIds.Any()) return 0;
-
-			foreach (var pick in aramPicks)
-			{
-				if (aramBenchIds.Contains(pick.Value<int>())) return pick.Value<int>();
-			}
-			return 0;
-		}
-
-		//Get the champion benched (their id) in aram
-		private List<int> GetAramBenchIds()
-		{
-			return sessionInfo["benchChampions"].Select(x => int.Parse(x["championId"].ToString())).ToList();
-		}
-
-		//Get the champion pick for blind or draft game, if any
-		private async Task<int> GetChampionPick()
-		{
-			var filename = gameType == "Draft" ? "Pick.json" : $"{gameType}.json";
-			var pickFile = File.ReadAllText($"Picks/{filename}");
-			var picks = gameType == "Draft" ? JObject.Parse(pickFile)[position] as JArray : JArray.Parse(pickFile);
-
-			if (!picks.Any()) return 0;
-
-			var availablePicks = picks.Select(x => int.Parse(x.ToString()))
-												.ToArray()
-												.Except(GetNonAvailableChampions())
-												.Intersect(await Client_Request.GetAvailableChampionsPick());
-
-			if (!availablePicks.Any()) return 0;
-			return availablePicks.First();
-		}
-
-		private async Task<int> GetRandomChampionPick()
-		{
-			int noPicksPreferences = Client_Control.GetPreference("noPicks.userPreference").Value<int>();
-
-			var availableChampions = await Client_Request.GetAvailableChampionsPick();
-
-			//Random pick by position
-			if (noPicksPreferences == 0) {
-				Debug.WriteLine(position);
-				var allChampionsByPosition = (await ClientDataCache.GetChampionsRunesRecommendation())
-																	.Where(item => item.Value<JArray>("runeRecommendations")
-																		.Any(rune => rune.Value<string>("position") == position && rune.Value<bool>("isDefaultPosition")))
-																	.Select(item => item.Value<int>("championId"))
-																	.ToArray();
-
-				var availablesChampionsForPosition = allChampionsByPosition.Intersect(availableChampions).ToArray();
-
-				return availablesChampionsForPosition[new Random().Next(maxValue:availablesChampionsForPosition.Length)];
-			}
-
-			//Random pick (no position)
-			return availableChampions[new Random().Next(maxValue:availableChampions.Length)];
-
-		}
-
-		//Get the champion ban for draft game, if any
-		private async Task<int> GetChampionBan()
-		{
-			var banFile = File.ReadAllText($"Picks/Ban.json");
-			var bans = JObject.Parse(banFile)[position];
-
-			if (!bans.Any()) return 0;
-
-			var availableBans = bans.Select(x => int.Parse(x.ToString()))
-												.ToArray()
-												.Except(GetNonAvailableChampions());
-
-			if (!availableBans.Any()) return 0;
-
-			return availableBans.First();
-		}
-
-		//Get if it's the current player turn and output the action id and type of action
-		internal bool IsCurrentPlayerTurn(IEnumerable<JObject> actions, out int actionId, out string type)
-		{
-			var currentPlayerAction = actions.Where(action => action.Value<int>("actorCellId") == cellId && (bool)action["isInProgress"] == true)
-				.Select(action => action).ToArray();
-
-			bool isCurrentPlayerTurn = currentPlayerAction.Any();
-
-			actionId = isCurrentPlayerTurn ? (int)currentPlayerAction.First()["id"] : 0;
-			type = isCurrentPlayerTurn ? currentPlayerAction.First()["type"].ToString() : string.Empty;
-			return isCurrentPlayerTurn;
+			if (Client_Control.GetSettingState("autoSummoner")) await ChangeSpells();
 		}
 
 		//Get sessions actions

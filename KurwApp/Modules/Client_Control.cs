@@ -92,7 +92,8 @@ namespace KurwApp.Modules
 							break;
 						//On champion selection : start and await the end of the champ select handler
 						case "ChampSelect":
-							Game champSelect = new(mainWindow);
+							Game? champSelect = await Game.CreateGame(mainWindow);
+							if (champSelect == null) break;
 							await champSelect.ChampSelectControl();
 							break;
 						case "GameStart":
@@ -192,6 +193,25 @@ namespace KurwApp.Modules
 			return champ_select_timer["phase"].ToString().ToUpper();
 		}
 
+		internal static async Task<string> GetChampionDefaultPosition(int championId)
+		{
+			return (await ClientDataCache.GetChampionsRunesRecommendation())
+																	.First(item => item.Value<int>("championId") == championId)
+																	.Value<JArray>("runeRecommendations")
+																	.First(recommendation => recommendation.Value<string>("position") != "NONE" && recommendation.Value<bool>("isDefaultPosition"))
+																	.Value<string>("position");
+
+		}
+
+		internal static async Task<int[]> GetAllChampionForPosition(string position)
+		{
+			return (await ClientDataCache.GetChampionsRunesRecommendation())
+																	.Where(item => item.Value<JArray>("runeRecommendations")
+																		.Any(rune => rune.Value<string>("position") == position && rune.Value<bool>("isDefaultPosition")))
+																	.Select(item => item.Value<int>("championId"))
+																	.ToArray();
+		}
+
 		#region Runes
 
 		//Get the recommended runes for a champion
@@ -226,6 +246,7 @@ namespace KurwApp.Modules
 			IEnumerable<JToken>? champRunesByPosition = null;
 
 			if (position != "") champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"].ToString() == position);
+
 			if (position == "" || !champRunesByPosition.Any()) champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"].ToString() != "NONE");
 
 			return champRunesByPosition.Select(recommendation => recommendation["summonerSpellIds"]).First(); ;
