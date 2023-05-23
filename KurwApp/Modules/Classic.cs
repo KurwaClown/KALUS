@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace KurwApp.Modules
 {
-	internal class Classic : Game
+	internal abstract class Classic : Game
 	{
 		private readonly string gameType;
 		private readonly bool isDraft;
@@ -29,7 +29,7 @@ namespace KurwApp.Modules
 		}
 
 		//Setting the player position and cell position id
-		internal void SetRoleAndCellId()
+		internal void SetPositionAndCellId()
 		{
 			cellId = sessionInfo.Value<int>("localPlayerCellId");
 			if (isDraft) position = sessionInfo["myTeam"].Where(player => player.Value<int>("cellId") == cellId).Select(player => player["assignedPosition"].ToString()).First().ToUpper();
@@ -40,8 +40,6 @@ namespace KurwApp.Modules
 		{
 			sessionInfo = await Client_Request.GetSessionInfo();
 			if (sessionInfo is null) return;
-			//Set the properties
-			SetRoleAndCellId();
 			if (gameType is null) return;
 
 			mainWindow.SetGamemodeName(gameType);
@@ -50,8 +48,9 @@ namespace KurwApp.Modules
 			while (Auth.IsAuthSet())
 			{
 				sessionInfo = await Client_Request.GetSessionInfo();
-
 				if (sessionInfo is null) return;
+				//Set the position and cell id after every new session check : in case of cell change
+				SetPositionAndCellId();
 				switch (sessionInfo.SelectToken("timer.phase").ToString())
 				{
 					default:
