@@ -77,10 +77,14 @@ namespace KurwApp.Modules
 		{
 			var currentRuneIcons = await Client_Control.GetRunesIcons();
 
-			if (currentRuneIcons is not null) mainWindow.SetRunesIcons(currentRuneIcons.Item1, currentRuneIcons.Item2); ;
+			if (currentRuneIcons != null) mainWindow.SetRunesIcons(currentRuneIcons.Item1, currentRuneIcons.Item2); ;
 
 			if (championId == 0) championId = await Client_Request.GetCurrentChampionId();
-
+			if (delayedPick != null)
+			{
+				championId = await Client_Request.GetCurrentChampionId();
+				CancelDelayedPick();
+			}
 			if (!isDraft) position = await Client_Control.GetChampionDefaultPosition(championId);
 
 			if (!champSelectFinalized)

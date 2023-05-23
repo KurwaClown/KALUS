@@ -58,7 +58,6 @@ namespace KurwApp.Modules
 			//Set runes if the the auto rune is toggled
 			if (Client_Control.GetSettingState("runesSwap") && !isRunePageChanged)
 			{
-
 				await ChangeRunes();
 			}
 
