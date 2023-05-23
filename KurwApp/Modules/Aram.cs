@@ -55,12 +55,9 @@ namespace KurwApp.Modules
 				if (aramPick != 0)
 				{
 					await Client_Request.AramBenchSwap(aramPick);
+					isRunePageChanged = false;
 					await PostPickAction();
 					championId = await Client_Request.GetCurrentChampionId();
-
-					if (Client_Control.GetSettingState("runesSwap") && !isRunePageChanged) await ChangeRunes();
-
-					if (Client_Control.GetSettingState("autoSummoner")) await ChangeSpells();
 				}
 			}
 			var currentChampionId = await Client_Request.GetCurrentChampionId();
@@ -68,10 +65,8 @@ namespace KurwApp.Modules
 			if (currentChampionId != championId)
 			{
 				championId = currentChampionId;
+				isRunePageChanged = false;
 				await PostPickAction();
-				if (Client_Control.GetSettingState("runesSwap")) await ChangeRunes();
-
-				if (Client_Control.GetSettingState("autoSummoner")) await ChangeSpells();
 			}
 		}
 
@@ -112,8 +107,11 @@ namespace KurwApp.Modules
 		protected override async Task ChangeRunes()
 		{
 			bool isSetActive = (bool)Client_Control.GetPreference("runes.notSetActive");
+
 			string activeRunesPage = isSetActive ? (await Client_Request.GetActiveRunePage())["id"].ToString() : "0";
+
 			await Client_Control.SetRunesPage(championId, "NONE");
+
 			isRunePageChanged = true;
 
 			if (isSetActive) await Client_Request.SetActiveRunePage(activeRunesPage);

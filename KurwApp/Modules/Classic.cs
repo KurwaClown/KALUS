@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace KurwApp.Modules
 {
-	internal abstract class Classic : Game
+	internal class Classic : Game
 	{
 		private readonly string gameType;
 		private readonly bool isDraft;
 
 		private int cellId;
-		protected string position = "NONE";
+		private string position = "NONE";
 		private bool isChampionRandom = false;
 		private bool champSelectFinalized = false;
 		private bool hasPicked = false;
@@ -35,13 +35,11 @@ namespace KurwApp.Modules
 			if (isDraft) position = sessionInfo["myTeam"].Where(player => player.Value<int>("cellId") == cellId).Select(player => player["assignedPosition"].ToString()).First().ToUpper();
 		}
 
+
+
 		//Handler of the champion selections
 		internal override async Task ChampSelectControl()
 		{
-			sessionInfo = await Client_Request.GetSessionInfo();
-			if (sessionInfo is null) return;
-			if (gameType is null) return;
-
 			mainWindow.SetGamemodeName(gameType);
 			mainWindow.SetGameModeIcon(gameType);
 
@@ -83,6 +81,8 @@ namespace KurwApp.Modules
 
 			if (championId == 0) championId = await Client_Request.GetCurrentChampionId();
 
+			if (!isDraft) position = await Client_Control.GetChampionDefaultPosition(championId);
+
 			if (!champSelectFinalized)
 			{
 				await PostPickAction();
@@ -92,8 +92,7 @@ namespace KurwApp.Modules
 
 		protected override async Task ChangeSpells()
 		{
-			string positionForSpells = "NONE";
-			if (isDraft) positionForSpells = position;
+			string positionForSpells = position;
 			var runesRecommendation = await Client_Control.GetSpellsRecommendationByPosition(championId, positionForSpells);
 			var spellsId = runesRecommendation.ToObject<int[]>();
 
@@ -116,6 +115,20 @@ namespace KurwApp.Modules
 
 			if (IsCurrentPlayerTurn(actions, out int actionId, out string type))
 			{
+				//Return if there is a delayed action of the current phase type awaiting
+				//Cancel it if it's not of the current phase type
+				if (delayedPick != null)
+				{
+					if (delayedPickType == type)
+					{
+						return;
+					}
+					else
+					{
+						CancelDelayedPick();
+					}
+				}
+
 				if (type == "ban" && Client_Control.GetSettingState("banPick"))
 				{
 					int banPick = await GetChampionBan();
@@ -161,7 +174,6 @@ namespace KurwApp.Modules
 						}
 					}
 					await SelectionAction(actionId, championId, type);
-					hasPicked = true;
 				}
 			}
 		}
@@ -201,12 +213,13 @@ namespace KurwApp.Modules
 				return;
 			}
 			await Client_Request.ConfirmAction(actionId);
+			hasPicked = true;
 		}
 
 		private async void ConfirmActionDelayed(object sender)
 		{
 			await Client_Request.ConfirmAction((int)sender);
-
+			hasPicked = true;
 			CancelDelayedPick();
 		}
 
@@ -264,11 +277,7 @@ namespace KurwApp.Modules
 			//Random pick by position
 			if (noPicksPreferences == 0)
 			{
-				var allChampionsByPosition = (await ClientDataCache.GetChampionsRunesRecommendation())
-																	.Where(item => item.Value<JArray>("runeRecommendations")
-																		.Any(rune => rune.Value<string>("position") == position && rune.Value<bool>("isDefaultPosition")))
-																	.Select(item => item.Value<int>("championId"))
-																	.ToArray();
+				var allChampionsByPosition = await Client_Control.GetAllChampionForPosition(position);
 
 				var availablesChampionsForPosition = allChampionsByPosition.Intersect(availableChampions).ToArray();
 
