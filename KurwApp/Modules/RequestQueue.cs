@@ -14,9 +14,9 @@ namespace KurwApp.Modules
 {
 	internal class RequestQueue
 	{
-		private static HttpClient _httpClient = new();
-		private static readonly SemaphoreSlim _semaphore = new(1);
-		private static readonly Queue<Func<Task>> _requestQueue = new();
+		private static HttpClient _httpClient = new HttpClient();
+		private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+		private static readonly Queue<Func<Task>> _requestQueue = new Queue<Func<Task>>();
 
 		static RequestQueue()
 		{
@@ -130,7 +130,7 @@ namespace KurwApp.Modules
 				SetClient();
 
 				var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, endpoint));
-				byte[] responseBytes = Array.Empty<byte>();
+				byte[] responseBytes = new byte[0];
 				if (response.IsSuccessStatusCode) responseBytes = await response.Content.ReadAsByteArrayAsync();
 				_httpClient.Dispose();
 				return responseBytes;

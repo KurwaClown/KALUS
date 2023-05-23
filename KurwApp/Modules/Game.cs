@@ -13,14 +13,14 @@ namespace KurwApp.Modules
 
 		protected bool isRunePageChanged = false;
 
-		protected MainWindow? mainWindow;
+		protected MainWindow mainWindow;
 
 		internal static async Task<Game?> CreateGame(MainWindow mainWindow)
 		{
 			JObject? lobbyInfo = await Client_Request.GetLobbyInfo();
 			if (lobbyInfo is null) return null;
-			string gameMode = lobbyInfo.Value<string>("gameConfig.gameMode");
-			bool hasPositions = lobbyInfo.Value<bool>("gameConfig.showPositionSelector");
+			string gameMode = lobbyInfo["gameConfig"]["gameMode"].ToString();
+			bool hasPositions = (bool)lobbyInfo["gameConfig"]["showPositionSelector"];
 
 			//if the gamemode is aram set to ARAM
 			if (gameMode == "ARAM") return new Aram(mainWindow);
@@ -41,13 +41,13 @@ namespace KurwApp.Modules
 
 		protected abstract Task ChangeRunes();
 
-		protected internal async Task PostPickAction()
+		protected async Task PostPickAction()
 		{
 			var imageBytes = await Client_Request.GetChampionImageById(championId);
 
 			var champions = await ClientDataCache.GetChampionsInformations();
 
-			string championName = champions.First(champion => champion.Value<int>("id") == championId).Value<string>("name");
+			string championName = champions.Where(champion => (int)champion["id"] == championId).Select(champion => champion["name"].ToString()).First();
 
 			//Set the current champion image and name on the UI
 			mainWindow.SetChampionIcon(imageBytes);
@@ -68,7 +68,7 @@ namespace KurwApp.Modules
 		}
 
 		//Get sessions actions
-		protected IEnumerable<JObject> GetSessionActions()
+		internal IEnumerable<JObject> GetSessionActions()
 		{
 			return sessionInfo["actions"].SelectMany(innerArray => innerArray).OfType<JObject>();
 		}
