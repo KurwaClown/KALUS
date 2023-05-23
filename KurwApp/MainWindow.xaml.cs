@@ -128,8 +128,8 @@ namespace KurwApp
 		internal async void LoadAndSetCharacterList()
 		{
 			var champions = await ClientDataCache.GetChampionsInformations();
-			Dictionary<int, string> championNames = champions.Where(champion => (int)champion["id"] != -1)
-															.ToDictionary(champion => (int)champion["id"], champion => (string)champion["name"]);
+			Dictionary<int, string> championNames = champions.Where(champion => champion.Value<int>("id") != -1)
+															.ToDictionary(champion => champion.Value<int>("id"), champion => champion.Value<string>("name"));
 			championNames = championNames.OrderBy(champion => champion.Value).ToDictionary(champion => champion.Key, champion => champion.Value);
 
 			Dispatcher.Invoke(() =>
@@ -191,6 +191,8 @@ namespace KurwApp
 		{
 			if (champList.SelectedItem == null) return;
 			var selection = champList.SelectedItem as ListBoxItem;
+
+
 
 			SelectedListCollection.Add(selection);
 			UpdatedListCollection.Remove(selection);
@@ -273,7 +275,7 @@ namespace KurwApp
 				{
 					JObject preference = JObject.Parse(File.ReadAllText("Configurations/preferences.json"));
 
-					comboBox.SelectedIndex = Int32.Parse(preference.SelectToken(comboBox.Tag.ToString()).ToString());
+					comboBox.SelectedIndex = int.Parse(preference.Value<string>(comboBox.Tag.ToString()));
 				}
 				else
 				{
@@ -286,7 +288,7 @@ namespace KurwApp
 				{
 					JObject preference = JObject.Parse(File.ReadAllText("Configurations/preferences.json"));
 
-					checkBox.IsChecked = (bool)preference.SelectToken(checkBox.Tag.ToString());
+					checkBox.IsChecked = preference.Value<bool>(checkBox.Tag.ToString());
 				}
 			}
 		}
@@ -300,7 +302,7 @@ namespace KurwApp
 			{
 				var preferences = JObject.Parse(File.ReadAllText("Configurations/preferences.json"));
 				var radioButtons = stack.Children.OfType<RadioButton>();
-				var radioButtonToCheck = radioButtons.FirstOrDefault(rb => preferences.SelectToken(token).ToString() == rb.Tag.ToString());
+				var radioButtonToCheck = radioButtons.FirstOrDefault(rb => preferences.Value<string>(token) == rb.Tag.ToString());
 				if (radioButtonToCheck != null)
 				{
 					radioButtonToCheck.IsChecked = true;
@@ -327,13 +329,13 @@ namespace KurwApp
 				setRadioByPreference(flashPosition, "summoners.flashPosition");
 
 
-				notSetPageAsActive.IsChecked = (bool)preferences["runes"]["notSetActive"];
-				overridePage.IsChecked = (bool)preferences["runes"]["overridePage"];
+				notSetPageAsActive.IsChecked = preferences.Value<bool>("runes.notSetActive");
+				overridePage.IsChecked = preferences.Value<bool>("runes.overridePage");
 
-				addChromas.IsChecked = (bool)preferences["randomSkin"]["addChromas"];
-				randomOnPick.IsChecked = (bool)preferences["randomSkin"]["randomOnPick"];
+				addChromas.IsChecked = preferences.Value<bool>("randomSkin.addChromas");
+				randomOnPick.IsChecked = preferences.Value<bool>("randomSkin.randomOnPick");
 
-				alwaysSnowball.IsChecked = (bool)preferences["summoners"]["alwaysSnowball"];
+				alwaysSnowball.IsChecked = preferences.Value<bool>("summoners.alwaysSnowball");
 			}
 			);
 		}
@@ -344,11 +346,11 @@ namespace KurwApp
 
 			Dispatcher.Invoke(() =>
 			{
-				autoPickSetting.IsChecked = (bool)settings["championPick"];
-				autoBanSetting.IsChecked = (bool)settings["banPick"];
-				autoReadySetting.IsChecked = (bool)settings["aramChampionSwap"];
-				autoRunesSetting.IsChecked = (bool)settings["runesSwap"];
-				autoSwapSetting.IsChecked = (bool)settings["autoReady"];
+				autoPickSetting.IsChecked = settings.Value<bool>("championPick");
+				autoBanSetting.IsChecked = settings.Value<bool>("banPick");
+				autoReadySetting.IsChecked = settings.Value<bool>("aramChampionSwap");
+				autoRunesSetting.IsChecked = settings.Value<bool>("runesSwap");
+				autoSwapSetting.IsChecked = settings.Value<bool>("autoReady");
 			}
 			);
 		}
@@ -407,7 +409,7 @@ namespace KurwApp
 				var position = ((ComboBoxItem)selectionListPosition.SelectedItem).Content.ToString();
 				var fileRole = position == "Support" ? "UTILITY" : position.ToUpper();
 
-				var champsId = (JArray)draftFile[fileRole];
+				var champsId = draftFile[fileRole].Value<JArray>();
 
 				champListBoxItems = ChampListCollection.Where(champion => champsId.Select(token => (int)token).ToArray().Contains(int.Parse(champion.Tag.ToString())));
 			}
@@ -432,8 +434,7 @@ namespace KurwApp
 			if (selectionList.SelectedItem == null) return;
 			var selection = selectionList.SelectedItem as ListBoxItem;
 
-			ObservableCollection<ListBoxItem>? observableCollection = selectionList.ItemsSource as ObservableCollection<ListBoxItem>;
-			if (observableCollection == null) return;
+			if (selectionList.ItemsSource is not ObservableCollection<ListBoxItem> observableCollection) return;
 
 			int oldIndex = observableCollection.IndexOf(selection);
 			bool isPrevious = ((Button)sender).Name == "selectionOrderUp";

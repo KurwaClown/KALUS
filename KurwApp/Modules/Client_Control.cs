@@ -175,8 +175,8 @@ namespace KurwApp.Modules
 
 			bool isCurrentPlayerTurn = currentPlayerAction.Any();
 
-			actionId = isCurrentPlayerTurn ? (int)currentPlayerAction.First()["id"] : 0;
-			type = isCurrentPlayerTurn ? currentPlayerAction.First()["type"].ToString() : string.Empty;
+			actionId = isCurrentPlayerTurn ? currentPlayerAction.First().Value<int>("id") : 0;
+			type = isCurrentPlayerTurn ? currentPlayerAction.First().Value<string>("type") : string.Empty;
 			return isCurrentPlayerTurn;
 		}
 
@@ -190,7 +190,7 @@ namespace KurwApp.Modules
 			}
 			JObject champ_select_timer = JObject.Parse(session_timer);
 
-			return champ_select_timer["phase"].ToString().ToUpper();
+			return champ_select_timer.Value<string>("phase").ToUpper();
 		}
 
 		internal static async Task<string> GetChampionDefaultPosition(int championId)
@@ -220,8 +220,8 @@ namespace KurwApp.Modules
 			var runesRecommendation = await ClientDataCache.GetChampionsRunesRecommendation();
 
 			JArray champRunes = runesRecommendation
-				.Where(obj => (int)obj["championId"] == champId)
-				.Select(obj => (JArray)obj["runeRecommendations"]).First();
+				.Where(obj => obj.Value<int>("championId") == champId)
+				.Select(obj => obj.Value<JArray>("runeRecommendations")).First();
 
 			return champRunes;
 		}
@@ -231,10 +231,10 @@ namespace KurwApp.Modules
 		{
 			var runesRecommendation = await GetRecommendedRunesById(champId);
 
-			var champRunesByPosition = runesRecommendation.Where(recommendation => (string)recommendation["position"] == position.ToUpper()).Select(recommendation => recommendation);
+			var champRunesByPosition = runesRecommendation.Where(recommendation => recommendation.Value<string>("position") == position.ToUpper()).Select(recommendation => recommendation);
 			if (!champRunesByPosition.Any())
 			{
-				champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"].ToString() == "NONE").Select(recommendation => recommendation);
+				champRunesByPosition = runesRecommendation.Where(recommendation => recommendation.Value<string>("position") == "NONE").Select(recommendation => recommendation);
 			}
 			return champRunesByPosition.FirstOrDefault();
 		}
@@ -245,11 +245,11 @@ namespace KurwApp.Modules
 			var runesRecommendation = await GetRecommendedRunesById(champId);
 			IEnumerable<JToken>? champRunesByPosition = null;
 
-			if (position != "") champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"].ToString() == position);
+			if (position != "") champRunesByPosition = runesRecommendation.Where(recommendation => recommendation.Value<string>("position") == position);
 
-			if (position == "" || !champRunesByPosition.Any()) champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"].ToString() != "NONE");
+			if (position == "" || !champRunesByPosition.Any()) champRunesByPosition = runesRecommendation.Where(recommendation => recommendation.Value<string>("position") != "NONE");
 
-			return champRunesByPosition.Select(recommendation => recommendation["summonerSpellIds"]).First(); ;
+			return champRunesByPosition.First().Value<JToken>("summonerSpellIds");
 		}
 
 		//Format the champion runes for the rune request
@@ -285,7 +285,7 @@ namespace KurwApp.Modules
 		internal static async Task<bool> CanCreateNewPage()
 		{
 			var inventory = await Client_Request.GetRunesInventory();
-			return (bool)inventory["canAddCustomPage"];
+			return inventory.Value<bool>("canAddCustomPage");
 		}
 
 		//Set the recommended rune page
@@ -297,7 +297,7 @@ namespace KurwApp.Modules
 
 			var champions = await ClientDataCache.GetChampionsInformations();
 
-			string championName = champions.Where(champion => (int)champion["id"] == champId).Select(champion => champion["name"].ToString()).First();
+			string championName = champions.Where(champion => champion.Value<int>("id") == champId).Select(champion => champion.Value<string>("name")).First();
 			//Get the recommended rune page
 			var runesRecommendation = await GetChampRunesByPosition(champId, position);
 			string recommendedRunes = FormatChampRunes(runesRecommendation, championName);
@@ -319,7 +319,7 @@ namespace KurwApp.Modules
 		private static async Task EditOldestRunePage(string newRunesPage)
 		{
 			var runesPages = await Client_Request.GetRunePages();
-			string oldestPageId = runesPages.OrderBy(page => page["lastModified"].ToString()).First()["id"].ToString();
+			string oldestPageId = runesPages.OrderBy(page => page.Value<string>("lastModified")).First().Value<int>("id").ToString();
 
 			await Client_Request.EditRunePage(oldestPageId, newRunesPage);
 		}
@@ -348,11 +348,11 @@ namespace KurwApp.Modules
 
 			if (currentRunes == null) return null;
 
-			string primaryRuneId = currentRunes["primaryStyleId"].ToString();
-			string subRuneId = currentRunes["subStyleId"].ToString();
+			string primaryRuneId = currentRunes.Value<string>("primaryStyleId").ToString();
+			string subRuneId = currentRunes.Value<string>("subStyleId").ToString();
 
-			var primaryRunes = runesStyles.First(rune => rune["id"].ToString() == primaryRuneId).SelectToken("iconPath").ToString();
-			var subRunes = runesStyles.First(rune => rune["id"].ToString() == subRuneId).SelectToken("iconPath").ToString();
+			var primaryRunes = runesStyles.First(rune => rune.Value<string>("id") == primaryRuneId).Value<string>("iconPath");
+			var subRunes = runesStyles.First(rune => rune.Value<string>("id") == subRuneId).Value<string>("iconPath");
 
 			byte[] primaryRuneIcon = await RequestQueue.GetImage(primaryRunes);
 			byte[] subRuneIcon = await RequestQueue.GetImage(subRunes);

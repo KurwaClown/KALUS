@@ -15,7 +15,7 @@ namespace KurwApp
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-gameflow/v1/gameflow-phase");
 
-			string client_phase = response.Substring(1, response.Length - 2);
+			string client_phase = response[1..^1];
 
 			return client_phase;
 		}
@@ -211,7 +211,7 @@ namespace KurwApp
 			var request = Auth.IsAuthSet() ? $"/lol-game-data/assets/v1/perkstyles.json" : "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perkstyles.json";
 			var response = await RequestQueue.Request(HttpMethod.Get, request);
 			var perksStyles = JObject.Parse(response);
-			return JArray.Parse(perksStyles["styles"].ToString());
+			return JArray.Parse(perksStyles.Value<string>("styles"));
 		}
 
 
