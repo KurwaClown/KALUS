@@ -92,15 +92,9 @@ namespace KurwApp.Modules
 			return picks;
 		}
 
-		internal static void AddDraftPick(string position, int pick)
+		internal static void SetDraftPick(string position, JArray pick)
 		{
-			((JArray)pickBan["Draft"]["Pick"][position]).Add(pick);
-
-			SavePickBan();
-		}
-		internal static void RemoveDraftPick(string position, int pick)
-		{
-			((JArray)pickBan["Draft"]["Pick"][position]).Remove(pick);
+			pickBan["Draft"]["Pick"][position] = pick;
 
 			SavePickBan();
 		}
@@ -112,55 +106,37 @@ namespace KurwApp.Modules
 			return bans;
 		}
 
-		internal static void AddDraftBan(string position, int ban)
+		internal static void SetDraftBan(string position, JArray ban)
 		{
-			((JArray)pickBan["Draft"]["Ban"][position]).Add(ban);
-
-			SavePickBan();
-		}
-		internal static void RemoveDraftBan(string position, int ban)
-		{
-			((JArray)pickBan["Draft"]["Ban"][position]).Remove(ban);
+			pickBan["Draft"]["Ban"][position] = ban;
 
 			SavePickBan();
 		}
 
 		internal static int[] GetBlindPick()
 		{
-			var picks = pickBan.Values<int>("Blind").ToArray();
+			var picks = pickBan["Blind"].Select(pick => (int)pick).ToArray();
 
 			return picks;
 		}
 
-		internal static void AddBlindPick(int pick)
+		internal static void SetBlindPick(JArray pick)
 		{
-			((JArray)pickBan["Blind"]).Add(pick);
-
-			SavePickBan();
-		}
-		internal static void RemoveBlindPick(int pick)
-		{
-			((JArray)pickBan["Blind"]).Remove(pick);
+			pickBan["Blind"] = pick;
 
 			SavePickBan();
 		}
 
 		internal static int[] GetAramPick()
 		{
-			var picks = pickBan.Values<int>("Aram").ToArray();
+			var picks = pickBan["Aram"].Select(pick => (int)pick).ToArray();
 
 			return picks;
 		}
 
-		internal static void AddAramPick(int pick)
+		internal static void SetAramPick(JArray pick)
 		{
-			((JArray)pickBan["Aram"]).Add(pick);
-
-			SavePickBan();
-		}
-		internal static void RemoveAramPick(int pick)
-		{
-			((JArray)pickBan["Aram"]).Remove(pick);
+			pickBan["Aram"] = pick;
 
 			SavePickBan();
 		}

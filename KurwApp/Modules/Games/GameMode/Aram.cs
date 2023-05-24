@@ -74,16 +74,17 @@ namespace KurwApp.Modules.Games.GameMode
         //Get the pick the aram champion to pick if any
         protected int GetBenchChampionPick()
         {
-            var aramPicks = JArray.Parse(File.ReadAllText($"Picks/ARAM.json"));
+            var aramPicks = DataCache.GetAramPick();
 
             if (!aramPicks.Any()) return 0;
 
             List<int> aramBenchIds = GetAramBenchIds();
+
             if (!aramBenchIds.Any()) return 0;
 
             foreach (var pick in aramPicks)
             {
-                if (aramBenchIds.Contains(pick.Value<int>())) return pick.Value<int>();
+                if (aramBenchIds.Contains(pick)) return pick;
             }
             return 0;
         }

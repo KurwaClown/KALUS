@@ -241,9 +241,8 @@ namespace KurwApp.Modules.Games.GameMode
         //Get the champion pick for blind or draft game, if any
         protected virtual async Task<int> GetChampionPick()
         {
-            var filename = isDraft ? "Pick.json" : $"{gameType}.json";
-            var pickFile = File.ReadAllText($"Picks/{filename}");
-            var picks = isDraft ? JObject.Parse(pickFile)[position] as JArray : JArray.Parse(pickFile);
+
+            var picks = isDraft ? DataCache.GetDraftPick(position) : DataCache.GetBlindPick();
 
             if (!picks.Any()) return 0;
 
@@ -259,8 +258,7 @@ namespace KurwApp.Modules.Games.GameMode
         //Get the champion ban for draft game, if any
         private async Task<int> GetChampionBan()
         {
-            var banFile = File.ReadAllText($"Picks/Ban.json");
-            var bans = JObject.Parse(banFile)[position];
+            var bans = DataCache.GetDraftBan(position);
 
             if (!bans.Any()) return 0;
 

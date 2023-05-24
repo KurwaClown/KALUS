@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -147,7 +148,7 @@ namespace KurwApp
 				}
 			});
 
-			JArray blindPicks = JArray.Parse(File.ReadAllText("Picks/Blind.json"));
+			int[] blindPicks = DataCache.GetBlindPick();
 			var champListBoxItems = ChampListCollection.Where(champion => blindPicks
 														.Select(token => (int)token).ToArray()
 														.Contains(int.Parse(champion.Tag.ToString())));
@@ -212,6 +213,7 @@ namespace KurwApp
 		private void SavePicksModification()
 		{
 			var gameType = ((ComboBoxItem)selectionListGameType.SelectedItem).Content.ToString();
+			var newList = new JArray(SelectedListCollection.Select(i => new JValue(int.Parse(i.Tag.ToString()))));
 			switch (gameType)
 			{
 				default:
@@ -220,22 +222,21 @@ namespace KurwApp
 				case "Draft":
 					var pickType = ((ComboBoxItem)selectionListType.SelectedItem).Content.ToString();
 
-					var draftFile = JObject.Parse(File.ReadAllText($"Picks/{pickType}.json"));
-
 					var position = ((ComboBoxItem)selectionListPosition.SelectedItem).Content.ToString();
 
 					var fileRole = position == "Support" ? "UTILITY" : position.ToUpper();
 
-					draftFile[fileRole] = new JArray(SelectedListCollection.Select(i => new JValue(int.Parse(i.Tag.ToString()))));
+					var positionPicks = new JArray(SelectedListCollection.Select(i => new JValue(int.Parse(i.Tag.ToString()))));
 
-					File.WriteAllText($"Picks/{pickType}.json", draftFile.ToString());
+					if (pickType == "Pick") DataCache.SetDraftPick(fileRole, positionPicks);
+					else DataCache.SetDraftBan(fileRole, positionPicks);
 					break;
 
 				case "Blind":
+					DataCache.SetBlindPick(newList);
+					break;
 				case "ARAM":
-					var file = JArray.Parse(File.ReadAllText($"Picks/{gameType}.json"));
-					file = new JArray(SelectedListCollection.Select(i => new JValue(int.Parse(i.Tag.ToString()))));
-					File.WriteAllText($"Picks/{gameType}.json", file.ToString());
+					DataCache.SetAramPick(newList);
 					break;
 			}
 		}
@@ -395,18 +396,16 @@ namespace KurwApp
 			if (gameType == "Draft")
 			{
 				var pickType = ((ComboBoxItem)selectionListType.SelectedItem).Content.ToString();
-				var draftFile = JObject.Parse(File.ReadAllText($"Picks/{pickType}.json"));
 
 				var position = ((ComboBoxItem)selectionListPosition.SelectedItem).Content.ToString();
-				var fileRole = position == "Support" ? "UTILITY" : position.ToUpper();
+				position = position == "Support" ? "UTILITY" : position.ToUpper();
 
-				var champsId = (JArray)draftFile[fileRole];
-
+				var champsId = pickType == "Pick" ? DataCache.GetDraftPick(position) : DataCache.GetDraftBan(position);
 				champListBoxItems = ChampListCollection.Where(champion => champsId.Select(token => (int)token).ToArray().Contains(int.Parse(champion.Tag.ToString())));
 			}
 			else
 			{
-				var champsId = JArray.Parse(File.ReadAllText($"Picks/{gameType}.json"));
+				var champsId = gameType == "Blind" ? DataCache.GetBlindPick() : DataCache.GetAramPick();
 				champListBoxItems = ChampListCollection.Where(champion => champsId.Select(token => (int)token).ToArray().Contains(int.Parse(champion.Tag.ToString())));
 			}
 

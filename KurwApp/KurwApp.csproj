@@ -14,6 +14,7 @@
     <None Remove="Picks\Ban.json" />
     <None Remove="Picks\Blind.json" />
     <None Remove="Picks\Pick.json" />
+    <None Remove="Picks\PickBan.json" />
     <None Remove="riotgames.pem" />
   </ItemGroup>
 
@@ -38,6 +39,9 @@
     </Content>
     <Content Include="Certificates\riotgames.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Picks\PickBan.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
