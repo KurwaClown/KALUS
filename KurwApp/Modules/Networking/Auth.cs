@@ -2,7 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KurwApp.Modules
+namespace KurwApp.Modules.Networking
 {
     internal class Auth
     {
@@ -30,21 +30,21 @@ namespace KurwApp.Modules
 
         //Reading the lockfile and returning each value contained as a string array
         private static string[] GetLockfileContent(string filename)
-		{
-			string[] lockfile_content;
-			int x = filename.IndexOf("LeagueClientUx.exe");
-			string dir_path = filename.Remove(x);
+        {
+            string[] lockfile_content;
+            int x = filename.IndexOf("LeagueClientUx.exe");
+            string dir_path = filename.Remove(x);
 
-			using (var fs = new FileStream(dir_path + "lockfile", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-			{
-				using (var sr = new StreamReader(fs, Encoding.Default))
-				{
-					lockfile_content = sr.ReadToEnd().Split(":");
-				}
-			}
+            using (var fs = new FileStream(dir_path + "lockfile", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (var sr = new StreamReader(fs, Encoding.Default))
+                {
+                    lockfile_content = sr.ReadToEnd().Split(":");
+                }
+            }
 
-			return lockfile_content;
-		}
+            return lockfile_content;
+        }
 
 
         #region Authentication Getter
@@ -62,7 +62,7 @@ namespace KurwApp.Modules
         //Returns a bool value defining if the authentication is set
         internal static bool IsAuthSet()
         {
-            return (port != 0 && basic != "");
+            return port != 0 && basic != "";
         }
 
         //Encode a string to base64 (used for basic authentication)

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using KurwApp.Modules.Networking;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -6,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace KurwApp.Modules
 {
-	internal static class DataCache
+    internal static class DataCache
 	{
 		private static readonly string settingsPath = "Configurations/settings.json";
 		private static JObject settings = JObject.Parse(File.ReadAllText(settingsPath));
+
 		private static readonly string preferencesPath = "Configurations/preferences.json";
 		private static JObject preferences = JObject.Parse(File.ReadAllText(preferencesPath));
 

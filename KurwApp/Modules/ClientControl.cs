@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using KurwApp.Modules.Networking;
+using KurwApp.Modules.Games;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace KurwApp.Modules
 {
-	internal static class ClientControl
+    internal static class ClientControl
 	{
 
 		//Random variable used for getting random skins
