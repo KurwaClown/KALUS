@@ -15,6 +15,9 @@ namespace KurwApp.Modules
 		private static readonly string preferencesPath = "Configurations/preferences.json";
 		private static JObject preferences = JObject.Parse(File.ReadAllText(preferencesPath));
 
+		private static string pickBanPath = "Picks/PickBan.json";
+		private static JObject pickBan = JObject.Parse(File.ReadAllText(pickBanPath));
+
 		private static JArray? championsInformation;
 		private static JArray? championsRunesRecommendation;
 		private static JArray? runesStyleInformation;
@@ -77,6 +80,90 @@ namespace KurwApp.Modules
 			File.WriteAllText(preferencesPath, preferences.ToString());
 		}
 
+		internal static void SavePickBan()
+		{
+			File.WriteAllText(pickBanPath, pickBan.ToString());
+		}
+
+		internal static int[] GetDraftPick(string position)
+		{
+			var picks = pickBan.SelectToken($"Draft.Pick.{position}").Values<int>().ToArray();
+
+			return picks;
+		}
+
+		internal static void AddDraftPick(string position, int pick)
+		{
+			((JArray)pickBan["Draft"]["Pick"][position]).Add(pick);
+
+			SavePickBan();
+		}
+		internal static void RemoveDraftPick(string position, int pick)
+		{
+			((JArray)pickBan["Draft"]["Pick"][position]).Remove(pick);
+
+			SavePickBan();
+		}
+
+		internal static int[] GetDraftBan(string position)
+		{
+			var bans = pickBan.SelectToken($"Draft.Ban.{position}").Values<int>().ToArray();
+
+			return bans;
+		}
+
+		internal static void AddDraftBan(string position, int ban)
+		{
+			((JArray)pickBan["Draft"]["Ban"][position]).Add(ban);
+
+			SavePickBan();
+		}
+		internal static void RemoveDraftBan(string position, int ban)
+		{
+			((JArray)pickBan["Draft"]["Ban"][position]).Remove(ban);
+
+			SavePickBan();
+		}
+
+		internal static int[] GetBlindPick()
+		{
+			var picks = pickBan.Values<int>("Blind").ToArray();
+
+			return picks;
+		}
+
+		internal static void AddBlindPick(int pick)
+		{
+			((JArray)pickBan["Blind"]).Add(pick);
+
+			SavePickBan();
+		}
+		internal static void RemoveBlindPick(int pick)
+		{
+			((JArray)pickBan["Blind"]).Remove(pick);
+
+			SavePickBan();
+		}
+
+		internal static int[] GetAramPick()
+		{
+			var picks = pickBan.Values<int>("Aram").ToArray();
+
+			return picks;
+		}
+
+		internal static void AddAramPick(int pick)
+		{
+			((JArray)pickBan["Aram"]).Add(pick);
+
+			SavePickBan();
+		}
+		internal static void RemoveAramPick(int pick)
+		{
+			((JArray)pickBan["Aram"]).Remove(pick);
+
+			SavePickBan();
+		}
 		#endregion
 
 

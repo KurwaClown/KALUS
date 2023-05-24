@@ -1,0 +1,20 @@
+{
+  "Draft": {
+    "Pick": {
+      "TOP": [],
+      "JUNGLE": [],
+      "MIDDLE": [],
+      "BOTTOM": [],
+      "UTILITY": []
+    },
+    "Ban": {
+      "TOP": [],
+      "JUNGLE": [],
+      "MIDDLE": [],
+      "BOTTOM": [],
+      "UTILITY": []
+    }
+  },
+  "Blind": [],
+  "Aram": []
+}
