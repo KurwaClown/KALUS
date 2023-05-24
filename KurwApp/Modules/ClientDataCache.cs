@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -6,6 +8,11 @@ namespace KurwApp.Modules
 {
 	internal static class ClientDataCache
 	{
+		private static readonly string settingsPath = "Configurations/settings.json";
+		private static JObject settings = JObject.Parse(File.ReadAllText(settingsPath));
+		private static readonly string preferencesPath = "Configurations/preferences.json";
+		private static JObject preferences = JObject.Parse(File.ReadAllText(preferencesPath));
+
 		private static JArray? championsInformation;
 		private static JArray? championsRunesRecommendation;
 		private static JArray? runesStyleInformation;
@@ -23,6 +30,53 @@ namespace KurwApp.Modules
 
 		private static byte[]? ingameAramIcon;
 		private static byte[]? champSelectAramIcon;
+
+
+		#region Files
+
+		internal static JObject GetSettings()
+		{
+			return settings;
+		}
+
+		internal static bool GetSetting(string settingName, out string? setting)
+		{
+			setting = null;
+			if (settings.SelectToken(settingName) == null) return false;
+			setting = settings.SelectToken(settingName).ToString();
+			return true;
+		}
+
+		internal static void SetSetting(string settingName, dynamic newValue)
+		{
+			settings.SelectToken(settingName).Replace(newValue);
+
+			File.WriteAllText(settingsPath, settings.ToString());
+		}
+
+
+		internal static JObject GetPreferences()
+		{
+			return preferences;
+		}
+
+		internal static bool GetPreference(string preferenceToken, out string? preference)
+		{
+			preference = null;
+			if (preferences.SelectToken(preferenceToken) == null) return false;
+			preference = preferences.SelectToken(preferenceToken).ToString();
+			return true;
+		}
+
+		internal static void SetPreference(string preferenceToken,  dynamic newValue)
+		{
+			preferences.SelectToken(preferenceToken).Replace(newValue);
+
+			File.WriteAllText(preferencesPath, preferences.ToString());
+		}
+
+		#endregion
+
 
 		internal static async Task<JArray> GetChampionsInformations()
 		{

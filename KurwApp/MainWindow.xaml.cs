@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -164,12 +165,6 @@ namespace KurwApp
 
 		}
 
-		internal static void SaveConfiguration(string token, dynamic value, string file = "preferences.json")
-		{
-			JObject preferences = JObject.Parse(File.ReadAllText($"Configurations/{file}"));
-			preferences.SelectToken(token).Replace(value);
-			File.WriteAllText($"Configurations/{file}", preferences.ToString());
-		}
 
 		private void RandomSkinClick(object sender, RoutedEventArgs e)
 		{
@@ -250,19 +245,19 @@ namespace KurwApp
 		{
 			if (sender is CheckBox checkBox)
 			{
-				SaveConfiguration(checkBox.Tag.ToString(), (bool)checkBox.IsChecked);
+				ClientDataCache.SetPreference(checkBox.Tag.ToString(), (bool)checkBox.IsChecked);
 			}
 			else if (sender is RadioButton radioButton)
 			{
 				if ((bool)!radioButton.IsChecked) return;
 				int radioPreference = int.Parse(radioButton.Tag.ToString());
-				SaveConfiguration(radioButton.GroupName, radioPreference);
+				ClientDataCache.SetPreference(radioButton.GroupName, radioPreference);
 			}
 		}
 
 		private void OnSettingsControlInteraction(object sender, RoutedEventArgs e)
 		{
-			SaveConfiguration((sender as CheckBox).Tag.ToString(), (bool)(sender as CheckBox).IsChecked, file: "settings.json");
+			ClientDataCache.SetSetting((sender as CheckBox).Tag.ToString(), (bool)(sender as CheckBox).IsChecked);
 		}
 
 		private void IsEnabledModified(object sender, DependencyPropertyChangedEventArgs e)
@@ -271,9 +266,10 @@ namespace KurwApp
 			{
 				if (comboBox.IsEnabled)
 				{
-					JObject preference = JObject.Parse(File.ReadAllText("Configurations/preferences.json"));
+					if (ClientDataCache.GetPreference(comboBox.Tag.ToString(), out string? preference))
 
-					comboBox.SelectedIndex = Int32.Parse(preference.SelectToken(comboBox.Tag.ToString()).ToString());
+					comboBox.SelectedIndex = int.Parse(preference);
+
 				}
 				else
 				{
@@ -284,9 +280,7 @@ namespace KurwApp
 			{
 				if (checkBox.IsEnabled)
 				{
-					JObject preference = JObject.Parse(File.ReadAllText("Configurations/preferences.json"));
-
-					checkBox.IsChecked = (bool)preference.SelectToken(checkBox.Tag.ToString());
+					if (ClientDataCache.GetPreference(checkBox.Tag.ToString(), out string? preference)) checkBox.IsChecked = bool.Parse(preference);
 				}
 			}
 		}
@@ -294,11 +288,11 @@ namespace KurwApp
 		//Set the preferences saved in the preferences.json to the ui
 		internal void SetPreferences()
 		{
-			var preferences = JObject.Parse(File.ReadAllText("Configurations/preferences.json"));
+			var preferences = ClientDataCache.GetPreferences();
 
 			void setRadioByPreference(StackPanel stack, string token)
 			{
-				var preferences = JObject.Parse(File.ReadAllText("Configurations/preferences.json"));
+				var preferences = ClientDataCache.GetPreferences();
 				var radioButtons = stack.Children.OfType<RadioButton>();
 				var radioButtonToCheck = radioButtons.FirstOrDefault(rb => preferences.SelectToken(token).ToString() == rb.Tag.ToString());
 				if (radioButtonToCheck != null)
@@ -340,7 +334,7 @@ namespace KurwApp
 
 		internal void SetSettings()
 		{
-			var settings = JObject.Parse(File.ReadAllText("Configurations/settings.json"));
+			var settings = ClientDataCache.GetSettings();
 
 			Dispatcher.Invoke(() =>
 			{
@@ -389,7 +383,7 @@ namespace KurwApp
 			{
 				if (comboBox.SelectedIndex == -1) return;
 
-				SaveConfiguration(comboBox.Tag.ToString(), comboBox.SelectedIndex);
+				ClientDataCache.SetPreference(comboBox.Tag.ToString(), comboBox.SelectedIndex);
 			}
 		}
 

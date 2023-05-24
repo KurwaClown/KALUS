@@ -63,7 +63,7 @@ namespace KurwApp.Modules
 
 		internal static JToken GetPreference(string token)
 		{
-			var preferences = JObject.Parse(File.ReadAllText("Configurations/preferences.json"));
+			var preferences = ClientDataCache.GetPreferences();
 
 			var preference = preferences.SelectToken(token);
 
@@ -76,6 +76,7 @@ namespace KurwApp.Modules
 		{
 			while (true)
 			{
+
 				//Only act if the authentication is set
 				if (Auth.IsAuthSet())
 				{
@@ -121,8 +122,7 @@ namespace KurwApp.Modules
 		//Returns a setting state by checking in the setting json
 		internal static bool GetSettingState(string settingName)
 		{
-			var settings = JObject.Parse(File.ReadAllText("Configurations/settings.json"));
-
+			var settings = ClientDataCache.GetSettings();
 			return settings.Value<bool>(settingName);
 		}
 

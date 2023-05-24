@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -143,6 +144,7 @@ namespace KurwApp.Modules
 					championId = await GetChampionPick();
 					int championSelectionId = actions.First(action => action.Value<bool>("isInProgress") && action.Value<int>("actorCellId") == cellId)
 														.Value<int>("championId");
+
 					if (championSelectionId != championId && championSelectionId != 0)
 					{
 						switch (Client_Control.GetPreference("selections.userPreference").Value<int>())

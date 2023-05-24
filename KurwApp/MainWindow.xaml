@@ -14,7 +14,7 @@
             <RowDefinition Height="150"/>
         </Grid.RowDefinitions>
         <TabControl Margin="5,5,5,5">
-            <TabItem Header="Characters" Margin="0,0,0,0">
+            <TabItem Header="Characters">
                 <!-- Content for Tab 1 -->
                 <Grid>
                     <Grid.RowDefinitions>
