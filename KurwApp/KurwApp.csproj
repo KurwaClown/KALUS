@@ -46,11 +46,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\App\" />
-    <Folder Include="Views\MainWindow\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Page Include="App.xaml" />
   </ItemGroup>
 
