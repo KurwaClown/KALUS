@@ -103,9 +103,9 @@ namespace KurwApp
 
 			byte[] icon = gameMode switch
 			{
-				"Draft" or "Blind" => await ClientDataCache.GetClassicMapIcon(inGame),
-				"ARAM" => await ClientDataCache.GetAramMapIcon(inGame),
-				_ => await ClientDataCache.GetDefaultMapIcon(),
+				"Draft" or "Blind" => await DataCache.GetClassicMapIcon(inGame),
+				"ARAM" => await DataCache.GetAramMapIcon(inGame),
+				_ => await DataCache.GetDefaultMapIcon(),
 			};
 
 			SetImageSource(gameModeIcon, icon);
@@ -115,20 +115,20 @@ namespace KurwApp
 
 		internal async void SetDefaultIcons()
 		{
-			byte[] defaultRunesIcon = await ClientDataCache.GetDefaultRuneIcon();
+			byte[] defaultRunesIcon = await DataCache.GetDefaultRuneIcon();
 			SetImageBrush(mainStyleIcon, defaultRunesIcon);
 			SetImageBrush(subStyleIcon, defaultRunesIcon);
 
-			SetChampionIcon(await ClientDataCache.GetDefaultChampionIcon());
+			SetChampionIcon(await DataCache.GetDefaultChampionIcon());
 
-			SetImageSource(gameModeIcon, await ClientDataCache.GetDefaultMapIcon());
+			SetImageSource(gameModeIcon, await DataCache.GetDefaultMapIcon());
 		}
 
 
 
 		internal async void LoadAndSetCharacterList()
 		{
-			var champions = await ClientDataCache.GetChampionsInformations();
+			var champions = await DataCache.GetChampionsInformations();
 			Dictionary<int, string> championNames = champions.Where(champion => (int)champion["id"] != -1)
 															.ToDictionary(champion => (int)champion["id"], champion => (string)champion["name"]);
 			championNames = championNames.OrderBy(champion => champion.Value).ToDictionary(champion => champion.Key, champion => champion.Value);
@@ -245,19 +245,19 @@ namespace KurwApp
 		{
 			if (sender is CheckBox checkBox)
 			{
-				ClientDataCache.SetPreference(checkBox.Tag.ToString(), (bool)checkBox.IsChecked);
+				DataCache.SetPreference(checkBox.Tag.ToString(), (bool)checkBox.IsChecked);
 			}
 			else if (sender is RadioButton radioButton)
 			{
 				if ((bool)!radioButton.IsChecked) return;
 				int radioPreference = int.Parse(radioButton.Tag.ToString());
-				ClientDataCache.SetPreference(radioButton.GroupName, radioPreference);
+				DataCache.SetPreference(radioButton.GroupName, radioPreference);
 			}
 		}
 
 		private void OnSettingsControlInteraction(object sender, RoutedEventArgs e)
 		{
-			ClientDataCache.SetSetting((sender as CheckBox).Tag.ToString(), (bool)(sender as CheckBox).IsChecked);
+			DataCache.SetSetting((sender as CheckBox).Tag.ToString(), (bool)(sender as CheckBox).IsChecked);
 		}
 
 		private void IsEnabledModified(object sender, DependencyPropertyChangedEventArgs e)
@@ -266,7 +266,7 @@ namespace KurwApp
 			{
 				if (comboBox.IsEnabled)
 				{
-					if (ClientDataCache.GetPreference(comboBox.Tag.ToString(), out string? preference))
+					if (DataCache.GetPreference(comboBox.Tag.ToString(), out string? preference))
 
 					comboBox.SelectedIndex = int.Parse(preference);
 
@@ -280,7 +280,7 @@ namespace KurwApp
 			{
 				if (checkBox.IsEnabled)
 				{
-					if (ClientDataCache.GetPreference(checkBox.Tag.ToString(), out string? preference)) checkBox.IsChecked = bool.Parse(preference);
+					if (DataCache.GetPreference(checkBox.Tag.ToString(), out string? preference)) checkBox.IsChecked = bool.Parse(preference);
 				}
 			}
 		}
@@ -288,11 +288,11 @@ namespace KurwApp
 		//Set the preferences saved in the preferences.json to the ui
 		internal void SetPreferences()
 		{
-			var preferences = ClientDataCache.GetPreferences();
+			var preferences = DataCache.GetPreferences();
 
 			void setRadioByPreference(StackPanel stack, string token)
 			{
-				var preferences = ClientDataCache.GetPreferences();
+				var preferences = DataCache.GetPreferences();
 				var radioButtons = stack.Children.OfType<RadioButton>();
 				var radioButtonToCheck = radioButtons.FirstOrDefault(rb => preferences.SelectToken(token).ToString() == rb.Tag.ToString());
 				if (radioButtonToCheck != null)
@@ -334,7 +334,7 @@ namespace KurwApp
 
 		internal void SetSettings()
 		{
-			var settings = ClientDataCache.GetSettings();
+			var settings = DataCache.GetSettings();
 
 			Dispatcher.Invoke(() =>
 			{
@@ -383,7 +383,7 @@ namespace KurwApp
 			{
 				if (comboBox.SelectedIndex == -1) return;
 
-				ClientDataCache.SetPreference(comboBox.Tag.ToString(), comboBox.SelectedIndex);
+				DataCache.SetPreference(comboBox.Tag.ToString(), comboBox.SelectedIndex);
 			}
 		}
 

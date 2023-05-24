@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KurwApp.Modules
 {
-	internal static class ClientDataCache
+	internal static class DataCache
 	{
 		private static readonly string settingsPath = "Configurations/settings.json";
 		private static JObject settings = JObject.Parse(File.ReadAllText(settingsPath));

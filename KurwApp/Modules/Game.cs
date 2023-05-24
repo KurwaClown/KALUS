@@ -45,7 +45,7 @@ namespace KurwApp.Modules
 		{
 			var imageBytes = await Client_Request.GetChampionImageById(championId);
 
-			var champions = await ClientDataCache.GetChampionsInformations();
+			var champions = await DataCache.GetChampionsInformations();
 
 			string championName = champions.Where(champion => (int)champion["id"] == championId).Select(champion => champion["name"].ToString()).First();
 

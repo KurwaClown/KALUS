@@ -34,7 +34,7 @@ namespace KurwApp.Modules
 					//Modify GroupBox style
 					mainWindow.ShowLolState(false);
 					//Reset cached data
-					ClientDataCache.ResetCachedData();
+					DataCache.ResetCachedData();
 					//If authenticated : reset the auth
 					if (authenticated) Auth.ResetAuth();
 					continue;
@@ -63,7 +63,7 @@ namespace KurwApp.Modules
 
 		internal static JToken GetPreference(string token)
 		{
-			var preferences = ClientDataCache.GetPreferences();
+			var preferences = DataCache.GetPreferences();
 
 			var preference = preferences.SelectToken(token);
 
@@ -105,7 +105,7 @@ namespace KurwApp.Modules
 							//Set the icon to default if it is not already
 							if (!MainWindow.isStatusBoxDefault)
 							{
-								mainWindow.SetChampionIcon(await ClientDataCache.GetDefaultChampionIcon());
+								mainWindow.SetChampionIcon(await DataCache.GetDefaultChampionIcon());
 
 								mainWindow.SetDefaultIcons();
 								mainWindow.SetDefaultLabels();
@@ -122,7 +122,7 @@ namespace KurwApp.Modules
 		//Returns a setting state by checking in the setting json
 		internal static bool GetSettingState(string settingName)
 		{
-			var settings = ClientDataCache.GetSettings();
+			var settings = DataCache.GetSettings();
 			return settings.Value<bool>(settingName);
 		}
 
@@ -192,7 +192,7 @@ namespace KurwApp.Modules
 
 		internal static async Task<string> GetChampionDefaultPosition(int championId)
 		{
-			return (await ClientDataCache.GetChampionsRunesRecommendation())
+			return (await DataCache.GetChampionsRunesRecommendation())
 																	.First(item => item.Value<int>("championId") == championId)
 																	.Value<JArray>("runeRecommendations")
 																	.First(recommendation => recommendation.Value<string>("position") != "NONE" && recommendation.Value<bool>("isDefaultPosition"))
@@ -202,7 +202,7 @@ namespace KurwApp.Modules
 
 		internal static async Task<int[]> GetAllChampionForPosition(string position)
 		{
-			return (await ClientDataCache.GetChampionsRunesRecommendation())
+			return (await DataCache.GetChampionsRunesRecommendation())
 																	.Where(item => item.Value<JArray>("runeRecommendations")
 																		.Any(rune => rune.Value<string>("position") == position && rune.Value<bool>("isDefaultPosition")))
 																	.Select(item => item.Value<int>("championId"))
@@ -214,7 +214,7 @@ namespace KurwApp.Modules
 		//Get the recommended runes for a champion
 		internal static async Task<JArray> GetRecommendedRunesById(int champId)
 		{
-			var runesRecommendation = await ClientDataCache.GetChampionsRunesRecommendation();
+			var runesRecommendation = await DataCache.GetChampionsRunesRecommendation();
 
 			JArray champRunes = runesRecommendation
 				.Where(obj => (int)obj["championId"] == champId)
@@ -290,9 +290,9 @@ namespace KurwApp.Modules
 		{
 			bool setActive = (bool)GetPreference("runes.notSetActive");
 
-			var appPageId = await ClientDataCache.GetAppRunePageId();
+			var appPageId = await DataCache.GetAppRunePageId();
 
-			var champions = await ClientDataCache.GetChampionsInformations();
+			var champions = await DataCache.GetChampionsInformations();
 
 			string championName = champions.Where(champion => (int)champion["id"] == champId).Select(champion => champion["name"].ToString()).First();
 			//Get the recommended rune page
@@ -339,7 +339,7 @@ namespace KurwApp.Modules
 
 		internal static async Task<Tuple<byte[], byte[]>?> GetRunesIcons()
 		{
-			var runesStyles = await ClientDataCache.GetRunesStyleInformation();
+			var runesStyles = await DataCache.GetRunesStyleInformation();
 
 			var currentRunes = await Client_Request.GetActiveRunePage();
 
