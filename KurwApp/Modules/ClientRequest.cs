@@ -7,9 +7,9 @@ using System.Net.Http;
 using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 
-namespace KurwApp
+namespace KurwApp.Modules
 {
-	internal class Client_Request
+	internal class ClientRequest
 	{
 		internal static async Task<string> GetClientPhase()
 		{

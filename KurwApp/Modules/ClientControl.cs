@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace KurwApp.Modules
 {
-	internal static class Client_Control
+	internal static class ClientControl
 	{
 
 		//Random variable used for getting random skins
@@ -81,12 +81,12 @@ namespace KurwApp.Modules
 				if (Auth.IsAuthSet())
 				{
 					//Checks the game phase and perform action depending on it
-					switch (await Client_Request.GetClientPhase())
+					switch (await ClientRequest.GetClientPhase())
 					{
 						//On ready check
 						case "ReadyCheck":
 							//If the setting to get automatically ready is on : accept the game
-							if (GetSettingState("autoReady")) await Client_Request.Accept();
+							if (GetSettingState("autoReady")) await ClientRequest.Accept();
 							break;
 						//On champion selection : start and await the end of the champ select handler
 						case "ChampSelect":
@@ -132,7 +132,7 @@ namespace KurwApp.Modules
 		//Get the id of all available skins
 		internal static async Task<int[]> GetAvailableSkinsID()
 		{
-			JArray currentChampionSkins = await Client_Request.GetCurrentChampionSkins();
+			JArray currentChampionSkins = await ClientRequest.GetCurrentChampionSkins();
 
 			var availableSkinsId = currentChampionSkins.Where(skin => skin.Value<bool>("unlocked"))
 														.Select(skin => skin.Value<int>("id"));
@@ -156,7 +156,7 @@ namespace KurwApp.Modules
 			if (skin_ids.Any())
 			{
 				int random_skin_index = random.Next(skin_ids.Length);
-				await Client_Request.ChangeSkinByID(skin_ids[random_skin_index]);
+				await ClientRequest.ChangeSkinByID(skin_ids[random_skin_index]);
 			}
 		}
 
@@ -180,7 +180,7 @@ namespace KurwApp.Modules
 		//Retrieves the champion select ohase name
 		internal static async Task<string> GetChampSelectPhase()
 		{
-			var session_timer = await Client_Request.GetSessionTimer();
+			var session_timer = await ClientRequest.GetSessionTimer();
 			if (session_timer == "")
 			{
 				return "";
@@ -269,7 +269,7 @@ namespace KurwApp.Modules
 		internal static async Task<int> GetCurrentRunePageId()
 		{
 			//Get all pages
-			var pages = await Client_Request.GetRunePages();
+			var pages = await ClientRequest.GetRunePages();
 
 			//Get the page containing the name Kurwapp
 			var kurwappRunes = pages.First(page => (bool)page["current"] == true);
@@ -281,7 +281,7 @@ namespace KurwApp.Modules
 		//Check if we can create a new page
 		internal static async Task<bool> CanCreateNewPage()
 		{
-			var inventory = await Client_Request.GetRunesInventory();
+			var inventory = await ClientRequest.GetRunesInventory();
 			return (bool)inventory["canAddCustomPage"];
 		}
 
@@ -301,11 +301,11 @@ namespace KurwApp.Modules
 
 			if (appPageId != null)
 			{
-				await Client_Request.EditRunePage(appPageId, recommendedRunes);
+				await ClientRequest.EditRunePage(appPageId, recommendedRunes);
 			}
 			else if (await CanCreateNewPage())
 			{
-				await Client_Request.CreateNewRunePage(recommendedRunes);
+				await ClientRequest.CreateNewRunePage(recommendedRunes);
 			}
 			else if ((bool)GetPreference("runes.overridePage"))
 			{
@@ -315,10 +315,10 @@ namespace KurwApp.Modules
 
 		private static async Task EditOldestRunePage(string newRunesPage)
 		{
-			var runesPages = await Client_Request.GetRunePages();
+			var runesPages = await ClientRequest.GetRunePages();
 			string oldestPageId = runesPages.OrderBy(page => page["lastModified"].ToString()).First()["id"].ToString();
 
-			await Client_Request.EditRunePage(oldestPageId, newRunesPage);
+			await ClientRequest.EditRunePage(oldestPageId, newRunesPage);
 		}
 
 		#endregion Runes
@@ -334,14 +334,14 @@ namespace KurwApp.Modules
 				}
 			}
 
-			await Client_Request.ChangeSummonerSpells(recommendedSpells);
+			await ClientRequest.ChangeSummonerSpells(recommendedSpells);
 		}
 
 		internal static async Task<Tuple<byte[], byte[]>?> GetRunesIcons()
 		{
 			var runesStyles = await DataCache.GetRunesStyleInformation();
 
-			var currentRunes = await Client_Request.GetActiveRunePage();
+			var currentRunes = await ClientRequest.GetActiveRunePage();
 
 			if (currentRunes == null) return null;
 

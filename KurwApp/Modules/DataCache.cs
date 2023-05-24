@@ -80,21 +80,21 @@ namespace KurwApp.Modules
 
 		internal static async Task<JArray> GetChampionsInformations()
 		{
-			championsInformation ??= await Client_Request.GetChampionsInfo();
+			championsInformation ??= await ClientRequest.GetChampionsInfo();
 
 			return championsInformation;
 		}
 
 		internal static async Task<JArray> GetChampionsRunesRecommendation()
 		{
-			championsRunesRecommendation ??= await Client_Request.GetRecommendedRunes();
+			championsRunesRecommendation ??= await ClientRequest.GetRecommendedRunes();
 
 			return championsRunesRecommendation;
 		}
 
 		internal static async Task<JArray> GetRunesStyleInformation()
 		{
-			runesStyleInformation ??= await Client_Request.GetRunesStyles();
+			runesStyleInformation ??= await ClientRequest.GetRunesStyles();
 
 			return runesStyleInformation;
 		}
@@ -103,7 +103,7 @@ namespace KurwApp.Modules
 		{
 			if (summonerId == null)
 			{
-				JObject summonerAndAccountId = await Client_Request.GetSummonerAndAccountId();
+				JObject summonerAndAccountId = await ClientRequest.GetSummonerAndAccountId();
 				summonerId = summonerAndAccountId["summonerId"].ToString();
 			}
 
@@ -115,7 +115,7 @@ namespace KurwApp.Modules
 			if (appRunePageId == null)
 			{
 				//Get all pages
-				var pages = await Client_Request.GetRunePages();
+				var pages = await ClientRequest.GetRunePages();
 
 				//Get the page containing the name Kurwapp
 				var kurwappRunes = pages.Where(page => page["name"].ToString().ToLower().Contains("kurwapp"));
@@ -129,21 +129,21 @@ namespace KurwApp.Modules
 
 		internal static async Task<byte[]> GetDefaultChampionIcon()
 		{
-			defaultChampionIcon ??= await Client_Request.GetChampionImageById(-1);
+			defaultChampionIcon ??= await ClientRequest.GetChampionImageById(-1);
 
 			return defaultChampionIcon;
 		}
 
 		internal static async Task<byte[]> GetDefaultRuneIcon()
 		{
-			defaultRuneIcon ??= await Client_Request.GetDefaultRuneImage();
+			defaultRuneIcon ??= await ClientRequest.GetDefaultRuneImage();
 
 			return defaultRuneIcon;
 		}
 
 		internal static async Task<byte[]> GetDefaultMapIcon()
 		{
-			defaultMapIcon ??= await Client_Request.GetDefaultMapImage();
+			defaultMapIcon ??= await ClientRequest.GetDefaultMapImage();
 
 			return defaultMapIcon;
 		}
@@ -152,11 +152,11 @@ namespace KurwApp.Modules
 		{
 			if (isInGame)
 			{
-				ingameAramIcon ??= await Client_Request.GetAramMapImage(inGame: true);
+				ingameAramIcon ??= await ClientRequest.GetAramMapImage(inGame: true);
 				return ingameAramIcon;
 			}
 
-			champSelectAramIcon ??= await Client_Request.GetAramMapImage(inGame: false);
+			champSelectAramIcon ??= await ClientRequest.GetAramMapImage(inGame: false);
 			return champSelectAramIcon;
 		}
 
@@ -164,11 +164,11 @@ namespace KurwApp.Modules
 		{
 			if (isInGame)
 			{
-				ingameClassicIcon ??= await Client_Request.GetClassicMapImage(inGame: true);
+				ingameClassicIcon ??= await ClientRequest.GetClassicMapImage(inGame: true);
 				return ingameClassicIcon;
 			}
 
-			champSelectClassicIcon ??= await Client_Request.GetClassicMapImage(inGame: false);
+			champSelectClassicIcon ??= await ClientRequest.GetClassicMapImage(inGame: false);
 			return champSelectClassicIcon;
 		}
 

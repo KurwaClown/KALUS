@@ -44,7 +44,7 @@ namespace KurwApp.Modules
 
 			while (Auth.IsAuthSet())
 			{
-				sessionInfo = await Client_Request.GetSessionInfo();
+				sessionInfo = await ClientRequest.GetSessionInfo();
 				if (sessionInfo is null) return;
 				//Set the position and cell id after every new session check : in case of cell change
 				SetPositionAndCellId();
@@ -74,17 +74,17 @@ namespace KurwApp.Modules
 		//Act on finalization
 		protected override async Task Finalization()
 		{
-			var currentRuneIcons = await Client_Control.GetRunesIcons();
+			var currentRuneIcons = await ClientControl.GetRunesIcons();
 
 			if (currentRuneIcons != null) mainWindow.SetRunesIcons(currentRuneIcons.Item1, currentRuneIcons.Item2); ;
 
-			if (championId == 0) championId = await Client_Request.GetCurrentChampionId();
+			if (championId == 0) championId = await ClientRequest.GetCurrentChampionId();
 			if (delayedPick != null)
 			{
-				championId = await Client_Request.GetCurrentChampionId();
+				championId = await ClientRequest.GetCurrentChampionId();
 				CancelDelayedPick();
 			}
-			if (!isDraft) position = await Client_Control.GetChampionDefaultPosition(championId);
+			if (!isDraft) position = await ClientControl.GetChampionDefaultPosition(championId);
 
 			if (!champSelectFinalized)
 			{
@@ -96,10 +96,10 @@ namespace KurwApp.Modules
 		protected override async Task ChangeSpells()
 		{
 			string positionForSpells = position;
-			var runesRecommendation = await Client_Control.GetSpellsRecommendationByPosition(championId, positionForSpells);
+			var runesRecommendation = await ClientControl.GetSpellsRecommendationByPosition(championId, positionForSpells);
 			var spellsId = runesRecommendation.ToObject<int[]>();
 
-			Client_Control.SetSummonerSpells(spellsId);
+			ClientControl.SetSummonerSpells(spellsId);
 		}
 
 		//Act on pick phase
@@ -108,7 +108,7 @@ namespace KurwApp.Modules
 			if (champSelectFinalized) return;
 			var actions = GetSessionActions();
 
-			int currentChampionId = await Client_Request.GetCurrentChampionId();
+			int currentChampionId = await ClientRequest.GetCurrentChampionId();
 			if (currentChampionId != 0)
 			{
 				championId = currentChampionId;
@@ -132,14 +132,14 @@ namespace KurwApp.Modules
 					}
 				}
 
-				if (type == "ban" && Client_Control.GetSettingState("banPick"))
+				if (type == "ban" && ClientControl.GetSettingState("banPick"))
 				{
 					int banPick = await GetChampionBan();
 					if (banPick == 0) return;
 					await SelectionAction(actionId, banPick, type);
 				}
 
-				if (type == "pick" && Client_Control.GetSettingState("championPick"))
+				if (type == "pick" && ClientControl.GetSettingState("championPick"))
 				{
 					championId = await GetChampionPick();
 					int championSelectionId = actions.First(action => action.Value<bool>("isInProgress") && action.Value<int>("actorCellId") == cellId)
@@ -147,7 +147,7 @@ namespace KurwApp.Modules
 
 					if (championSelectionId != championId && championSelectionId != 0)
 					{
-						switch (Client_Control.GetPreference("selections.userPreference").Value<int>())
+						switch (ClientControl.GetPreference("selections.userPreference").Value<int>())
 						{
 							default:
 								break;
@@ -166,7 +166,7 @@ namespace KurwApp.Modules
 
 					if (championId == 0)
 					{
-						switch (Client_Control.GetPreference("noPicks.userPreference").Value<int>())
+						switch (ClientControl.GetPreference("noPicks.userPreference").Value<int>())
 						{
 							default:
 								championId = await GetRandomChampionPick();
@@ -186,7 +186,7 @@ namespace KurwApp.Modules
 		{
 			if (championId == 0 || delayedPickType == type) return;
 
-			await Client_Request.SelectChampion(actionId, championId);
+			await ClientRequest.SelectChampion(actionId, championId);
 			if (type == "pick")
 			{
 				if (isChampionRandom) return;
@@ -201,7 +201,7 @@ namespace KurwApp.Modules
 
 		private async Task ExecutePickBanPreference(string preferenceToken, int actionId, string pickType)
 		{
-			int preference = Client_Control.GetPreference($"{preferenceToken}.userPreference").Value<int>();
+			int preference = ClientControl.GetPreference($"{preferenceToken}.userPreference").Value<int>();
 			if (preference == 1) return;
 			if (preference == 2)
 			{
@@ -209,20 +209,20 @@ namespace KurwApp.Modules
 				if (delayedPick != null && delayedPickType == pickType) return;
 
 				//+1 to prevent index 0 (5 seconds) to be 0 seconds
-				int otlTimeIndex = Client_Control.GetPreference($"{preferenceToken}.OTLTimeIndex").Value<int>() + 1;
+				int otlTimeIndex = ClientControl.GetPreference($"{preferenceToken}.OTLTimeIndex").Value<int>() + 1;
 				int sessionTimer = sessionInfo.SelectToken("timer.adjustedTimeLeftInPhase").Value<int>();
 
 				delayedPick = new Timer(ConfirmActionDelayed, actionId, TimeSpan.FromSeconds(sessionTimer / 1000 - (otlTimeIndex * 5)), TimeSpan.Zero);
 				delayedPickType = pickType;
 				return;
 			}
-			await Client_Request.ConfirmAction(actionId);
+			await ClientRequest.ConfirmAction(actionId);
 			hasPicked = true;
 		}
 
 		private async void ConfirmActionDelayed(object sender)
 		{
-			await Client_Request.ConfirmAction((int)sender);
+			await ClientRequest.ConfirmAction((int)sender);
 			hasPicked = true;
 			CancelDelayedPick();
 		}
@@ -249,7 +249,7 @@ namespace KurwApp.Modules
 			var availablePicks = picks.Select(x => int.Parse(x.ToString()))
 												.ToArray()
 												.Except(GetNonAvailableChampions())
-												.Intersect(await Client_Request.GetAvailableChampionsPick());
+												.Intersect(await ClientRequest.GetAvailableChampionsPick());
 
 			if (!availablePicks.Any()) return 0;
 			return availablePicks.First();
@@ -274,14 +274,14 @@ namespace KurwApp.Modules
 
 		private async Task<int> GetRandomChampionPick()
 		{
-			int noPicksPreferences = Client_Control.GetPreference("noPicks.userPreference").Value<int>();
+			int noPicksPreferences = ClientControl.GetPreference("noPicks.userPreference").Value<int>();
 
-			var availableChampions = await Client_Request.GetAvailableChampionsPick();
+			var availableChampions = await ClientRequest.GetAvailableChampionsPick();
 
 			//Random pick by position
 			if (noPicksPreferences == 0)
 			{
-				var allChampionsByPosition = await Client_Control.GetAllChampionForPosition(position);
+				var allChampionsByPosition = await ClientControl.GetAllChampionForPosition(position);
 
 				var availablesChampionsForPosition = allChampionsByPosition.Intersect(availableChampions).ToArray();
 
@@ -314,12 +314,12 @@ namespace KurwApp.Modules
 
 		protected override async Task ChangeRunes()
 		{
-			bool isSetActive = (bool)Client_Control.GetPreference("runes.notSetActive");
-			string activeRunesPage = isSetActive ? (await Client_Request.GetActiveRunePage())["id"].ToString() : "0";
-			await Client_Control.SetRunesPage(championId, position);
+			bool isSetActive = (bool)ClientControl.GetPreference("runes.notSetActive");
+			string activeRunesPage = isSetActive ? (await ClientRequest.GetActiveRunePage())["id"].ToString() : "0";
+			await ClientControl.SetRunesPage(championId, position);
 			isRunePageChanged = true;
 
-			if (isSetActive) await Client_Request.SetActiveRunePage(activeRunesPage);
+			if (isSetActive) await ClientRequest.SetActiveRunePage(activeRunesPage);
 		}
 	}
 }

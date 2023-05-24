@@ -31,8 +31,8 @@ namespace KurwApp
 		{
 			InitializeComponent();
 
-			Thread authentication = new(() => Client_Control.EnsureAuthentication(this));
-			Thread clientPhase = new(() => Client_Control.ClientPhase(this));
+			Thread authentication = new(() => ClientControl.EnsureAuthentication(this));
+			Thread clientPhase = new(() => ClientControl.ClientPhase(this));
 
 			authentication.Start();
 			clientPhase.Start();
@@ -168,7 +168,7 @@ namespace KurwApp
 
 		private void RandomSkinClick(object sender, RoutedEventArgs e)
 		{
-			Client_Control.PickRandomSkin();
+			ClientControl.PickRandomSkin();
 		}
 
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -179,7 +179,7 @@ namespace KurwApp
 
 		private async void ClientRestart(object sender, RoutedEventArgs e)
 		{
-			await Client_Request.RestartLCU();
+			await ClientRequest.RestartLCU();
 		}
 
 		private void AddSelection(object sender, RoutedEventArgs e)

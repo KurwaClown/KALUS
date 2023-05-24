@@ -17,7 +17,7 @@ namespace KurwApp.Modules
 
 		internal static async Task<Game?> CreateGame(MainWindow mainWindow)
 		{
-			JObject? lobbyInfo = await Client_Request.GetLobbyInfo();
+			JObject? lobbyInfo = await ClientRequest.GetLobbyInfo();
 			if (lobbyInfo is null) return null;
 			string gameMode = lobbyInfo["gameConfig"]["gameMode"].ToString();
 			bool hasPositions = (bool)lobbyInfo["gameConfig"]["showPositionSelector"];
@@ -43,7 +43,7 @@ namespace KurwApp.Modules
 
 		protected async Task PostPickAction()
 		{
-			var imageBytes = await Client_Request.GetChampionImageById(championId);
+			var imageBytes = await ClientRequest.GetChampionImageById(championId);
 
 			var champions = await DataCache.GetChampionsInformations();
 
@@ -56,15 +56,15 @@ namespace KurwApp.Modules
 			mainWindow.EnableRandomSkinButton(true);
 
 			//Set runes if the the auto rune is toggled
-			if (Client_Control.GetSettingState("runesSwap") && !isRunePageChanged)
+			if (ClientControl.GetSettingState("runesSwap") && !isRunePageChanged)
 			{
 				await ChangeRunes();
 			}
 
 			//Random skin on pick
-			if ((bool)Client_Control.GetPreference("randomSkin.randomOnPick")) Client_Control.PickRandomSkin();
+			if ((bool)ClientControl.GetPreference("randomSkin.randomOnPick")) ClientControl.PickRandomSkin();
 
-			if (Client_Control.GetSettingState("autoSummoner")) await ChangeSpells();
+			if (ClientControl.GetSettingState("autoSummoner")) await ChangeSpells();
 		}
 
 		//Get sessions actions

@@ -17,7 +17,7 @@ namespace KurwApp.Modules
 		//Handler of the champion selections
 		protected internal override async Task ChampSelectControl()
 		{
-			sessionInfo = await Client_Request.GetSessionInfo();
+			sessionInfo = await ClientRequest.GetSessionInfo();
 			if (sessionInfo is null) return;
 
 			mainWindow.SetGamemodeName("ARAM");
@@ -25,7 +25,7 @@ namespace KurwApp.Modules
 
 			while (Auth.IsAuthSet())
 			{
-				sessionInfo = await Client_Request.GetSessionInfo();
+				sessionInfo = await ClientRequest.GetSessionInfo();
 
 				if (sessionInfo is null) return;
 				switch (sessionInfo.Value<string>("timer.phase"))
@@ -48,19 +48,19 @@ namespace KurwApp.Modules
 
 		protected override async Task Finalization()
 		{
-			if (Client_Control.GetSettingState("aramChampionSwap"))
+			if (ClientControl.GetSettingState("aramChampionSwap"))
 			{
 				int aramPick = GetBenchChampionPick();
 
 				if (aramPick != 0)
 				{
-					await Client_Request.AramBenchSwap(aramPick);
+					await ClientRequest.AramBenchSwap(aramPick);
 					isRunePageChanged = false;
 					await PostPickAction();
-					championId = await Client_Request.GetCurrentChampionId();
+					championId = await ClientRequest.GetCurrentChampionId();
 				}
 			}
-			var currentChampionId = await Client_Request.GetCurrentChampionId();
+			var currentChampionId = await ClientRequest.GetCurrentChampionId();
 
 			if (currentChampionId != championId)
 			{
@@ -95,26 +95,26 @@ namespace KurwApp.Modules
 
 		protected override async Task ChangeSpells()
 		{
-			var runesRecommendation = await Client_Control.GetSpellsRecommendationByPosition(championId, "NONE");
+			var runesRecommendation = await ClientControl.GetSpellsRecommendationByPosition(championId, "NONE");
 
 			var spellsId = runesRecommendation.ToObject<int[]>();
 
 			if (!spellsId.Contains(32)) spellsId[1] = 32;
 
-			Client_Control.SetSummonerSpells(spellsId);
+			ClientControl.SetSummonerSpells(spellsId);
 		}
 
 		protected override async Task ChangeRunes()
 		{
-			bool isSetActive = (bool)Client_Control.GetPreference("runes.notSetActive");
+			bool isSetActive = (bool)ClientControl.GetPreference("runes.notSetActive");
 
-			string activeRunesPage = isSetActive ? (await Client_Request.GetActiveRunePage())["id"].ToString() : "0";
+			string activeRunesPage = isSetActive ? (await ClientRequest.GetActiveRunePage())["id"].ToString() : "0";
 
-			await Client_Control.SetRunesPage(championId, "NONE");
+			await ClientControl.SetRunesPage(championId, "NONE");
 
 			isRunePageChanged = true;
 
-			if (isSetActive) await Client_Request.SetActiveRunePage(activeRunesPage);
+			if (isSetActive) await ClientRequest.SetActiveRunePage(activeRunesPage);
 		}
 	}
 }
