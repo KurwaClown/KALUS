@@ -1,5 +1,5 @@
-﻿using KurwApp.Modules;
-using KurwApp.Modules.Networking;
+﻿using Kalus.Modules;
+using Kalus.Modules.Networking;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
-namespace KurwApp
+namespace Kalus
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml

@@ -1,4 +1,4 @@
-﻿using KurwApp.Modules.Networking;
+﻿using Kalus.Modules.Networking;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KurwApp.Modules.Games.GameMode
+namespace Kalus.Modules.Games.GameMode
 {
     internal class Aram : Game
     {

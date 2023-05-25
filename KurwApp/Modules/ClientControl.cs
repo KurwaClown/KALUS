@@ -1,5 +1,5 @@
-﻿using KurwApp.Modules.Networking;
-using KurwApp.Modules.Games;
+﻿using Kalus.Modules.Networking;
+using Kalus.Modules.Games;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KurwApp.Modules
+namespace Kalus.Modules
 {
     internal static class ClientControl
 	{

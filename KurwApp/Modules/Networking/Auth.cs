@@ -2,7 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KurwApp.Modules.Networking
+namespace Kalus.Modules.Networking
 {
     internal class Auth
     {

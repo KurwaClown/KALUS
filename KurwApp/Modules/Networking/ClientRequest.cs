@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 
-namespace KurwApp.Modules.Networking
+namespace Kalus.Modules.Networking
 {
     internal class ClientRequest
     {

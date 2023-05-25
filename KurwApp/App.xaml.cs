@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace KurwApp
+namespace Kalus
 {
 	/// <summary>
 	/// Interaction logic for App.xaml

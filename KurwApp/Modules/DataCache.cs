@@ -1,11 +1,11 @@
-﻿using KurwApp.Modules.Networking;
+﻿using Kalus.Modules.Networking;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KurwApp.Modules
+namespace Kalus.Modules
 {
     internal static class DataCache
 	{
