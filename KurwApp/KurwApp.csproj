@@ -10,10 +10,6 @@
   <ItemGroup>
     <None Remove="Configurations\preferences.json" />
     <None Remove="Configurations\settings.json" />
-    <None Remove="Picks\ARAM.json" />
-    <None Remove="Picks\Ban.json" />
-    <None Remove="Picks\Blind.json" />
-    <None Remove="Picks\Pick.json" />
     <None Remove="Picks\PickBan.json" />
     <None Remove="riotgames.pem" />
   </ItemGroup>
@@ -23,18 +19,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Configurations\settings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Picks\ARAM.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Picks\Ban.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Picks\Blind.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Picks\Pick.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Certificates\riotgames.pem">
