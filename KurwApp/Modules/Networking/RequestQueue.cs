@@ -95,12 +95,9 @@ namespace KurwApp.Modules.Networking
                 var response = await _httpClient.SendAsync(new HttpRequestMessage(httpMethod, endpoint) { Content = httpContent });
                 string responseString = string.Empty;
 
-                if (response.IsSuccessStatusCode) responseString = await response.Content.ReadAsStringAsync();
-                else
-                {
-                    Debug.WriteLine(response.StatusCode);
-                    Debug.WriteLine(endpoint);
-                }
+                if (!response.IsSuccessStatusCode) Debug.WriteLine($"{response.StatusCode} for endpoint : {endpoint}");
+				responseString = await response.Content.ReadAsStringAsync();
+
                 _httpClient.Dispose();
                 return responseString;
             };
