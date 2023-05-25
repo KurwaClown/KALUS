@@ -342,6 +342,7 @@ namespace Kalus
 				autoBanSetting.IsChecked = (bool)settings["banPick"];
 				autoReadySetting.IsChecked = (bool)settings["aramChampionSwap"];
 				autoRunesSetting.IsChecked = (bool)settings["runesSwap"];
+				autoSpellSetting.IsChecked = (bool)settings["autoSummoner"];
 				autoSwapSetting.IsChecked = (bool)settings["autoReady"];
 			}
 			);
