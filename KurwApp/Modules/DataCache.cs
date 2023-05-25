@@ -1,13 +1,12 @@
 ﻿using Kalus.Modules.Networking;
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kalus.Modules
 {
-    internal static class DataCache
+	internal static class DataCache
 	{
 		private static readonly string settingsPath = "Configurations/settings.json";
 		private static JObject settings = JObject.Parse(File.ReadAllText(settingsPath));
@@ -36,7 +35,6 @@ namespace Kalus.Modules
 		private static byte[]? ingameAramIcon;
 		private static byte[]? champSelectAramIcon;
 
-
 		#region Files
 
 		internal static JObject GetSettings()
@@ -59,7 +57,6 @@ namespace Kalus.Modules
 			File.WriteAllText(settingsPath, settings.ToString());
 		}
 
-
 		internal static JObject GetPreferences()
 		{
 			return preferences;
@@ -73,7 +70,7 @@ namespace Kalus.Modules
 			return true;
 		}
 
-		internal static void SetPreference(string preferenceToken,  dynamic newValue)
+		internal static void SetPreference(string preferenceToken, dynamic newValue)
 		{
 			preferences.SelectToken(preferenceToken).Replace(newValue);
 
@@ -140,8 +137,8 @@ namespace Kalus.Modules
 
 			SavePickBan();
 		}
-		#endregion
 
+		#endregion Files
 
 		internal static async Task<JArray> GetChampionsInformations()
 		{
@@ -186,7 +183,7 @@ namespace Kalus.Modules
 				var kurwappRunes = pages.Where(page => page["name"].ToString().ToLower().Contains("kurwapp"));
 
 				//Assign the page id if there is any
-				if (kurwappRunes.Any())appRunePageId = kurwappRunes.Select(page => (int)page["id"]).First().ToString();
+				if (kurwappRunes.Any()) appRunePageId = kurwappRunes.Select(page => (int)page["id"]).First().ToString();
 			}
 
 			return appRunePageId;

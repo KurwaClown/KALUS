@@ -10,92 +10,91 @@
         Closing="Window_Closing" MinWidth="720" MinHeight="440">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition Height="150"/>
+            <RowDefinition />
+            <RowDefinition Height="150" />
         </Grid.RowDefinitions>
         <TabControl Margin="5,5,5,5">
             <TabItem Header="Characters">
                 <!-- Content for Tab 1 -->
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition MinHeight="25"/>
-                        <RowDefinition Height="4*"/>
-                        <RowDefinition Height="4*"/>
-                        <RowDefinition Height="4*"/>
-                        <RowDefinition/>
+                        <RowDefinition MinHeight="25" />
+                        <RowDefinition Height="4*" />
+                        <RowDefinition Height="4*" />
+                        <RowDefinition Height="4*" />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="2*" />
                     </Grid.ColumnDefinitions>
-                    <ListBox x:Name="champList" ItemsSource="{Binding updatedListCollection}" Grid.RowSpan="3" Grid.Row="1" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"/>
-                    <ListBox x:Name="selectionList" ItemsSource="{Binding selectedListCollection}" Grid.Column="3" Grid.RowSpan="3" Grid.Row="1" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"/>
+                    <ListBox x:Name="champList" ItemsSource="{Binding updatedListCollection}" Grid.RowSpan="3" Grid.Row="1" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+                    <ListBox x:Name="selectionList" ItemsSource="{Binding selectedListCollection}" Grid.Column="3" Grid.RowSpan="3" Grid.Row="1" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" />
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" Width="100" MinHeight="50" MinWidth="100">
                         <ComboBox x:Name="selectionListGameType" SelectionChanged="SelectionListChange">
-                            <ComboBoxItem Content="Blind" IsSelected="True"/>
-                            <ComboBoxItem x:Name="draftMode" Content="Draft"/>
-                            <ComboBoxItem Content="ARAM"/>
+                            <ComboBoxItem Content="Blind" IsSelected="True" />
+                            <ComboBoxItem x:Name="draftMode" Content="Draft" />
+                            <ComboBoxItem Content="ARAM" />
                         </ComboBox>
                         <ComboBox x:Name="selectionListType" Margin="0,10,0,0" IsEnabled="{Binding IsSelected, ElementName=draftMode}" SelectionChanged="SelectionListChange">
-                            <ComboBoxItem Content="Pick" IsSelected="True"/>
-                            <ComboBoxItem Content="Ban"/>
+                            <ComboBoxItem Content="Pick" IsSelected="True" />
+                            <ComboBoxItem Content="Ban" />
                         </ComboBox>
                         <ComboBox x:Name="selectionListPosition" Margin="0,10,0,0" VerticalAlignment="Top" IsEnabled="{Binding IsSelected, ElementName=draftMode}"  SelectionChanged="SelectionListChange">
-                            <ComboBoxItem Content="Top" IsSelected="True"/>
-                            <ComboBoxItem Content="Jungle"/>
-                            <ComboBoxItem Content="Middle"/>
-                            <ComboBoxItem Content="Bottom"/>
-                            <ComboBoxItem Content="Support"/>
+                            <ComboBoxItem Content="Top" IsSelected="True" />
+                            <ComboBoxItem Content="Jungle" />
+                            <ComboBoxItem Content="Middle" />
+                            <ComboBoxItem Content="Bottom" />
+                            <ComboBoxItem Content="Support" />
                         </ComboBox>
                     </StackPanel>
-                    <Label Content="Champions List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Grid.Column="3" Content="Selected Champions" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="Champions List" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <Label Grid.Column="3" Content="Selected Champions" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="2" MinHeight="50" Width="100" MinWidth="100">
-                        <Button x:Name="selectionListAdd" Content="Add →" Click="AddSelection"/>
-                        <Button x:Name="selectionListRemove" Content="← Remove " Margin="0,10,0,0" Click="RemoveSelection"/>
+                        <Button x:Name="selectionListAdd" Content="Add →" Click="AddSelection" />
+                        <Button x:Name="selectionListRemove" Content="← Remove " Margin="0,10,0,0" Click="RemoveSelection" />
                     </StackPanel>
                     <StackPanel Grid.Column="2" Grid.Row="4" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Button x:Name="selectionOrderDown" Content="↓" Width="{Binding ActualHeight, ElementName=selectionOrderDown, Mode=OneWay}" Click="ReorderSelection"/>
-                        <Button x:Name="selectionOrderUp" Content="↑" Width="{Binding ActualHeight, ElementName=selectionOrderUp, Mode=OneWay}" Margin="15,0,0,0" Click="ReorderSelection"/>
+                        <Button x:Name="selectionOrderDown" Content="↓" Width="{Binding ActualHeight, ElementName=selectionOrderDown, Mode=OneWay}" Click="ReorderSelection" />
+                        <Button x:Name="selectionOrderUp" Content="↑" Width="{Binding ActualHeight, ElementName=selectionOrderUp, Mode=OneWay}" Margin="15,0,0,0" Click="ReorderSelection" />
                     </StackPanel>
-
                 </Grid>
             </TabItem>
             <TabItem Header="Preferences">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <StackPanel x:Name="leftPanel" Grid.RowSpan="3">
                         <GroupBox Height="100" Header="Runes">
                             <StackPanel x:Name="runesPreferences">
-                                <CheckBox x:Name="notSetPageAsActive" Content="Do not set page as active" Height="15" SnapsToDevicePixels="True" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="runes.notSetActive"/>
-                                <CheckBox x:Name="overridePage" Content="Erase oldest page when no slot available" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="runes.overridePage"/>
+                                <CheckBox x:Name="notSetPageAsActive" Content="Do not set page as active" Height="15" SnapsToDevicePixels="True" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="runes.notSetActive" />
+                                <CheckBox x:Name="overridePage" Content="Erase oldest page when no slot available" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="runes.overridePage" />
                             </StackPanel>
                         </GroupBox>
                         <GroupBox Height="100" Header="Random Skin">
                             <StackPanel x:Name="randomSkinPreferences">
                                 <CheckBox x:Name="addChromas" Content="Add chroma skins to randomizer" Height="15" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="randomSkin.addChromas" />
-                                <CheckBox x:Name="randomOnPick" Content="Randomize skin on champion pick " Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="randomSkin.randomOnPick"/>
+                                <CheckBox x:Name="randomOnPick" Content="Randomize skin on champion pick " Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="randomSkin.randomOnPick" />
                             </StackPanel>
                         </GroupBox>
                         <GroupBox Height="100" Header="Summoner Spells">
                             <StackPanel x:Name="summonerPreferences">
                                 <CheckBox x:Name="alwaysSnowball" Content="Always have snowball in aram" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="summoners.alwaysSnowball" />
                                 <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                    <Label Content="Flash position :" HorizontalAlignment="Left" Margin="-3,0,0,0" VerticalAlignment="Center"/>
+                                    <Label Content="Flash position :" HorizontalAlignment="Left" Margin="-3,0,0,0" VerticalAlignment="Center" />
                                     <StackPanel x:Name="flashPosition" Width="100">
                                         <StackPanel Orientation="Horizontal">
-                                            <RadioButton Content="Left" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="0"/>
-                                            <RadioButton Content="Right" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="1" Margin="5,0,0,0"/>
+                                            <RadioButton Content="Left" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="0" />
+                                            <RadioButton Content="Right" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="1" Margin="5,0,0,0" />
                                         </StackPanel>
-                                        <RadioButton Content="Indifferent" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="2"/>
+                                        <RadioButton Content="Indifferent" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="2" />
                                     </StackPanel>
                                 </StackPanel>
                             </StackPanel>
@@ -104,36 +103,36 @@
                     <StackPanel x:Name="middlePanel" Grid.Column="1" Grid.RowSpan="3" Margin="5,0,5,0">
                         <GroupBox  Header="Picks" MinHeight="85">
                             <StackPanel x:Name="picksPreferences" UseLayoutRounding="False" VerticalAlignment="Top" Tag="picks">
-                                <RadioButton Content="Instant" GroupName="picks.userPreference" Height="15"  Tag="0" Checked="OnControlInteraction"/>
-                                <RadioButton Content="Select and Wait" GroupName="picks.userPreference" Height="15" Margin="0,5,0,0" Tag="1" Checked="OnControlInteraction"/>
+                                <RadioButton Content="Instant" GroupName="picks.userPreference" Height="15"  Tag="0" Checked="OnControlInteraction" />
+                                <RadioButton Content="Select and Wait" GroupName="picks.userPreference" Height="15" Margin="0,5,0,0" Tag="1" Checked="OnControlInteraction" />
 
-                                <RadioButton x:Name="pickOTL" Content="On time left" GroupName="picks.userPreference" VerticalAlignment="Center" Tag="2" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction"/>
-                                <ComboBox x:Name="picksTimeLeft" HorizontalAlignment="Left" IsEnabled="{Binding IsChecked, ElementName=pickOTL}" IsEnabledChanged="IsEnabledModified" SelectionChanged="OTLChange" Margin="20,5,0,0" Tag="picks.OTLTimeIndex"/>
+                                <RadioButton x:Name="pickOTL" Content="On time left" GroupName="picks.userPreference" VerticalAlignment="Center" Tag="2" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" />
+                                <ComboBox x:Name="picksTimeLeft" HorizontalAlignment="Left" IsEnabled="{Binding IsChecked, ElementName=pickOTL}" IsEnabledChanged="IsEnabledModified" SelectionChanged="OTLChange" Margin="20,5,0,0" Tag="picks.OTLTimeIndex" />
                             </StackPanel>
                         </GroupBox>
                         <GroupBox Header="No Available Picks" MinHeight="85">
                             <StackPanel x:Name="noAvailablePreferences" Tag="noPicks">
-                                <RadioButton Tag="0" GroupName="noPicks.userPreference" Content="Select random from current role" Checked="OnControlInteraction" Height="15"/>
-                                <RadioButton Tag="1" GroupName="noPicks.userPreference" Content="Select random from any role" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
-                                <RadioButton Tag="2" GroupName="noPicks.userPreference" Content="Do nothing"  Checked="OnControlInteraction" Height="15" Margin="0,5,0,5"/>
+                                <RadioButton Tag="0" GroupName="noPicks.userPreference" Content="Select random from current role" Checked="OnControlInteraction" Height="15" />
+                                <RadioButton Tag="1" GroupName="noPicks.userPreference" Content="Select random from any role" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0" />
+                                <RadioButton Tag="2" GroupName="noPicks.userPreference" Content="Do nothing"  Checked="OnControlInteraction" Height="15" Margin="0,5,0,5" />
                             </StackPanel>
                         </GroupBox>
                         <GroupBox Height="100" Header="On Champion Selection" MinHeight="85">
                             <StackPanel x:Name="onSelectionPreferences" Tag="selections">
-                                <TextBlock TextWrapping="Wrap" Text="Behavior on champion selection before pick phase" FontSize="9" HorizontalAlignment="Left" Margin="5,0,0,0"/>
-                                <RadioButton Tag="0" GroupName="selections.userPreference" Content="Do nothing" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
-                                <RadioButton Tag="1" x:Name="stillAutoPick" GroupName="selections.userPreference" Content="Still use normal auto pick" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
-                                <RadioButton Tag="2" x:Name="pickSelection" GroupName="selections.userPreference" Content="Use selection for auto pick" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
+                                <TextBlock TextWrapping="Wrap" Text="Behavior on champion selection before pick phase" FontSize="9" HorizontalAlignment="Left" Margin="5,0,0,0" />
+                                <RadioButton Tag="0" GroupName="selections.userPreference" Content="Do nothing" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0" />
+                                <RadioButton Tag="1" x:Name="stillAutoPick" GroupName="selections.userPreference" Content="Still use normal auto pick" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0" />
+                                <RadioButton Tag="2" x:Name="pickSelection" GroupName="selections.userPreference" Content="Use selection for auto pick" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0" />
                             </StackPanel>
                         </GroupBox>
                     </StackPanel>
                     <StackPanel x:Name="rightPanel" Margin="0,0,12,23" Grid.Column="2">
                         <GroupBox Header="Bans">
                             <StackPanel x:Name="bansPreferences" UseLayoutRounding="False" VerticalAlignment="Center" Margin="0,0,-2,0" Tag="bans">
-                                <RadioButton Tag="0" Content="Instant" GroupName="bans.userPreference" Checked="OnControlInteraction" Height="15"/>
-                                <RadioButton Tag="1" Content="Select and Wait" GroupName="bans.userPreference" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
-                                <RadioButton x:Name="bansOTL" Tag="2" Content="On time left" GroupName="bans.userPreference" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0"/>
-                                <ComboBox x:Name="bansTimeLeft" HorizontalAlignment="Left" Margin="20,5,0,0" IsEnabled="{Binding IsChecked, ElementName=bansOTL}" IsEnabledChanged="IsEnabledModified"  SelectionChanged="OTLChange" Tag="bans.OTLTimeIndex"/>
+                                <RadioButton Tag="0" Content="Instant" GroupName="bans.userPreference" Checked="OnControlInteraction" Height="15" />
+                                <RadioButton Tag="1" Content="Select and Wait" GroupName="bans.userPreference" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0" />
+                                <RadioButton x:Name="bansOTL" Tag="2" Content="On time left" GroupName="bans.userPreference" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0" />
+                                <ComboBox x:Name="bansTimeLeft" HorizontalAlignment="Left" Margin="20,5,0,0" IsEnabled="{Binding IsChecked, ElementName=bansOTL}" IsEnabledChanged="IsEnabledModified"  SelectionChanged="OTLChange" Tag="bans.OTLTimeIndex" />
                             </StackPanel>
                         </GroupBox>
                     </StackPanel>
@@ -143,41 +142,41 @@
         </TabControl>
         <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="1" Margin="5,0,5,5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <GroupBox x:Name="statusBorder" Header="Status" BorderBrush="#FFFF0303" Grid.ColumnSpan="2" Grid.Column="2" BorderThickness="2,2,2,2" Margin="5,0,0,0">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Image x:Name="gameModeIcon" Grid.RowSpan="3" Width="80" Height="80"/>
-                    <GridSplitter Height="100" Grid.RowSpan="4" Width="1"/>
+                    <Image x:Name="gameModeIcon" Grid.RowSpan="3" Width="80" Height="80" />
+                    <GridSplitter Height="100" Grid.RowSpan="4" Width="1" />
                     <Grid x:Name="stylesIcon" Grid.Column="1" Grid.RowSpan="4">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="3*"/>
-                            <RowDefinition/>
+                            <RowDefinition Height="3*" />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
                         <Grid HorizontalAlignment="Center" Height="81" VerticalAlignment="Center" Width="94">
                             <Ellipse x:Name="mainStyle" StrokeThickness="6" Stroke="#FF333333" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="50" MinHeight="50" MaxWidth="100" MaxHeight="100" Height="{Binding ActualWidth, ElementName=mainStyle, Mode=OneWay}" Width="70" Panel.ZIndex="1">
-                                <Ellipse.Fill >
-                                    <ImageBrush x:Name="mainStyleIcon" Stretch="None" ViewboxUnits="RelativeToBoundingBox" >
+                                <Ellipse.Fill>
+                                    <ImageBrush x:Name="mainStyleIcon" Stretch="None" ViewboxUnits="RelativeToBoundingBox">
                                         <ImageBrush.RelativeTransform>
                                             <TransformGroup>
-                                                <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleX="1.2" ScaleY="1.2"/>
-                                                <SkewTransform CenterX="0.5" CenterY="0.5"/>
-                                                <RotateTransform CenterX="0.5" CenterY="0.5"/>
-                                                <TranslateTransform/>
+                                                <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleX="1.2" ScaleY="1.2" />
+                                                <SkewTransform CenterX="0.5" CenterY="0.5" />
+                                                <RotateTransform CenterX="0.5" CenterY="0.5" />
+                                                <TranslateTransform />
                                             </TransformGroup>
                                         </ImageBrush.RelativeTransform>
                                     </ImageBrush>
@@ -185,50 +184,50 @@
                             </Ellipse>
                             <Path Stroke="{Binding Stroke, ElementName=mainStyle, Mode=TwoWay}" StrokeThickness="4" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="Fill" Margin="54,41,0,0" Data="M20,20 A30,30,0,1,1,0,50">
                                 <Path.Fill>
-                                    <ImageBrush x:Name="subStyleIcon" Stretch="None" >
+                                    <ImageBrush x:Name="subStyleIcon" Stretch="None">
                                         <ImageBrush.RelativeTransform>
                                             <TransformGroup>
-                                                <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleX="0.7" ScaleY="0.7"/>
-                                                <SkewTransform CenterX="0.5" CenterY="0.5"/>
-                                                <RotateTransform CenterX="0.5" CenterY="0.5"/>
-                                                <TranslateTransform/>
+                                                <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleX="0.7" ScaleY="0.7" />
+                                                <SkewTransform CenterX="0.5" CenterY="0.5" />
+                                                <RotateTransform CenterX="0.5" CenterY="0.5" />
+                                                <TranslateTransform />
                                             </TransformGroup>
                                         </ImageBrush.RelativeTransform>
                                     </ImageBrush>
                                 </Path.Fill>
                             </Path>
                         </Grid>
-                        <Label x:Name="runesLbl" Content="Runes" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center"/>
+                        <Label x:Name="runesLbl" Content="Runes" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" />
                     </Grid>
-                    <GridSplitter Height="100" Grid.RowSpan="4" Width="1" Grid.Column="1"/>
+                    <GridSplitter Height="100" Grid.RowSpan="4" Width="1" Grid.Column="1" />
                     <Grid Grid.Column="2" HorizontalAlignment="Center" Height="116" Grid.RowSpan="4" VerticalAlignment="Center" Width="120">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="3*"/>
-                            <RowDefinition/>
+                            <RowDefinition Height="3*" />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
                         <Ellipse StrokeThickness="8" Stroke="#FF333333" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="50" MinHeight="50" MaxWidth="100" MaxHeight="100" Height="80" Width="80" Grid.RowSpan="1">
                             <Ellipse.Fill>
                                 <ImageBrush x:Name="characterIcon" />
                             </Ellipse.Fill>
                         </Ellipse>
-                        <GridSplitter Height="1" Width="50" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1"/>
-                        <Label x:Name="championLbl" Content="Champ Picked" HorizontalAlignment="Center" VerticalAlignment="Top" FontWeight="UltraBold" FontSize="16" Grid.Row="1"/>
+                        <GridSplitter Height="1" Width="50" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1" />
+                        <Label x:Name="championLbl" Content="Champ Picked" HorizontalAlignment="Center" VerticalAlignment="Top" FontWeight="UltraBold" FontSize="16" Grid.Row="1" />
                     </Grid>
-                    <Label x:Name="gameModeLbl" Content="Game Mode" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center"/>
+                    <Label x:Name="gameModeLbl" Content="Game Mode" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" />
                 </Grid>
             </GroupBox>
             <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="5,0,5,0">
-                <Button x:Name="random_btn" Content="Random Skin" Click="RandomSkinClick" IsEnabled="False"/>
-                <Button Content="Reload League Client" Click="ClientRestart" Margin="0,10,0,0"/>
+                <Button x:Name="random_btn" Content="Random Skin" Click="RandomSkinClick" IsEnabled="False" />
+                <Button Content="Reload League Client" Click="ClientRestart" Margin="0,10,0,0" />
             </StackPanel>
             <GroupBox Header="Automatic Utility" Grid.Column="1" Margin="5,0,0,0">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
-                    <CheckBox x:Name="autoPickSetting" Content="Pick Champion" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="championPick" VerticalAlignment="Center"/>
-                    <CheckBox x:Name="autoBanSetting" Content="Ban Champion" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="banPick" VerticalAlignment="Center" Margin="0,3,0,0"/>
-                    <CheckBox x:Name="autoSwapSetting" Content="Swap in ARAM" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="aramChampionSwap" VerticalAlignment="Center" Margin="0,3,0,0"/>
-                    <CheckBox x:Name="autoRunesSetting" Content="Set Runes" Height="15"  Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="runesSwap" VerticalAlignment="Center" Margin="0,3,0,0"/>
-                    <CheckBox x:Name="autoSpellSetting" Content="Set Summoner Spell" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="autoSummoner" VerticalAlignment="Center" Margin="0,3,0,0"/>
-                    <CheckBox x:Name="autoReadySetting" Content="Ready Check" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="autoReady" VerticalAlignment="Center" Margin="0,3,0,0"/>
+                    <CheckBox x:Name="autoPickSetting" Content="Pick Champion" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="championPick" VerticalAlignment="Center" />
+                    <CheckBox x:Name="autoBanSetting" Content="Ban Champion" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="banPick" VerticalAlignment="Center" Margin="0,3,0,0" />
+                    <CheckBox x:Name="autoSwapSetting" Content="Swap in ARAM" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="aramChampionSwap" VerticalAlignment="Center" Margin="0,3,0,0" />
+                    <CheckBox x:Name="autoRunesSetting" Content="Set Runes" Height="15"  Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="runesSwap" VerticalAlignment="Center" Margin="0,3,0,0" />
+                    <CheckBox x:Name="autoSpellSetting" Content="Set Summoner Spell" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="autoSummoner" VerticalAlignment="Center" Margin="0,3,0,0" />
+                    <CheckBox x:Name="autoReadySetting" Content="Ready Check" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="autoReady" VerticalAlignment="Center" Margin="0,3,0,0" />
                 </StackPanel>
             </GroupBox>
             <!-- Add other tools here -->

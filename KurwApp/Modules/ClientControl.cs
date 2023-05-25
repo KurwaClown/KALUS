@@ -1,19 +1,17 @@
-﻿using Kalus.Modules.Networking;
-using Kalus.Modules.Games;
+﻿using Kalus.Modules.Games;
+using Kalus.Modules.Networking;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Kalus.Modules
 {
-    internal static class ClientControl
+	internal static class ClientControl
 	{
-
 		//Random variable used for getting random skins
 		internal static Random random = new();
 
@@ -78,7 +76,6 @@ namespace Kalus.Modules
 		{
 			while (true)
 			{
-
 				//Only act if the authentication is set
 				if (Auth.IsAuthSet())
 				{
@@ -96,6 +93,7 @@ namespace Kalus.Modules
 							if (champSelect == null) break;
 							await champSelect.ChampSelectControl();
 							break;
+
 						case "GameStart":
 						case "InProgress":
 							string gameMode = mainWindow.GetGamemodeName();
@@ -127,7 +125,6 @@ namespace Kalus.Modules
 			var settings = DataCache.GetSettings();
 			return settings.Value<bool>(settingName);
 		}
-
 
 		#region Random Skin
 
@@ -199,7 +196,6 @@ namespace Kalus.Modules
 																	.Value<JArray>("runeRecommendations")
 																	.First(recommendation => recommendation.Value<string>("position") != "NONE" && recommendation.Value<bool>("isDefaultPosition"))
 																	.Value<string>("position");
-
 		}
 
 		internal static async Task<int[]> GetAllChampionForPosition(string position)
@@ -266,7 +262,6 @@ namespace Kalus.Modules
 			return runesObject.ToString();
 		}
 
-
 		//Get current page id
 		internal static async Task<int> GetCurrentRunePageId()
 		{
@@ -331,7 +326,8 @@ namespace Kalus.Modules
 
 			if (flashPosition != 2 && recommendedSpells.Contains(4))
 			{
-				if(Array.IndexOf(recommendedSpells, 4) != flashPosition) {
+				if (Array.IndexOf(recommendedSpells, 4) != flashPosition)
+				{
 					(recommendedSpells[1], recommendedSpells[0]) = (recommendedSpells[0], recommendedSpells[1]);
 				}
 			}
@@ -358,7 +354,5 @@ namespace Kalus.Modules
 
 			return Tuple.Create(primaryRuneIcon, subRuneIcon);
 		}
-
-
 	}
 }

@@ -6,72 +6,72 @@ using System.Threading.Tasks;
 
 namespace Kalus.Modules.Games
 {
-    public abstract class Game
-    {
-        protected int championId = 0;
+	public abstract class Game
+	{
+		protected int championId = 0;
 
-        protected JObject? sessionInfo;
+		protected JObject? sessionInfo;
 
-        protected bool isRunePageChanged = false;
+		protected bool isRunePageChanged = false;
 
-        protected MainWindow mainWindow;
+		protected MainWindow mainWindow;
 
-        internal static async Task<Game?> CreateGame(MainWindow mainWindow)
-        {
-            JObject? lobbyInfo = await ClientRequest.GetLobbyInfo();
-            if (lobbyInfo is null) return null;
-            string gameMode = lobbyInfo["gameConfig"]["gameMode"].ToString();
-            bool hasPositions = (bool)lobbyInfo["gameConfig"]["showPositionSelector"];
+		internal static async Task<Game?> CreateGame(MainWindow mainWindow)
+		{
+			JObject? lobbyInfo = await ClientRequest.GetLobbyInfo();
+			if (lobbyInfo is null) return null;
+			string gameMode = lobbyInfo["gameConfig"]["gameMode"].ToString();
+			bool hasPositions = (bool)lobbyInfo["gameConfig"]["showPositionSelector"];
 
-            //if the gamemode is aram set to ARAM
-            if (gameMode == "ARAM") return new GameMode.Aram(mainWindow);
+			//if the gamemode is aram set to ARAM
+			if (gameMode == "ARAM") return new GameMode.Aram(mainWindow);
 
-            //if it's not aram and has positions set to Draft
-            if (hasPositions) return new GameMode.Classic(mainWindow, "Draft");
+			//if it's not aram and has positions set to Draft
+			if (hasPositions) return new GameMode.Classic(mainWindow, "Draft");
 
-            return new GameMode.Classic(mainWindow, "Blind");
-        }
+			return new GameMode.Classic(mainWindow, "Blind");
+		}
 
-        //Handler of the champion selections
-        protected internal abstract Task ChampSelectControl();
+		//Handler of the champion selections
+		protected internal abstract Task ChampSelectControl();
 
-        //Act on finalization
-        protected abstract Task Finalization();
+		//Act on finalization
+		protected abstract Task Finalization();
 
-        protected abstract Task ChangeSpells();
+		protected abstract Task ChangeSpells();
 
-        protected abstract Task ChangeRunes();
+		protected abstract Task ChangeRunes();
 
-        protected async Task PostPickAction()
-        {
-            var imageBytes = await ClientRequest.GetChampionImageById(championId);
+		protected async Task PostPickAction()
+		{
+			var imageBytes = await ClientRequest.GetChampionImageById(championId);
 
-            var champions = await DataCache.GetChampionsInformations();
+			var champions = await DataCache.GetChampionsInformations();
 
-            string championName = champions.Where(champion => (int)champion["id"] == championId).Select(champion => champion["name"].ToString()).First();
+			string championName = champions.Where(champion => (int)champion["id"] == championId).Select(champion => champion["name"].ToString()).First();
 
-            //Set the current champion image and name on the UI
-            mainWindow.SetChampionIcon(imageBytes);
-            mainWindow.SetChampionName(championName);
-            //Toggle the random skin button on
-            mainWindow.EnableRandomSkinButton(true);
+			//Set the current champion image and name on the UI
+			mainWindow.SetChampionIcon(imageBytes);
+			mainWindow.SetChampionName(championName);
+			//Toggle the random skin button on
+			mainWindow.EnableRandomSkinButton(true);
 
-            //Set runes if the the auto rune is toggled
-            if (ClientControl.GetSettingState("runesSwap") && !isRunePageChanged)
-            {
-                await ChangeRunes();
-            }
+			//Set runes if the the auto rune is toggled
+			if (ClientControl.GetSettingState("runesSwap") && !isRunePageChanged)
+			{
+				await ChangeRunes();
+			}
 
-            //Random skin on pick
-            if ((bool)ClientControl.GetPreference("randomSkin.randomOnPick")) ClientControl.PickRandomSkin();
+			//Random skin on pick
+			if ((bool)ClientControl.GetPreference("randomSkin.randomOnPick")) ClientControl.PickRandomSkin();
 
-            if (ClientControl.GetSettingState("autoSummoner")) await ChangeSpells();
-        }
+			if (ClientControl.GetSettingState("autoSummoner")) await ChangeSpells();
+		}
 
-        //Get sessions actions
-        internal IEnumerable<JObject> GetSessionActions()
-        {
-            return sessionInfo["actions"].SelectMany(innerArray => innerArray).OfType<JObject>();
-        }
-    }
+		//Get sessions actions
+		internal IEnumerable<JObject> GetSessionActions()
+		{
+			return sessionInfo["actions"].SelectMany(innerArray => innerArray).OfType<JObject>();
+		}
+	}
 }

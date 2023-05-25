@@ -28,7 +28,7 @@ namespace Kalus.Modules.Games.GameMode
             while (Auth.IsAuthSet())
             {
                 sessionInfo = await ClientRequest.GetSessionInfo();
-                if (sessionInfo is null) return;
+                if (sessionInfo == null) return;
                 switch (sessionInfo.SelectToken("timer.phase").ToString())
                 {
                     default:
@@ -56,13 +56,12 @@ namespace Kalus.Modules.Games.GameMode
                 if (aramPick != 0)
                 {
                     await ClientRequest.AramBenchSwap(aramPick);
+                    championId = aramPick;
                     isRunePageChanged = false;
                     await PostPickAction();
-                    championId = await ClientRequest.GetCurrentChampionId();
                 }
             }
             var currentChampionId = await ClientRequest.GetCurrentChampionId();
-            Debug.WriteLine($"Current champion : {currentChampionId}, stored champion : {championId}");
             if (currentChampionId != championId)
             {
                 championId = currentChampionId;
