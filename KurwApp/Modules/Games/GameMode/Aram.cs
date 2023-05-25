@@ -1,6 +1,7 @@
 ﻿using KurwApp.Modules.Networking;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -27,9 +28,8 @@ namespace KurwApp.Modules.Games.GameMode
             while (Auth.IsAuthSet())
             {
                 sessionInfo = await ClientRequest.GetSessionInfo();
-
                 if (sessionInfo is null) return;
-                switch (sessionInfo.Value<string>("timer.phase"))
+                switch (sessionInfo.SelectToken("timer.phase").ToString())
                 {
                     default:
                         break;
@@ -62,7 +62,7 @@ namespace KurwApp.Modules.Games.GameMode
                 }
             }
             var currentChampionId = await ClientRequest.GetCurrentChampionId();
-
+            Debug.WriteLine($"Current champion : {currentChampionId}, stored champion : {championId}");
             if (currentChampionId != championId)
             {
                 championId = currentChampionId;

@@ -213,18 +213,21 @@ namespace KurwApp.Modules.Games.GameMode
                 int otlTimeIndex = ClientControl.GetPreference($"{preferenceToken}.OTLTimeIndex").Value<int>() + 1;
                 int sessionTimer = sessionInfo.SelectToken("timer.adjustedTimeLeftInPhase").Value<int>();
 
-                delayedPick = new Timer(ConfirmActionDelayed, actionId, TimeSpan.FromSeconds(sessionTimer / 1000 - otlTimeIndex * 5), TimeSpan.Zero);
+				delayedPick = new Timer(state =>
+				{
+					ConfirmActionDelayed(actionId, pickType); // Call the callback method with the passed argument
+				}, actionId, TimeSpan.FromSeconds(sessionTimer / 1000 - otlTimeIndex * 5), TimeSpan.Zero);
                 delayedPickType = pickType;
                 return;
             }
             await ClientRequest.ConfirmAction(actionId);
-            hasPicked = true;
+            if (pickType == "pick") hasPicked = true;
         }
 
-        private async void ConfirmActionDelayed(object sender)
+        private async void ConfirmActionDelayed(int actionId, string pickType)
         {
-            await ClientRequest.ConfirmAction((int)sender);
-            hasPicked = true;
+            await ClientRequest.ConfirmAction(actionId);
+			if(pickType == "pick") hasPicked = true;
             CancelDelayedPick();
         }
 
