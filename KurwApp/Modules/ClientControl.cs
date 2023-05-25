@@ -20,7 +20,7 @@ namespace Kalus.Modules
 		//Ensure that the Authentication is set
 		//Set it when client gets open or is open at startup
 		//Reset it when it gets closed or is closed at startup
-		internal static async void EnsureAuthentication(MainWindow mainWindow)
+		internal static void EnsureAuthentication(MainWindow mainWindow)
 		{
 			do
 			{
@@ -31,14 +31,14 @@ namespace Kalus.Modules
 				bool isClientOpen = IsClientOpen();
 
 				// When the client is closed
-				if (!isClientOpen)
+				if (!isClientOpen && authenticated)
 				{
 					//Modify GroupBox style
 					mainWindow.ShowLolState(false);
 					//Reset cached data
 					DataCache.ResetCachedData();
 					//If authenticated : reset the auth
-					if (authenticated) Auth.ResetAuth();
+					Auth.ResetAuth();
 					continue;
 				}
 
