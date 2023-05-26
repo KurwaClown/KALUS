@@ -1,121 +1,130 @@
 ﻿using Kalus.Modules.Networking;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Kalus.Modules.Games.GameMode
 {
-    internal class Aram : Game
-    {
-        internal Aram(MainWindow mainWindow)
-        {
-            this.mainWindow = mainWindow;
-        }
+	internal class Aram : Game
+	{
+		internal Aram(MainWindow mainWindow)
+		{
+			this.mainWindow = mainWindow;
+		}
 
-        //Handler of the champion selections
-        protected internal override async Task ChampSelectControl()
-        {
-            sessionInfo = await ClientRequest.GetSessionInfo();
-            if (sessionInfo is null) return;
+		//Handler of the champion selections
+		protected internal override async Task ChampSelectControl()
+		{
+			sessionInfo = await ClientRequest.GetSessionInfo();
+			if (sessionInfo is null) return;
 
-            mainWindow.SetGamemodeName("ARAM");
-            mainWindow.SetGameModeIcon("ARAM");
+			if (mainWindow == null) return;
 
-            while (Auth.IsAuthSet())
-            {
-                sessionInfo = await ClientRequest.GetSessionInfo();
-                if (sessionInfo == null) return;
-                switch (sessionInfo.SelectToken("timer.phase").ToString())
-                {
-                    default:
-                        break;
+			mainWindow.SetGamemodeName("ARAM");
+			mainWindow.SetGameModeIcon("ARAM");
 
-                    case "FINALIZATION":
-                        await Finalization();
-                        break;
+			while (Auth.IsAuthSet())
+			{
+				sessionInfo = await ClientRequest.GetSessionInfo();
+				if (sessionInfo == null) return;
+				switch (sessionInfo.SelectToken("timer.phase")?.ToString())
+				{
+					default:
+						break;
+					case null:
+						return;
+					case "FINALIZATION":
+						await Finalization();
+						break;
 
-                    case "GAME_STARTING":
-                    case "":
-                        mainWindow.EnableRandomSkinButton(false);
-                        return;
-                }
-                Thread.Sleep(1000);
-            }
-        }
+					case "GAME_STARTING":
+					case "":
+						mainWindow.EnableRandomSkinButton(false);
+						return;
+				}
+				Thread.Sleep(1000);
+			}
+		}
 
-        protected override async Task Finalization()
-        {
-            if (ClientControl.GetSettingState("aramChampionSwap"))
-            {
-                int aramPick = GetBenchChampionPick();
+		protected override async Task Finalization()
+		{
+			if (ClientControl.GetSettingState("aramChampionSwap"))
+			{
+				int aramPick = GetBenchChampionPick();
 
-                if (aramPick != 0)
-                {
-                    await ClientRequest.AramBenchSwap(aramPick);
-                    championId = aramPick;
-                    isRunePageChanged = false;
-                    await PostPickAction();
-                }
-            }
-            var currentChampionId = await ClientRequest.GetCurrentChampionId();
-            if (currentChampionId != championId)
-            {
-                championId = currentChampionId;
-                isRunePageChanged = false;
-                await PostPickAction();
-            }
-        }
+				if (aramPick != 0)
+				{
+					await ClientRequest.AramBenchSwap(aramPick);
+					championId = aramPick;
+					isRunePageChanged = false;
+					await PostPickAction();
+				}
+			}
+			var currentChampionId = await ClientRequest.GetCurrentChampionId();
+			if (currentChampionId != championId)
+			{
+				championId = currentChampionId;
+				isRunePageChanged = false;
+				await PostPickAction();
+			}
+		}
 
-        //Get the pick the aram champion to pick if any
-        protected int GetBenchChampionPick()
-        {
-            var aramPicks = DataCache.GetAramPick();
+		//Get the pick the aram champion to pick if any
+		protected int GetBenchChampionPick()
+		{
+			var aramPicks = DataCache.GetAramPick();
 
-            if (!aramPicks.Any()) return 0;
+			if (aramPicks == null) return 0;
+			if (!aramPicks.Any()) return 0;
 
-            List<int> aramBenchIds = GetAramBenchIds();
+			List<int>? aramBenchIds = GetAramBenchIds();
 
-            if (!aramBenchIds.Any()) return 0;
+			if (aramBenchIds == null) return 0;
+			if (!aramBenchIds.Any()) return 0;
 
-            foreach (var pick in aramPicks)
-            {
-                if (aramBenchIds.Contains(pick)) return pick;
-            }
-            return 0;
-        }
+			foreach (var pick in aramPicks)
+			{
+				if (aramBenchIds.Contains(pick)) return pick;
+			}
+			return 0;
+		}
 
-        //Get the champion benched (their id) in aram
-        private List<int> GetAramBenchIds()
-        {
-            return sessionInfo["benchChampions"].Select(x => int.Parse(x["championId"].ToString())).ToList();
-        }
+		//Get the champion benched (their id) in aram
+		private List<int>? GetAramBenchIds()
+		{
+			return sessionInfo?["benchChampions"]?.Select(x => int.TryParse(x?["championId"]?.ToString(), out int championId) ? championId : (int?)null)
+													.Where(championId => championId.HasValue)
+													.Select(championId => championId.Value)
+													.ToList();
+		}
 
-        protected override async Task ChangeSpells()
-        {
-            var runesRecommendation = await ClientControl.GetSpellsRecommendationByPosition(championId, "NONE");
+		protected override async Task ChangeSpells()
+		{
+			var runesRecommendation = await ClientControl.GetSpellsRecommendationByPosition(championId, "NONE");
+			if(runesRecommendation == null) return;
+			int[]? spellsId = runesRecommendation.ToObject<int[]>();
 
-            var spellsId = runesRecommendation.ToObject<int[]>();
+			if (spellsId == null) return;
 
-            if (!spellsId.Contains(32)) spellsId[1] = 32;
+			if (!spellsId.Contains(32)) spellsId[1] = 32;
 
-            ClientControl.SetSummonerSpells(spellsId);
-        }
+			ClientControl.SetSummonerSpells(spellsId);
+		}
 
-        protected override async Task ChangeRunes()
-        {
-            bool isSetActive = (bool)ClientControl.GetPreference("runes.notSetActive");
+		protected override async Task ChangeRunes()
+		{
+			bool isSetActive = (bool)ClientControl.GetPreference("runes.notSetActive");
 
-            string activeRunesPage = isSetActive ? (await ClientRequest.GetActiveRunePage())["id"].ToString() : "0";
+			string? activeRunesPage = isSetActive ? (await ClientRequest.GetActiveRunePage())?["id"]?.ToString() : "0";
 
-            await ClientControl.SetRunesPage(championId, "NONE");
+			if(activeRunesPage == null) return;
 
-            isRunePageChanged = true;
+			await ClientControl.SetRunesPage(championId, "NONE");
 
-            if (isSetActive) await ClientRequest.SetActiveRunePage(activeRunesPage);
-        }
-    }
+			isRunePageChanged = true;
+
+			if (isSetActive) await ClientRequest.SetActiveRunePage(activeRunesPage);
+		}
+	}
 }

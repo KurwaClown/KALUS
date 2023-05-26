@@ -38,10 +38,8 @@ namespace Kalus.Modules.Networking
 
 			using (var fs = new FileStream(dir_path + "lockfile", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
 			{
-				using (var sr = new StreamReader(fs, Encoding.Default))
-				{
-					lockfile_content = sr.ReadToEnd().Split(":");
-				}
+				using var sr = new StreamReader(fs, Encoding.Default);
+				lockfile_content = sr.ReadToEnd().Split(":");
 			}
 
 			return lockfile_content;

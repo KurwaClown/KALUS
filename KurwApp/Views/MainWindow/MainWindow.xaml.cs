@@ -4,7 +4,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -54,40 +53,35 @@ namespace Kalus
 		{
 			SetImageBrush(characterIcon, image);
 
-			Dispatcher.Invoke(() =>isStatusBoxDefault = false);
-
+			Dispatcher.Invoke(() => isStatusBoxDefault = false);
 		}
 
 		internal void SetImageBrush(ImageBrush imageBrush, byte[] image)
 		{
-			using (MemoryStream stream = new(image))
+			using MemoryStream stream = new(image);
+			Dispatcher.Invoke(() =>
 			{
-				Dispatcher.Invoke(() =>
-				{
-					BitmapImage bitmapImage = new();
-					bitmapImage.BeginInit();
-					bitmapImage.StreamSource = stream;
-					bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-					bitmapImage.EndInit();
-					imageBrush.ImageSource = bitmapImage;
-
-				});
-			}
+				BitmapImage bitmapImage = new();
+				bitmapImage.BeginInit();
+				bitmapImage.StreamSource = stream;
+				bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+				bitmapImage.EndInit();
+				imageBrush.ImageSource = bitmapImage;
+			});
 		}
+
 		internal void SetImageSource(Image image, byte[] imageStream)
 		{
-			using (MemoryStream stream = new(imageStream))
+			using MemoryStream stream = new(imageStream);
+			Dispatcher.Invoke(() =>
 			{
-				Dispatcher.Invoke(() =>
-				{
-					BitmapImage bitmapImage = new();
-					bitmapImage.BeginInit();
-					bitmapImage.StreamSource = stream;
-					bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-					bitmapImage.EndInit();
-					image.Source = bitmapImage;
-				});
-			}
+				BitmapImage bitmapImage = new();
+				bitmapImage.BeginInit();
+				bitmapImage.StreamSource = stream;
+				bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+				bitmapImage.EndInit();
+				image.Source = bitmapImage;
+			});
 		}
 
 		internal void SetRunesIcons(byte[] primaryRune, byte[] subRune)
@@ -100,7 +94,6 @@ namespace Kalus
 
 		internal async void SetGameModeIcon(string gameMode, bool inGame = false)
 		{
-
 			byte[] icon = gameMode switch
 			{
 				"Draft" or "Blind" => await DataCache.GetClassicMapIcon(inGame),
@@ -124,18 +117,16 @@ namespace Kalus
 			SetImageSource(gameModeIcon, await DataCache.GetDefaultMapIcon());
 		}
 
-
-
 		internal async void LoadAndSetCharacterList()
 		{
 			var champions = await DataCache.GetChampionsInformations();
-			Dictionary<int, string> championNames = champions.Where(champion => (int)champion["id"] != -1)
-															.ToDictionary(champion => (int)champion["id"], champion => (string)champion["name"]);
+			Dictionary<int, string?> championNames = champions.Where(champion => champion.Value<int>("id") != -1)
+															.ToDictionary(champion => champion.Value<int>("id"), champion => champion["name"]?.ToString());
 			championNames = championNames.OrderBy(champion => champion.Value).ToDictionary(champion => champion.Key, champion => champion.Value);
 
 			Dispatcher.Invoke(() =>
 			{
-				foreach (KeyValuePair<int, string> champName in championNames)
+				foreach (KeyValuePair<int, string?> champName in championNames)
 				{
 					ListBoxItem championItem = new()
 					{
@@ -148,9 +139,11 @@ namespace Kalus
 				}
 			});
 
-			int[] blindPicks = DataCache.GetBlindPick();
+			int[]? blindPicks = DataCache.GetBlindPick();
+			blindPicks ??= Array.Empty<int>();
+
 			var champListBoxItems = ChampListCollection.Where(champion => blindPicks
-														.Select(token => (int)token).ToArray()
+														.Select(token => token).ToArray()
 														.Contains(int.Parse(champion.Tag.ToString())));
 
 			foreach (var champ in champListBoxItems)
@@ -162,9 +155,7 @@ namespace Kalus
 
 			champList.ItemsSource = UpdatedListCollection;
 			selectionList.ItemsSource = SelectedListCollection;
-
 		}
-
 
 		private void RandomSkinClick(object sender, RoutedEventArgs e)
 		{
@@ -185,7 +176,8 @@ namespace Kalus
 		private void AddSelection(object sender, RoutedEventArgs e)
 		{
 			if (champList.SelectedItem == null) return;
-			var selection = champList.SelectedItem as ListBoxItem;
+
+			if (champList.SelectedItem is not ListBoxItem selection) return;
 
 			SelectedListCollection.Add(selection);
 			UpdatedListCollection.Remove(selection);
@@ -196,8 +188,8 @@ namespace Kalus
 		private void RemoveSelection(object sender, RoutedEventArgs e)
 		{
 			if (selectionList.SelectedItem == null) return;
-			var selection = selectionList.SelectedItem as ListBoxItem;
 
+			if (selectionList.SelectedItem is not ListBoxItem selection) return;
 			//Add the removed item to the champion list and then re-order the list
 			UpdatedListCollection.Add(selection);
 
@@ -224,6 +216,8 @@ namespace Kalus
 
 					var position = ((ComboBoxItem)selectionListPosition.SelectedItem).Content.ToString();
 
+					if (position == null) return;
+
 					var fileRole = position == "Support" ? "UTILITY" : position.ToUpper();
 
 					var positionPicks = new JArray(SelectedListCollection.Select(i => new JValue(int.Parse(i.Tag.ToString()))));
@@ -235,6 +229,7 @@ namespace Kalus
 				case "Blind":
 					DataCache.SetBlindPick(newList);
 					break;
+
 				case "ARAM":
 					DataCache.SetAramPick(newList);
 					break;
@@ -245,19 +240,32 @@ namespace Kalus
 		{
 			if (sender is CheckBox checkBox)
 			{
-				DataCache.SetPreference(checkBox.Tag.ToString(), (bool)checkBox.IsChecked);
+				bool isChecked = checkBox.IsChecked ?? false;
+				string? checkboxTag = checkBox.Tag.ToString();
+				if (checkboxTag == null) return;
+
+				DataCache.SetPreference(checkboxTag, isChecked);
 			}
 			else if (sender is RadioButton radioButton)
 			{
-				if ((bool)!radioButton.IsChecked) return;
-				int radioPreference = int.Parse(radioButton.Tag.ToString());
-				DataCache.SetPreference(radioButton.GroupName, radioPreference);
+				bool isChecked = radioButton.IsChecked ?? false;
+				if (isChecked) return;
+
+				if (radioButton.Tag != null && int.TryParse(radioButton.Tag.ToString(), out int parsedValue))
+				{
+					DataCache.SetPreference(radioButton.GroupName, parsedValue);
+				}
 			}
 		}
 
 		private void OnSettingsControlInteraction(object sender, RoutedEventArgs e)
 		{
-			DataCache.SetSetting((sender as CheckBox).Tag.ToString(), (bool)(sender as CheckBox).IsChecked);
+			if (sender is not CheckBox checkBox) return;
+			bool isChecked = checkBox.IsChecked ?? false;
+			string? checkboxTag = checkBox.Tag.ToString();
+			if(checkboxTag == null) return;
+
+			DataCache.SetSetting(checkboxTag, isChecked);
 		}
 
 		private void IsEnabledModified(object sender, DependencyPropertyChangedEventArgs e)
@@ -268,8 +276,7 @@ namespace Kalus
 				{
 					if (DataCache.GetPreference(comboBox.Tag.ToString(), out string? preference))
 
-					comboBox.SelectedIndex = int.Parse(preference);
-
+						comboBox.SelectedIndex = int.Parse(preference);
 				}
 				else
 				{
@@ -294,7 +301,7 @@ namespace Kalus
 			{
 				var preferences = DataCache.GetPreferences();
 				var radioButtons = stack.Children.OfType<RadioButton>();
-				var radioButtonToCheck = radioButtons.FirstOrDefault(rb => preferences.SelectToken(token).ToString() == rb.Tag.ToString());
+				var radioButtonToCheck = radioButtons.FirstOrDefault(rb => preferences.SelectToken(token)?.ToString() == rb.Tag.ToString());
 				if (radioButtonToCheck != null)
 				{
 					radioButtonToCheck.IsChecked = true;
@@ -309,7 +316,6 @@ namespace Kalus
 						setRadioByPreference(nestedPanel, token);
 					}
 				}
-
 			}
 
 			Dispatcher.Invoke(() =>
@@ -320,14 +326,13 @@ namespace Kalus
 				setRadioByPreference(onSelectionPreferences, "selections.userPreference");
 				setRadioByPreference(flashPosition, "summoners.flashPosition");
 
+				notSetPageAsActive.IsChecked = preferences.Value<bool>("runes.notSetActive");
+				overridePage.IsChecked = preferences.Value<bool>("runes.overridePage");
 
-				notSetPageAsActive.IsChecked = (bool)preferences["runes"]["notSetActive"];
-				overridePage.IsChecked = (bool)preferences["runes"]["overridePage"];
+				addChromas.IsChecked = preferences.Value<bool>("randomSkin.addChromas");
+				randomOnPick.IsChecked = preferences.Value<bool>("randomSkin.randomOnPick");
 
-				addChromas.IsChecked = (bool)preferences["randomSkin"]["addChromas"];
-				randomOnPick.IsChecked = (bool)preferences["randomSkin"]["randomOnPick"];
-
-				alwaysSnowball.IsChecked = (bool)preferences["summoners"]["alwaysSnowball"];
+				alwaysSnowball.IsChecked = preferences.Value<bool>("summoners.alwaysSnowball");
 			}
 			);
 		}
@@ -338,12 +343,12 @@ namespace Kalus
 
 			Dispatcher.Invoke(() =>
 			{
-				autoPickSetting.IsChecked = (bool)settings["championPick"];
-				autoBanSetting.IsChecked = (bool)settings["banPick"];
-				autoReadySetting.IsChecked = (bool)settings["aramChampionSwap"];
-				autoRunesSetting.IsChecked = (bool)settings["runesSwap"];
-				autoSpellSetting.IsChecked = (bool)settings["autoSummoner"];
-				autoSwapSetting.IsChecked = (bool)settings["autoReady"];
+				autoPickSetting.IsChecked = settings.Value<bool>("championPick");
+				autoBanSetting.IsChecked = settings.Value<bool>("banPick");
+				autoReadySetting.IsChecked = settings.Value<bool>("aramChampionSwap");
+				autoRunesSetting.IsChecked = settings.Value<bool>("runesSwap");
+				autoSpellSetting.IsChecked = settings.Value<bool>("autoSummoner");
+				autoSwapSetting.IsChecked = settings.Value<bool>("autoReady");
 			}
 			);
 		}
@@ -352,13 +357,13 @@ namespace Kalus
 		{
 			LoadAndSetCharacterList();
 
-			Action<int, ComboBox> populateComboBox = (maxTime, comboBox) =>
+			static void populateComboBox(int maxTime, ComboBox comboBox)
 			{
 				for (int i = 1; i <= maxTime / 5; i++)
 				{
 					comboBox.Items.Add(i * 5);
 				}
-			};
+			}
 			populateComboBox(30, picksTimeLeft);
 			populateComboBox(30, bansTimeLeft);
 
@@ -399,14 +404,18 @@ namespace Kalus
 				var pickType = ((ComboBoxItem)selectionListType.SelectedItem).Content.ToString();
 
 				var position = ((ComboBoxItem)selectionListPosition.SelectedItem).Content.ToString();
+				if (position == null) return;
 				position = position == "Support" ? "UTILITY" : position.ToUpper();
 
 				var champsId = pickType == "Pick" ? DataCache.GetDraftPick(position) : DataCache.GetDraftBan(position);
+				if (champsId == null) return;
 				champListBoxItems = ChampListCollection.Where(champion => champsId.Select(token => (int)token).ToArray().Contains(int.Parse(champion.Tag.ToString())));
 			}
 			else
 			{
 				var champsId = gameType == "Blind" ? DataCache.GetBlindPick() : DataCache.GetAramPick();
+				if (champsId == null) return;
+
 				champListBoxItems = ChampListCollection.Where(champion => champsId.Select(token => (int)token).ToArray().Contains(int.Parse(champion.Tag.ToString())));
 			}
 
@@ -423,10 +432,9 @@ namespace Kalus
 		private void ReorderSelection(object sender, RoutedEventArgs e)
 		{
 			if (selectionList.SelectedItem == null) return;
-			var selection = selectionList.SelectedItem as ListBoxItem;
+			if (selectionList.SelectedItem is not ListBoxItem selection) return;
 
-			ObservableCollection<ListBoxItem>? observableCollection = selectionList.ItemsSource as ObservableCollection<ListBoxItem>;
-			if (observableCollection == null) return;
+			if (selectionList.ItemsSource is not ObservableCollection<ListBoxItem> observableCollection) return;
 
 			int oldIndex = observableCollection.IndexOf(selection);
 			bool isPrevious = ((Button)sender).Name == "selectionOrderUp";
@@ -444,21 +452,25 @@ namespace Kalus
 
 		internal void SetGamemodeName(string gamemodeName)
 		{
-			Dispatcher.Invoke(() => {
+			Dispatcher.Invoke(() =>
+			{
 				gameModeLbl.Content = gamemodeName;
 				isStatusBoxDefault = false;
 			});
 		}
+
 		internal string GetGamemodeName()
 		{
-			string gameMode = "";
+			string? gameMode = "";
 			Dispatcher.Invoke(() => gameMode = gameModeLbl.Content.ToString());
+			if (gameMode == null) return "GameMode";
 			return gameMode;
 		}
 
 		internal void SetChampionName(string championName)
 		{
-			Dispatcher.Invoke (() => {
+			Dispatcher.Invoke(() =>
+			{
 				championLbl.Content = championName;
 				isStatusBoxDefault = false;
 			});

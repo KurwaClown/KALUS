@@ -46,7 +46,13 @@ namespace Kalus.Modules
 					//If the client is open : set the authentication and player id
 					if (isClientOpen)
 					{
-						Auth.SetBasicAuth(Process.GetProcessesByName("LeagueClientUx").First().MainModule.FileName);
+						ProcessModule? leagueProcess = Process.GetProcessesByName("LeagueClientUx").First().MainModule;
+						if (leagueProcess == null) return;
+
+						string? filename = leagueProcess.FileName;
+						if(filename == null) return;
+
+						Auth.SetBasicAuth(filename);
 						mainWindow.ShowLolState(true);
 					}
 				}
@@ -61,7 +67,7 @@ namespace Kalus.Modules
 			return Process.GetProcessesByName("LeagueClientUxRender").Length > 3;
 		}
 
-		internal static JToken GetPreference(string token)
+		internal static JToken? GetPreference(string token)
 		{
 			var preferences = DataCache.GetPreferences();
 
@@ -129,13 +135,16 @@ namespace Kalus.Modules
 		#region Random Skin
 
 		//Get the id of all available skins
-		internal static async Task<int[]> GetAvailableSkinsID()
+		internal static async Task<int[]?> GetAvailableSkinsID()
 		{
 			JArray currentChampionSkins = await ClientRequest.GetCurrentChampionSkins();
 
 			var availableSkinsId = currentChampionSkins.Where(skin => skin.Value<bool>("unlocked"))
 														.Select(skin => skin.Value<int>("id"));
-			if ((bool)GetPreference("randomSkin.addChromas"))
+
+			bool? addChromasPreference = (bool)GetPreference("randomSkin.addChromas");
+			if (addChromasPreference == null) return null;
+			if ((bool)addChromasPreference)
 			{
 				var availableChromasId = currentChampionSkins.SelectMany(skin => skin["childSkins"]
 																		 .Where(childSkin => childSkin.Value<bool>("unlocked"))
@@ -149,8 +158,9 @@ namespace Kalus.Modules
 		internal static async void PickRandomSkin()
 		{
 			//Get all available skins
-			int[] skin_ids = await GetAvailableSkinsID();
+			int[]? skin_ids = await GetAvailableSkinsID();
 
+			if (skin_ids == null) return;
 			//If there is any skins available : select and change the next skin randomly
 			if (skin_ids.Any())
 			{
@@ -163,37 +173,28 @@ namespace Kalus.Modules
 
 		//Returns if it's the player turn to act
 		//If true output the id of the action and the type (e.g : pick or ban)
-		internal static bool IsCurrentPlayerTurn(IEnumerable<JObject> actions, int cellId, out int actionId, out string type)
+		internal static bool IsCurrentPlayerTurn(IEnumerable<JObject> actions, int cellId, out int? actionId, out string? type)
 		{
 			//Get the player actions that are in progress
-			var currentPlayerAction = actions.Where(action => (int)action["actorCellId"] == cellId && (bool)action["isInProgress"] == true)
+			var currentPlayerAction = actions.Where(action => action.Value<int>("actorCellId") == cellId && action.Value<bool>("isInProgress") == true)
 				.Select(action => action).ToArray();
 
 			bool isCurrentPlayerTurn = currentPlayerAction.Any();
 
-			actionId = isCurrentPlayerTurn ? (int)currentPlayerAction.First()["id"] : 0;
-			type = isCurrentPlayerTurn ? currentPlayerAction.First()["type"].ToString() : string.Empty;
+			actionId = isCurrentPlayerTurn ? currentPlayerAction.First().Value<int>("id") : 0;
+			type = isCurrentPlayerTurn ? currentPlayerAction.First()["type"]?.ToString() : string.Empty;
+
+			if (type == null || actionId == null) return false;
+
 			return isCurrentPlayerTurn;
 		}
 
-		//Retrieves the champion select ohase name
-		internal static async Task<string> GetChampSelectPhase()
-		{
-			var session_timer = await ClientRequest.GetSessionTimer();
-			if (session_timer == "")
-			{
-				return "";
-			}
-			JObject champ_select_timer = JObject.Parse(session_timer);
 
-			return champ_select_timer["phase"].ToString().ToUpper();
-		}
-
-		internal static async Task<string> GetChampionDefaultPosition(int championId)
+		internal static async Task<string?> GetChampionDefaultPosition(int championId)
 		{
 			return (await DataCache.GetChampionsRunesRecommendation())
 																	.First(item => item.Value<int>("championId") == championId)
-																	.Value<JArray>("runeRecommendations")
+																	.Value<JArray>("runeRecommendations")?
 																	.First(recommendation => recommendation.Value<string>("position") != "NONE" && recommendation.Value<bool>("isDefaultPosition"))
 																	.Value<string>("position");
 		}
@@ -210,39 +211,46 @@ namespace Kalus.Modules
 		#region Runes
 
 		//Get the recommended runes for a champion
-		internal static async Task<JArray> GetRecommendedRunesById(int champId)
+		internal static async Task<JArray?> GetRecommendedRunesById(int champId)
 		{
 			var runesRecommendation = await DataCache.GetChampionsRunesRecommendation();
 
-			JArray champRunes = runesRecommendation
-				.Where(obj => (int)obj["championId"] == champId)
+			JArray? champRunes = runesRecommendation
+				.Where(obj => obj.Value<int>("championId") == champId)
 				.Select(obj => (JArray)obj["runeRecommendations"]).First();
 
 			return champRunes;
 		}
 
 		//Get the recommended champion runes for a champion depending on its position
-		internal static async Task<JToken> GetChampRunesByPosition(int champId, string position)
+		internal static async Task<JToken?> GetChampRunesByPosition(int champId, string position)
 		{
 			var runesRecommendation = await GetRecommendedRunesById(champId);
 
-			var champRunesByPosition = runesRecommendation.Where(recommendation => (string)recommendation["position"] == position.ToUpper()).Select(recommendation => recommendation);
+			if (runesRecommendation == null) return null;
+
+			var champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"]?.ToString() == position.ToUpper()).Select(recommendation => recommendation);
 			if (!champRunesByPosition.Any())
 			{
-				champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"].ToString() == "NONE").Select(recommendation => recommendation);
+				champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"]?.ToString() == "NONE").Select(recommendation => recommendation);
 			}
 			return champRunesByPosition.FirstOrDefault();
 		}
 
 		//Get the recommended champion spells for a champion depending on its position and the game mode
-		internal static async Task<JToken> GetSpellsRecommendationByPosition(int champId, string position)
+		internal static async Task<JToken?> GetSpellsRecommendationByPosition(int champId, string position)
 		{
 			var runesRecommendation = await GetRecommendedRunesById(champId);
+
+			if (runesRecommendation == null) return null;
+
 			IEnumerable<JToken>? champRunesByPosition = null;
 
-			if (position != "") champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"].ToString() == position);
+			if (position != "") champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"]?.ToString() == position);
 
-			if (position == "" || !champRunesByPosition.Any()) champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"].ToString() != "NONE");
+			if (champRunesByPosition == null) return null;
+
+			if (position == "" || !champRunesByPosition.Any()) champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"]?.ToString() != "NONE");
 
 			return champRunesByPosition.Select(recommendation => recommendation["summonerSpellIds"]).First(); ;
 		}
@@ -269,7 +277,7 @@ namespace Kalus.Modules
 			var pages = await ClientRequest.GetRunePages();
 
 			//Get the page containing the name Kurwapp
-			var kurwappRunes = pages.First(page => (bool)page["current"] == true);
+			var kurwappRunes = pages.First(page => page.Value<bool>("current") == true);
 
 			//Return the page id if there is a page else return 0
 			return kurwappRunes.Any() ? int.Parse(kurwappRunes.ToString()) : 0;
@@ -279,7 +287,7 @@ namespace Kalus.Modules
 		internal static async Task<bool> CanCreateNewPage()
 		{
 			var inventory = await ClientRequest.GetRunesInventory();
-			return (bool)inventory["canAddCustomPage"];
+			return inventory.Value<bool>("canAddCustomPage");
 		}
 
 		//Set the recommended rune page
@@ -291,9 +299,14 @@ namespace Kalus.Modules
 
 			var champions = await DataCache.GetChampionsInformations();
 
-			string championName = champions.Where(champion => (int)champion["id"] == champId).Select(champion => champion["name"].ToString()).First();
+			string? championName = champions.Where(champion => champion.Value<int>("id") == champId).Select(champion => champion["name"]?.ToString()).First();
+
+			if (championName == null) return;
+
 			//Get the recommended rune page
 			var runesRecommendation = await GetChampRunesByPosition(champId, position);
+			if (runesRecommendation == null) return;
+
 			string recommendedRunes = FormatChampRunes(runesRecommendation, championName);
 
 			if (appPageId != null)
@@ -313,7 +326,9 @@ namespace Kalus.Modules
 		private static async Task EditOldestRunePage(string newRunesPage)
 		{
 			var runesPages = await ClientRequest.GetRunePages();
-			string oldestPageId = runesPages.OrderBy(page => page["lastModified"].ToString()).First()["id"].ToString();
+			string? oldestPageId = runesPages.OrderBy(page => page["lastModified"]?.ToString()).First()["id"]?.ToString();
+
+			if (oldestPageId == null) return;
 
 			await ClientRequest.EditRunePage(oldestPageId, newRunesPage);
 		}
@@ -339,15 +354,23 @@ namespace Kalus.Modules
 		{
 			var runesStyles = await DataCache.GetRunesStyleInformation();
 
+			if(runesStyles == null) return null;
+
 			var currentRunes = await ClientRequest.GetActiveRunePage();
 
 			if (currentRunes == null) return null;
 
-			string primaryRuneId = currentRunes["primaryStyleId"].ToString();
-			string subRuneId = currentRunes["subStyleId"].ToString();
+			string? primaryRuneId = currentRunes["primaryStyleId"]?.ToString();
+			string? subRuneId = currentRunes["subStyleId"]?.ToString();
 
-			var primaryRunes = runesStyles.First(rune => rune["id"].ToString() == primaryRuneId).SelectToken("iconPath").ToString();
-			var subRunes = runesStyles.First(rune => rune["id"].ToString() == subRuneId).SelectToken("iconPath").ToString();
+			if (primaryRuneId == null || subRuneId == null)
+				return null;
+
+			var primaryRunes = runesStyles.FirstOrDefault(rune => rune["id"]?.ToString() == primaryRuneId)?.SelectToken("iconPath")?.ToString();
+			var subRunes = runesStyles.FirstOrDefault(rune => rune["id"]?.ToString() == subRuneId)?.SelectToken("iconPath")?.ToString();
+
+			if (primaryRunes == null || subRunes == null)
+				return null;
 
 			byte[] primaryRuneIcon = await RequestQueue.GetImage(primaryRunes);
 			byte[] subRuneIcon = await RequestQueue.GetImage(subRunes);
