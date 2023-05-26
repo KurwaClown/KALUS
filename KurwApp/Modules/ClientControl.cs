@@ -88,6 +88,8 @@ namespace Kalus.Modules
 					//Checks the game phase and perform action depending on it
 					switch (await ClientRequest.GetClientPhase())
 					{
+						case "":
+							continue;
 						//On ready check
 						case "ReadyCheck":
 							//If the setting to get automatically ready is on : accept the game

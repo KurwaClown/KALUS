@@ -11,6 +11,8 @@ namespace Kalus.Modules.Networking
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-gameflow/v1/gameflow-phase");
 
+			if (response == "") return "";
+
 			string client_phase = response[1..^1];
 
 			return client_phase;
