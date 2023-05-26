@@ -39,7 +39,7 @@ namespace Kalus.Modules.Games.GameMode
 		//Handler of the champion selections
 		protected internal override async Task ChampSelectControl()
 		{
-			if(mainWindow == null) return;
+			if (mainWindow == null) return;
 
 			mainWindow.SetGamemodeName(gameType);
 			mainWindow.SetGameModeIcon(gameType);
@@ -54,8 +54,10 @@ namespace Kalus.Modules.Games.GameMode
 				{
 					default:
 						break;
+
 					case null:
 						return;
+
 					case "FINALIZATION":
 						await Finalization();
 						break;
@@ -104,7 +106,7 @@ namespace Kalus.Modules.Games.GameMode
 			string positionForSpells = position;
 			var runesRecommendation = await ClientControl.GetSpellsRecommendationByPosition(championId, positionForSpells);
 
-			if(runesRecommendation == null) return;
+			if (runesRecommendation == null) return;
 
 			var spellsId = runesRecommendation.ToObject<int[]>();
 			if (spellsId != null) ClientControl.SetSummonerSpells(spellsId);
@@ -126,7 +128,6 @@ namespace Kalus.Modules.Games.GameMode
 
 			if (IsCurrentPlayerTurn(actions, out int actionId, out string? type))
 			{
-
 				//Return if there is a delayed action of the current phase type awaiting
 				//Cancel it if it's not of the current phase type
 				if (delayedPick != null)
@@ -160,8 +161,10 @@ namespace Kalus.Modules.Games.GameMode
 						{
 							default:
 								break;
+
 							case null:
 								return;
+
 							case 0:
 								return;
 
@@ -176,7 +179,6 @@ namespace Kalus.Modules.Games.GameMode
 
 					if (championId == 0)
 					{
-
 						switch (ClientControl.GetPreference("noPicks.userPreference")?.Value<int>())
 						{
 							default:
@@ -185,6 +187,7 @@ namespace Kalus.Modules.Games.GameMode
 								championId = randomChampionId;
 								isChampionRandom = true;
 								break;
+
 							case null:
 							case 2:
 								return;
@@ -226,7 +229,7 @@ namespace Kalus.Modules.Games.GameMode
 				int? otlTimeIndex = ClientControl.GetPreference($"{preferenceToken}.OTLTimeIndex")?.Value<int>() + 1;
 				int? sessionTimer = sessionInfo?.SelectToken("timer.adjustedTimeLeftInPhase")?.Value<int>();
 
-				if (sessionTimer  == null || otlTimeIndex == null) return;
+				if (sessionTimer == null || otlTimeIndex == null) return;
 
 				delayedPick = new Timer(state =>
 				{
@@ -277,7 +280,7 @@ namespace Kalus.Modules.Games.GameMode
 		//Get the champion ban for draft game, if any
 		private int GetChampionBan()
 		{
-			if(position == null)return 0;
+			if (position == null) return 0;
 			var bans = DataCache.GetDraftBan(position);
 
 			if (bans == null) return 0;
@@ -299,15 +302,13 @@ namespace Kalus.Modules.Games.GameMode
 			if (noPicksPreferences == null) return 0;
 
 			var availableChampions = await ClientRequest.GetAvailableChampionsPick();
-			if(availableChampions == null) return 0;
+			if (availableChampions == null) return 0;
 
 			//Random pick by position
 			if (noPicksPreferences == 0)
 			{
 				if (position == null) return 0;
 				var allChampionsByPosition = await ClientControl.GetAllChampionForPosition(position);
-
-
 
 				var availablesChampionsForPosition = allChampionsByPosition.Intersect(availableChampions).ToArray();
 
@@ -329,7 +330,7 @@ namespace Kalus.Modules.Games.GameMode
 			actionId = isCurrentPlayerTurn ? currentPlayerAction.First().Value<int>("id") : 0;
 			type = isCurrentPlayerTurn ? currentPlayerAction.First()["type"]?.ToString() : string.Empty;
 
-			if(actionId == 0 || type == null) return false;
+			if (actionId == 0 || type == null) return false;
 
 			return isCurrentPlayerTurn;
 		}
@@ -343,7 +344,8 @@ namespace Kalus.Modules.Games.GameMode
 
 		protected override async Task ChangeRunes()
 		{
-			bool isSetActive = (bool)ClientControl.GetPreference("runes.notSetActive");
+			JToken? notSetActivePreference = ClientControl.GetPreference("runes.notSetActive");
+			bool isSetActive = (notSetActivePreference != null) && (bool)notSetActivePreference;
 
 			JObject? activeRunesPage = await ClientRequest.GetActiveRunePage();
 			if (activeRunesPage == null) return;

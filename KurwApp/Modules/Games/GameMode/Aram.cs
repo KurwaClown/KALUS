@@ -1,4 +1,5 @@
 ﻿using Kalus.Modules.Networking;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -32,8 +33,10 @@ namespace Kalus.Modules.Games.GameMode
 				{
 					default:
 						break;
+
 					case null:
 						return;
+
 					case "FINALIZATION":
 						await Finalization();
 						break;
@@ -95,14 +98,14 @@ namespace Kalus.Modules.Games.GameMode
 		{
 			return sessionInfo?["benchChampions"]?.Select(x => int.TryParse(x?["championId"]?.ToString(), out int championId) ? championId : (int?)null)
 													.Where(championId => championId.HasValue)
-													.Select(championId => championId.Value)
+													.Select(championId => championId!.Value)
 													.ToList();
 		}
 
 		protected override async Task ChangeSpells()
 		{
 			var runesRecommendation = await ClientControl.GetSpellsRecommendationByPosition(championId, "NONE");
-			if(runesRecommendation == null) return;
+			if (runesRecommendation == null) return;
 			int[]? spellsId = runesRecommendation.ToObject<int[]>();
 
 			if (spellsId == null) return;
@@ -114,11 +117,12 @@ namespace Kalus.Modules.Games.GameMode
 
 		protected override async Task ChangeRunes()
 		{
-			bool isSetActive = (bool)ClientControl.GetPreference("runes.notSetActive");
+			JToken? preference = ClientControl.GetPreference("runes.notSetActive");
+			bool isSetActive = (preference != null) && (bool)preference;
 
 			string? activeRunesPage = isSetActive ? (await ClientRequest.GetActiveRunePage())?["id"]?.ToString() : "0";
 
-			if(activeRunesPage == null) return;
+			if (activeRunesPage == null) return;
 
 			await ClientControl.SetRunesPage(championId, "NONE");
 

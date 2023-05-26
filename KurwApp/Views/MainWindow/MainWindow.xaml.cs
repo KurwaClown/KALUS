@@ -142,9 +142,18 @@ namespace Kalus
 			int[]? blindPicks = DataCache.GetBlindPick();
 			blindPicks ??= Array.Empty<int>();
 
-			var champListBoxItems = ChampListCollection.Where(champion => blindPicks
-														.Select(token => token).ToArray()
-														.Contains(int.Parse(champion.Tag.ToString())));
+			var champListBoxItems = ChampListCollection.Where(champion =>
+			{
+				object tag = champion.Tag;
+				if (tag != null)
+				{
+					if (int.TryParse(tag.ToString(), out int championId))
+					{
+						return blindPicks.Select(token => token).ToArray().Contains(championId);
+					}
+				}
+				return false;
+			});
 
 			foreach (var champ in champListBoxItems)
 			{
@@ -205,7 +214,9 @@ namespace Kalus
 		private void SavePicksModification()
 		{
 			var gameType = ((ComboBoxItem)selectionListGameType.SelectedItem).Content.ToString();
-			var newList = new JArray(SelectedListCollection.Select(i => new JValue(int.Parse(i.Tag.ToString()))));
+			var newList = new JArray(SelectedListCollection
+				.Where(i => i.Tag != null)
+				.Select(i => new JValue(int.Parse(i.Tag.ToString()!))));
 			switch (gameType)
 			{
 				default:
@@ -220,7 +231,9 @@ namespace Kalus
 
 					var fileRole = position == "Support" ? "UTILITY" : position.ToUpper();
 
-					var positionPicks = new JArray(SelectedListCollection.Select(i => new JValue(int.Parse(i.Tag.ToString()))));
+					var positionPicks = new JArray(SelectedListCollection
+										.Where(i => i.Tag != null)
+										.Select(i => new JValue(int.Parse(i.Tag.ToString()!))));
 
 					if (pickType == "Pick") DataCache.SetDraftPick(fileRole, positionPicks);
 					else DataCache.SetDraftBan(fileRole, positionPicks);
@@ -263,7 +276,7 @@ namespace Kalus
 			if (sender is not CheckBox checkBox) return;
 			bool isChecked = checkBox.IsChecked ?? false;
 			string? checkboxTag = checkBox.Tag.ToString();
-			if(checkboxTag == null) return;
+			if (checkboxTag == null) return;
 
 			DataCache.SetSetting(checkboxTag, isChecked);
 		}
@@ -274,9 +287,12 @@ namespace Kalus
 			{
 				if (comboBox.IsEnabled)
 				{
-					if (DataCache.GetPreference(comboBox.Tag.ToString(), out string? preference))
-
-						comboBox.SelectedIndex = int.Parse(preference);
+					string? tag = comboBox.Tag.ToString();
+					if (tag == null) return;
+					if (DataCache.GetPreference(tag, out string? preference))
+					{
+						comboBox.SelectedIndex = int.Parse(preference!);
+					}
 				}
 				else
 				{
@@ -287,7 +303,9 @@ namespace Kalus
 			{
 				if (checkBox.IsEnabled)
 				{
-					if (DataCache.GetPreference(checkBox.Tag.ToString(), out string? preference)) checkBox.IsChecked = bool.Parse(preference);
+					string? tag = checkBox.Tag.ToString();
+					if (tag == null) return;
+					if (DataCache.GetPreference(tag, out string? preference)) checkBox.IsChecked = bool.Parse(preference!);
 				}
 			}
 		}
@@ -388,8 +406,9 @@ namespace Kalus
 			if (sender is ComboBox comboBox)
 			{
 				if (comboBox.SelectedIndex == -1) return;
-
-				DataCache.SetPreference(comboBox.Tag.ToString(), comboBox.SelectedIndex);
+				string? tag = comboBox.Tag.ToString();
+				if (tag == null) return;
+				DataCache.SetPreference(tag, comboBox.SelectedIndex);
 			}
 		}
 
@@ -409,14 +428,14 @@ namespace Kalus
 
 				var champsId = pickType == "Pick" ? DataCache.GetDraftPick(position) : DataCache.GetDraftBan(position);
 				if (champsId == null) return;
-				champListBoxItems = ChampListCollection.Where(champion => champsId.Select(token => (int)token).ToArray().Contains(int.Parse(champion.Tag.ToString())));
+				champListBoxItems = ChampListCollection.Where(champion => champion.Tag != null).Where(champion => champsId.Select(token => token).ToArray().Contains(int.Parse(champion.Tag.ToString()!)));
 			}
 			else
 			{
 				var champsId = gameType == "Blind" ? DataCache.GetBlindPick() : DataCache.GetAramPick();
 				if (champsId == null) return;
 
-				champListBoxItems = ChampListCollection.Where(champion => champsId.Select(token => (int)token).ToArray().Contains(int.Parse(champion.Tag.ToString())));
+				champListBoxItems = ChampListCollection.Where(champion => champion.Tag != null).Where(champion => champsId.Select(token => token).ToArray().Contains(int.Parse(champion.Tag.ToString()!)));
 			}
 
 			SelectedListCollection.Clear();

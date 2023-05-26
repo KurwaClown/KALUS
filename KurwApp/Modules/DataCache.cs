@@ -15,7 +15,7 @@ namespace Kalus.Modules
 		private static readonly JObject preferences = JObject.Parse(File.ReadAllText(preferencesPath));
 
 		private static readonly string pickBanPath = "Picks/PickBan.json";
-		private static readonly JObject pickBan = JObject.Parse(File.ReadAllText(pickBanPath));
+		private static readonly JObject pickBan = InitializePickBan();
 
 		private static JArray? championsInformation;
 		private static JArray? championsRunesRecommendation;
@@ -34,6 +34,30 @@ namespace Kalus.Modules
 		private static byte[]? champSelectAramIcon;
 
 		#region Files
+
+		internal static JObject InitializePickBan()
+		{
+			try
+			{
+				return JObject.Parse(File.ReadAllText(pickBanPath));
+			}
+			catch (FileNotFoundException)
+			{
+				var pickBan = new JObject();
+
+				pickBan["Draft"] ??= new JObject();  // Initialize "Draft" if it is null
+
+				pickBan["Draft"]!["Pick"] ??= new JObject();  // Initialize "Ban" if it is null
+
+				pickBan["Draft"]!["Ban"] ??= new JObject();  // Initialize "Pick" if it is null
+
+				pickBan["Blind"] ??= new JArray();
+				pickBan["Aram"] ??= new JArray();
+
+				File.WriteAllText(pickBanPath, pickBan.ToString());
+				return pickBan;
+			}
+		}
 
 		internal static JObject GetSettings()
 		{
@@ -62,10 +86,12 @@ namespace Kalus.Modules
 			return preferences;
 		}
 
+
+
 		internal static bool GetPreference(string preferenceToken, out string? preference)
 		{
 			preference = preferences.SelectToken(preferenceToken)?.ToString();
-			if(preference == null) return false;
+			if (preference == null) return false;
 			return true;
 		}
 
@@ -93,9 +119,7 @@ namespace Kalus.Modules
 
 		internal static void SetDraftPick(string position, JArray pick)
 		{
-
-
-			pickBan["Draft"]["Pick"][position] = pick;
+			pickBan["Draft"]!["Pick"]![position] = pick;
 
 			SavePickBan();
 		}
@@ -109,7 +133,7 @@ namespace Kalus.Modules
 
 		internal static void SetDraftBan(string position, JArray ban)
 		{
-			pickBan["Draft"]["Ban"][position] = ban;
+			pickBan["Draft"]!["Ban"]![position] = ban;
 
 			SavePickBan();
 		}
@@ -162,11 +186,10 @@ namespace Kalus.Modules
 		{
 			runesStyleInformation ??= await ClientRequest.GetRunesStyles();
 
-			if(runesStyleInformation == null) return null;
+			if (runesStyleInformation == null) return null;
 
 			return runesStyleInformation;
 		}
-
 
 		internal static async Task<string?> GetAppRunePageId()
 		{
@@ -176,7 +199,7 @@ namespace Kalus.Modules
 				var pages = await ClientRequest.GetRunePages();
 
 				//Get the page containing the name Kurwapp
-				var kurwappRunes = pages.Where(page => page["name"] != null && page["name"].ToString().ToLower().Contains("kurwapp"));
+				var kurwappRunes = pages.Where(page => page["name"] != null && page["name"]?.ToString().ToLower().Contains("kurwapp") == true);
 
 				//Assign the page id if there is any
 				if (kurwappRunes.Any()) appRunePageId = kurwappRunes.Select(page => page.Value<int>("id")).First().ToString();

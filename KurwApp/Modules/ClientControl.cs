@@ -50,7 +50,7 @@ namespace Kalus.Modules
 						if (leagueProcess == null) return;
 
 						string? filename = leagueProcess.FileName;
-						if(filename == null) return;
+						if (filename == null) return;
 
 						Auth.SetBasicAuth(filename);
 						mainWindow.ShowLolState(true);
@@ -142,13 +142,21 @@ namespace Kalus.Modules
 			var availableSkinsId = currentChampionSkins.Where(skin => skin.Value<bool>("unlocked"))
 														.Select(skin => skin.Value<int>("id"));
 
-			bool? addChromasPreference = (bool)GetPreference("randomSkin.addChromas");
-			if (addChromasPreference == null) return null;
-			if ((bool)addChromasPreference)
+			JToken? preference = GetPreference("randomSkin.addChromas");
+			bool addChromasPreference = (preference != null) && (bool)preference;
+
+			if (addChromasPreference)
 			{
-				var availableChromasId = currentChampionSkins.SelectMany(skin => skin["childSkins"]
-																		 .Where(childSkin => childSkin.Value<bool>("unlocked"))
-																			.Select(childSkin => childSkin.Value<int>("id")));
+				var availableChromasId = currentChampionSkins.SelectMany(skin =>
+				{
+					var childSkins = skin["childSkins"];
+					if (childSkins != null)
+					{
+						return childSkins.Where(childSkin => childSkin.Value<bool>("unlocked"))
+										 .Select(childSkin => childSkin.Value<int>("id"));
+					}
+					return Enumerable.Empty<int>(); // Return an empty collection if "childSkins" is null
+				});
 				return availableSkinsId.Concat(availableChromasId).ToArray();
 			};
 			return availableSkinsId.ToArray();
@@ -189,7 +197,6 @@ namespace Kalus.Modules
 			return isCurrentPlayerTurn;
 		}
 
-
 		internal static async Task<string?> GetChampionDefaultPosition(int championId)
 		{
 			return (await DataCache.GetChampionsRunesRecommendation())
@@ -202,10 +209,14 @@ namespace Kalus.Modules
 		internal static async Task<int[]> GetAllChampionForPosition(string position)
 		{
 			return (await DataCache.GetChampionsRunesRecommendation())
-																	.Where(item => item.Value<JArray>("runeRecommendations")
-																		.Any(rune => rune.Value<string>("position") == position && rune.Value<bool>("isDefaultPosition")))
-																	.Select(item => item.Value<int>("championId"))
-																	.ToArray();
+							.Where(item =>
+							{
+								var runeRecommendations = item.Value<JArray>("runeRecommendations");
+								return runeRecommendations != null &&
+									runeRecommendations.Any(rune => rune.Value<string>("position") == position && rune.Value<bool>("isDefaultPosition"));
+							})
+							.Select(item => item.Value<int>("championId"))
+							.ToArray();
 		}
 
 		#region Runes
@@ -216,8 +227,10 @@ namespace Kalus.Modules
 			var runesRecommendation = await DataCache.GetChampionsRunesRecommendation();
 
 			JArray? champRunes = runesRecommendation
-				.Where(obj => obj.Value<int>("championId") == champId)
-				.Select(obj => (JArray)obj["runeRecommendations"]).First();
+						.Where(obj => obj.Value<int>("championId") == champId)
+						.Select(obj => obj["runeRecommendations"] as JArray)
+						.FirstOrDefault();
+
 
 			return champRunes;
 		}
@@ -293,8 +306,6 @@ namespace Kalus.Modules
 		//Set the recommended rune page
 		internal static async Task SetRunesPage(int champId, string position = "NONE")
 		{
-			bool setActive = (bool)GetPreference("runes.notSetActive");
-
 			var appPageId = await DataCache.GetAppRunePageId();
 
 			var champions = await DataCache.GetChampionsInformations();
@@ -309,6 +320,9 @@ namespace Kalus.Modules
 
 			string recommendedRunes = FormatChampRunes(runesRecommendation, championName);
 
+			JToken? preference = ClientControl.GetPreference("runes.overridePage");
+			bool canOverride = (preference != null) && (bool)preference;
+
 			if (appPageId != null)
 			{
 				await ClientRequest.EditRunePage(appPageId, recommendedRunes);
@@ -317,7 +331,7 @@ namespace Kalus.Modules
 			{
 				await ClientRequest.CreateNewRunePage(recommendedRunes);
 			}
-			else if ((bool)GetPreference("runes.overridePage"))
+			else if (canOverride)
 			{
 				await EditOldestRunePage(recommendedRunes);
 			}
@@ -337,7 +351,8 @@ namespace Kalus.Modules
 
 		internal static async void SetSummonerSpells(int[] recommendedSpells)
 		{
-			int flashPosition = (int)GetPreference("summoners.flashPosition");
+			JToken? preference = GetPreference("summoners.flashPosition");
+			int flashPosition = (preference != null) ? (int)preference : 2;
 
 			if (flashPosition != 2 && recommendedSpells.Contains(4))
 			{
@@ -354,7 +369,7 @@ namespace Kalus.Modules
 		{
 			var runesStyles = await DataCache.GetRunesStyleInformation();
 
-			if(runesStyles == null) return null;
+			if (runesStyles == null) return null;
 
 			var currentRunes = await ClientRequest.GetActiveRunePage();
 

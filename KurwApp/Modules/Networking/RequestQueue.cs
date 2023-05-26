@@ -84,15 +84,25 @@ namespace Kalus.Modules.Networking
 			var request = async () =>
 			{
 				SetClient();
+				//if (_httpClient.BaseAddress?.ToString().Contains("127.0.0.1:0") == true) return string.Empty;
 				var httpContent = new StringContent(requestBody, Encoding.UTF8, "application/json");
 
-				var response = await _httpClient.SendAsync(new HttpRequestMessage(httpMethod, endpoint) { Content = httpContent });
-				string responseString = string.Empty;
 
-				if (!response.IsSuccessStatusCode) Debug.WriteLine($"{response.StatusCode} for endpoint : {endpoint}");
-				responseString = await response.Content.ReadAsStringAsync();
-				_httpClient.Dispose();
-				return responseString;
+				try
+				{
+					var response = await _httpClient.SendAsync(new HttpRequestMessage(httpMethod, endpoint) { Content = httpContent });
+					string responseString = string.Empty;
+
+					if (!response.IsSuccessStatusCode) Debug.WriteLine($"{response.StatusCode} for endpoint : {endpoint}");
+					responseString = await response.Content.ReadAsStringAsync();
+					_httpClient.Dispose();
+					return responseString;
+				}
+				catch (HttpRequestException)
+				{
+					_httpClient.Dispose();
+					return string.Empty;
+				}
 			};
 
 			var taskCompletionSource = new TaskCompletionSource<string>();
@@ -120,7 +130,7 @@ namespace Kalus.Modules.Networking
 				SetClient();
 
 				var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, endpoint));
-				byte[] responseBytes = new byte[0];
+				byte[] responseBytes = Array.Empty<byte>();
 				if (response.IsSuccessStatusCode) responseBytes = await response.Content.ReadAsByteArrayAsync();
 				_httpClient.Dispose();
 				return responseBytes;

@@ -51,9 +51,9 @@ namespace Kalus.Modules.Games
 
 			string? championName = champions.Where(champion => champion.Value<int>("id") == championId).Select(champion => champion["name"]?.ToString()).First();
 
-			if(championName == null) return;
+			if (championName == null) return;
 
-			if(mainWindow == null) return;
+			if (mainWindow == null) return;
 
 			//Set the current champion image and name on the UI
 			mainWindow.SetChampionIcon(imageBytes);
@@ -68,7 +68,11 @@ namespace Kalus.Modules.Games
 			}
 
 			//Random skin on pick
-			if ((bool)ClientControl.GetPreference("randomSkin.randomOnPick")) ClientControl.PickRandomSkin();
+			JToken? preference = ClientControl.GetPreference("randomSkin.randomOnPick");
+			if (preference != null && (bool)preference)
+			{
+				ClientControl.PickRandomSkin();
+			}
 
 			if (ClientControl.GetSettingState("autoSummoner")) await ChangeSpells();
 		}
