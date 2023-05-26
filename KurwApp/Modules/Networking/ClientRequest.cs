@@ -60,6 +60,7 @@ namespace Kalus.Modules.Networking
 		internal static async Task<JArray> GetCurrentChampionSkins()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-champ-select/v1/skin-carousel-skins");
+			if(response == "") return new JArray();
 			var currentChampionSkins = JArray.Parse(response);
 			return currentChampionSkins;
 		}
@@ -115,6 +116,7 @@ namespace Kalus.Modules.Networking
 		internal static async Task<JArray> GetRecommendedRunes()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, $"/lol-game-data/assets/v1/champion-rune-recommendations.json");
+			if(response == "") return new JArray();
 			var recommendedRunes = JArray.Parse(response);
 			return recommendedRunes;
 		}
@@ -136,13 +138,15 @@ namespace Kalus.Modules.Networking
 		internal static async Task<JArray> GetRunePages()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-perks/v1/pages");
+			if(response == null) return new JArray();
 			var runesPages = JArray.Parse(response);
 			return runesPages;
 		}
 
-		internal static async Task<JObject> GetRunesInventory()
+		internal static async Task<JObject?> GetRunesInventory()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-perks/v1/inventory");
+			if (response == "") return null;
 			var runesInventory = JObject.Parse(response);
 			return runesInventory;
 		}

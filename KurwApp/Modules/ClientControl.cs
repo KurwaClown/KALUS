@@ -201,6 +201,7 @@ namespace Kalus.Modules
 
 		internal static async Task<string?> GetChampionDefaultPosition(int championId)
 		{
+
 			return (await DataCache.GetChampionsRunesRecommendation())
 																	.First(item => item.Value<int>("championId") == championId)
 																	.Value<JArray>("runeRecommendations")?
@@ -291,6 +292,7 @@ namespace Kalus.Modules
 			//Get all pages
 			var pages = await ClientRequest.GetRunePages();
 
+			if (!pages.Any()) return 0;
 			//Get the page containing the name Kurwapp
 			var kurwappRunes = pages.First(page => page.Value<bool>("current") == true);
 
@@ -302,6 +304,7 @@ namespace Kalus.Modules
 		internal static async Task<bool> CanCreateNewPage()
 		{
 			var inventory = await ClientRequest.GetRunesInventory();
+			if (inventory == null) return false;
 			return inventory.Value<bool>("canAddCustomPage");
 		}
 
