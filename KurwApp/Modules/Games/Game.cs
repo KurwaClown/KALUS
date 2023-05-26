@@ -14,14 +14,15 @@ namespace Kalus.Modules.Games
 
 		protected bool isRunePageChanged = false;
 
-		protected MainWindow mainWindow;
+		protected MainWindow? mainWindow;
 
 		internal static async Task<Game?> CreateGame(MainWindow mainWindow)
 		{
 			JObject? lobbyInfo = await ClientRequest.GetLobbyInfo();
 			if (lobbyInfo is null) return null;
-			string gameMode = lobbyInfo["gameConfig"]["gameMode"].ToString();
-			bool hasPositions = (bool)lobbyInfo["gameConfig"]["showPositionSelector"];
+			string? gameMode = lobbyInfo.SelectToken("gameConfig.gameMode")?.ToString();
+			if (gameMode == null) return null;
+			bool hasPositions = lobbyInfo.Value<bool>("gameConfig.showPositionSelector");
 
 			//if the gamemode is aram set to ARAM
 			if (gameMode == "ARAM") return new GameMode.Aram(mainWindow);
@@ -48,7 +49,11 @@ namespace Kalus.Modules.Games
 
 			var champions = await DataCache.GetChampionsInformations();
 
-			string championName = champions.Where(champion => (int)champion["id"] == championId).Select(champion => champion["name"].ToString()).First();
+			string? championName = champions.Where(champion => champion.Value<int>("id") == championId).Select(champion => champion["name"]?.ToString()).First();
+
+			if(championName == null) return;
+
+			if(mainWindow == null) return;
 
 			//Set the current champion image and name on the UI
 			mainWindow.SetChampionIcon(imageBytes);
@@ -69,9 +74,9 @@ namespace Kalus.Modules.Games
 		}
 
 		//Get sessions actions
-		internal IEnumerable<JObject> GetSessionActions()
+		internal IEnumerable<JObject>? GetSessionActions()
 		{
-			return sessionInfo["actions"].SelectMany(innerArray => innerArray).OfType<JObject>();
+			return sessionInfo?["actions"]?.SelectMany(innerArray => innerArray).OfType<JObject>();
 		}
 	}
 }

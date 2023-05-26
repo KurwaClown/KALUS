@@ -1,8 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
@@ -12,143 +10,138 @@ using System.Threading.Tasks;
 
 namespace Kalus.Modules.Networking
 {
-    internal class RequestQueue
-    {
-        private static HttpClient _httpClient = new HttpClient();
-        private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
-        private static readonly Queue<Func<Task>> _requestQueue = new Queue<Func<Task>>();
+	internal class RequestQueue
+	{
+		private static HttpClient _httpClient = new();
+		private static readonly SemaphoreSlim _semaphore = new(1);
+		private static readonly Queue<Func<Task>> _requestQueue = new();
 
-        static RequestQueue()
-        {
-            ProcessNextRequest();
-        }
+		static RequestQueue()
+		{
+			ProcessNextRequest();
+		}
 
+		public static void Enqueue(Func<Task> request)
+		{
+			_requestQueue.Enqueue(request);
+		}
 
+		internal static void SetClient()
+		{
+			var certFilePath = "Certificates/riotgames.pem";
+			var certCollection = new X509Certificate2Collection();
+			certCollection.Import(certFilePath);
+			var riotCert = certCollection[0];
+			HttpClientHandler handler = new()
+			{
+				ClientCertificateOptions = ClientCertificateOption.Manual,
+				SslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls11 | System.Security.Authentication.SslProtocols.Tls,
+				ServerCertificateCustomValidationCallback =
+				(httpRequestMessage, cert, cetChain, policyErrors) =>
+				{
+					return true;
+				}
+			};
+			handler.ClientCertificates.Add(riotCert);
 
-        public static void Enqueue(Func<Task> request)
-        {
-            _requestQueue.Enqueue(request);
-        }
+			_httpClient = new HttpClient(handler)
+			{
+				BaseAddress = new Uri($"https://127.0.0.1:{Auth.GetPort()}")
+			};
 
-        internal static void SetClient()
-        {
-            var certFilePath = "Certificates/riotgames.pem";
-            var certCollection = new X509Certificate2Collection();
-            certCollection.Import(certFilePath);
-            var riotCert = certCollection[0];
-            HttpClientHandler handler = new()
-            {
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Auth.GetBasicAuth());
+		}
 
-                ClientCertificateOptions = ClientCertificateOption.Manual,
-                SslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls11 | System.Security.Authentication.SslProtocols.Tls,
-                ServerCertificateCustomValidationCallback =
-                (httpRequestMessage, cert, cetChain, policyErrors) =>
-                {
-                    return true;
-                }
-            };
-            handler.ClientCertificates.Add(riotCert);
+		private static async void ProcessNextRequest()
+		{
+			while (true)
+			{
+				await _semaphore.WaitAsync();
 
-            _httpClient = new HttpClient(handler)
-            {
-                BaseAddress = new Uri($"https://127.0.0.1:{Auth.GetPort()}")
-            };
+				if (_requestQueue.Count == 0)
+				{
+					_semaphore.Release();
+					await Task.Delay(100);
+					continue;
+				}
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Auth.GetBasicAuth());
-        }
+				var request = _requestQueue.Dequeue();
+				_semaphore.Release();
+				try
+				{
+					await request();
+				}
+				catch (NullReferenceException)
+				{
+					await Task.Delay(100);
+					continue;
+				}
+			}
+		}
 
-        private static async Task ProcessNextRequest()
-        {
-            while (true)
-            {
-                await _semaphore.WaitAsync();
+		internal static async Task<string> Request(HttpMethod httpMethod, string endpoint, string requestBody = "")
+		{
+			var request = async () =>
+			{
+				SetClient();
+				var httpContent = new StringContent(requestBody, Encoding.UTF8, "application/json");
 
-                if (_requestQueue.Count == 0)
-                {
-                    _semaphore.Release();
-                    await Task.Delay(100);
-                    continue;
-                }
+				var response = await _httpClient.SendAsync(new HttpRequestMessage(httpMethod, endpoint) { Content = httpContent });
+				string responseString = string.Empty;
 
-                var request = _requestQueue.Dequeue();
-                _semaphore.Release();
-                try
-                {
-                    await request();
-
-                }
-                catch (NullReferenceException)
-                {
-                    await Task.Delay(100);
-                    continue;
-                }
-            }
-        }
-
-        internal static async Task<string> Request(HttpMethod httpMethod, string endpoint, string requestBody = "")
-        {
-            var request = async () =>
-            {
-                SetClient();
-                var httpContent = new StringContent(requestBody, Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.SendAsync(new HttpRequestMessage(httpMethod, endpoint) { Content = httpContent });
-                string responseString = string.Empty;
-
-                if (!response.IsSuccessStatusCode) Debug.WriteLine($"{response.StatusCode} for endpoint : {endpoint}");
+				if (!response.IsSuccessStatusCode) Debug.WriteLine($"{response.StatusCode} for endpoint : {endpoint}");
 				responseString = await response.Content.ReadAsStringAsync();
+				_httpClient.Dispose();
+				return responseString;
+			};
 
-                _httpClient.Dispose();
-                return responseString;
-            };
+			var taskCompletionSource = new TaskCompletionSource<string>();
 
-            var taskCompletionSource = new TaskCompletionSource<string>();
+			Enqueue(async () =>
+			{
+				try
+				{
+					var result = await request();
+					taskCompletionSource.SetResult(result);
+				}
+				catch (Exception ex)
+				{
+					taskCompletionSource.SetException(ex);
+				}
+			});
 
-            Enqueue(async () =>
-            {
-                try
-                {
-                    var result = await request();
-                    taskCompletionSource.SetResult(result);
-                }
-                catch (Exception ex)
-                {
-                    taskCompletionSource.SetException(ex);
-                }
-            });
+			return await taskCompletionSource.Task;
+		}
 
-            return await taskCompletionSource.Task;
-        }
+		internal static async Task<byte[]> GetImage(string endpoint)
+		{
+			var request = async () =>
+			{
+				SetClient();
 
-        internal static async Task<byte[]> GetImage(string endpoint)
-        {
-            var request = async () =>
-            {
-                SetClient();
+				var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, endpoint));
+				byte[] responseBytes = new byte[0];
+				if (response.IsSuccessStatusCode) responseBytes = await response.Content.ReadAsByteArrayAsync();
+				_httpClient.Dispose();
+				return responseBytes;
+			};
 
-                var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, endpoint));
-                byte[] responseBytes = new byte[0];
-                if (response.IsSuccessStatusCode) responseBytes = await response.Content.ReadAsByteArrayAsync();
-                _httpClient.Dispose();
-                return responseBytes;
-            };
+			var taskCompletionSource = new TaskCompletionSource<byte[]>();
 
-            var taskCompletionSource = new TaskCompletionSource<byte[]>();
+			Enqueue(async () =>
+			{
+				try
+				{
+					var result = await request();
+					taskCompletionSource.SetResult(result);
+				}
+				catch (Exception ex)
+				{
+					taskCompletionSource.SetException(ex);
+				}
+			});
 
-            Enqueue(async () =>
-            {
-                try
-                {
-                    var result = await request();
-                    taskCompletionSource.SetResult(result);
-                }
-                catch (Exception ex)
-                {
-                    taskCompletionSource.SetException(ex);
-                }
-            });
-
-            return await taskCompletionSource.Task;
-        }
-    }
+			return await taskCompletionSource.Task;
+		}
+	}
 }
