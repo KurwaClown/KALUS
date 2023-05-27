@@ -33,7 +33,7 @@ namespace Kalus.Modules.Games.GameMode
 		{
 			if (sessionInfo == null) return;
 			cellId = sessionInfo.Value<int>("localPlayerCellId");
-			if (isDraft) position = (sessionInfo["myTeam"]?.Where(player => player.Value<int>("cellId") == cellId).Select(player => player["assignedPosition"]?.ToString()).First() ?? "NONE").ToUpper();
+			if (isDraft) position = (sessionInfo["myTeam"]?.Where(player => player.Value<int>("cellId") == cellId).Select(player => player["assignedPosition"]?.ToString()).FirstOrDefault() ?? "NONE").ToUpper();
 		}
 
 		//Handler of the champion selections
