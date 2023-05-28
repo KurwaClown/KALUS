@@ -49,7 +49,7 @@ namespace Kalus.Modules.Games
 
 			var champions = await DataCache.GetChampionsInformations();
 
-			string? championName = champions.Where(champion => champion.Value<int>("id") == championId).Select(champion => champion["name"]?.ToString()).First();
+			string? championName = champions.Where(champion => champion.Value<int>("id") == championId).Select(champion => champion["name"]?.ToString()).FirstOrDefault();
 
 			if (championName == null) return;
 
