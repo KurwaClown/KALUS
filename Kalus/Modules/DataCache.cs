@@ -198,8 +198,8 @@ namespace Kalus.Modules
 				//Get all pages
 				var pages = await ClientRequest.GetRunePages();
 
-				//Get the page containing the name Kurwapp
-				var kurwappRunes = pages.Where(page => page["name"] != null && page["name"]?.ToString().ToLower().Contains("kurwapp") == true);
+				//Get the page containing the name KALUS
+				var kurwappRunes = pages.Where(page => page["name"] != null && page["name"]?.ToString().ToLower().Contains("kalus") == true);
 
 				//Assign the page id if there is any
 				if (kurwappRunes.Any()) appRunePageId = kurwappRunes.Select(page => page.Value<int>("id")).First().ToString();

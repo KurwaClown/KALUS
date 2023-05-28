@@ -275,7 +275,7 @@ namespace Kalus.Modules
 		internal static string FormatChampRunes(JToken runes, string champion)
 		{
 			//Create a template for the request body
-			string runesTemplate = $"{{\"current\": true,\"name\": \"Kurwapp - {champion}\",\"primaryStyleId\": 0,\"subStyleId\": 0, \"selectedPerkIds\": []}}";
+			string runesTemplate = $"{{\"current\": true,\"name\": \"KALUS - {champion}\",\"primaryStyleId\": 0,\"subStyleId\": 0, \"selectedPerkIds\": []}}";
 			JObject runesObject = JObject.Parse(runesTemplate);
 
 			//Set the values from the recommended runes
@@ -293,7 +293,7 @@ namespace Kalus.Modules
 			var pages = await ClientRequest.GetRunePages();
 
 			if (!pages.Any()) return 0;
-			//Get the page containing the name Kurwapp
+			//Get the page containing the name KALUS
 			var kurwappRunes = pages.First(page => page.Value<bool>("current") == true);
 
 			//Return the page id if there is a page else return 0
