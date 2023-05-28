@@ -71,7 +71,7 @@
                         <ColumnDefinition />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <StackPanel x:Name="leftPanel" Grid.RowSpan="3">
+                    <StackPanel x:Name="leftPanel" Grid.RowSpan="3" Margin="5,0,5,0">
                         <GroupBox Height="100" Header="Runes">
                             <StackPanel x:Name="runesPreferences">
                                 <CheckBox x:Name="notSetPageAsActive" Content="Do not set page as active" Height="15" SnapsToDevicePixels="True" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="runes.notSetActive" />
@@ -126,13 +126,20 @@
                             </StackPanel>
                         </GroupBox>
                     </StackPanel>
-                    <StackPanel x:Name="rightPanel" Margin="0,0,12,23" Grid.Column="2">
+                    <StackPanel x:Name="rightPanel" Grid.Column="2" Margin="5,0,5,0">
                         <GroupBox Header="Bans">
                             <StackPanel x:Name="bansPreferences" UseLayoutRounding="False" VerticalAlignment="Center" Margin="0,0,-2,0" Tag="bans">
                                 <RadioButton Tag="0" Content="Instant" GroupName="bans.userPreference" Checked="OnControlInteraction" Height="15" />
                                 <RadioButton Tag="1" Content="Select and Wait" GroupName="bans.userPreference" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0" />
                                 <RadioButton x:Name="bansOTL" Tag="2" Content="On time left" GroupName="bans.userPreference" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0" />
                                 <ComboBox x:Name="bansTimeLeft" HorizontalAlignment="Left" Margin="20,5,0,0" IsEnabled="{Binding IsChecked, ElementName=bansOTL}" IsEnabledChanged="IsEnabledModified"  SelectionChanged="OTLChange" Tag="bans.OTLTimeIndex" />
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Height="100" Header="Aram">
+                            <StackPanel x:Name="aramPreferences">
+                                <CheckBox x:Name="rerollForChampion" Content="Roll until getting a liked champion" Height="15" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="aram.rerollForChampion" />
+                                <CheckBox x:Name="tradeForChampion" Content="Trade for liked champion" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="aram.tradeForChampion" />
+                                <CheckBox x:Name="repickChampion" Content="Pick champion dropped on unliked roll" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="aram.repickChampion" />
                             </StackPanel>
                         </GroupBox>
                     </StackPanel>
