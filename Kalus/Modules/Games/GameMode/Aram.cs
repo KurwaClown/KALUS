@@ -1,19 +1,23 @@
 ﻿using Kalus.Modules.Networking;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Kalus.Modules.Games.GameMode
 {
 	internal class Aram : Game
 	{
+		private int rerollsRemaining = 0;
+		private delegate void OnRerollHandler(object sender, EventArgs e);
+		private event OnRerollHandler OnReroll;
 
 		internal Aram(MainWindow mainWindow)
 		{
+			OnReroll += ExecutePreferencesOnReroll;
 			this.mainWindow = mainWindow;
 		}
 
@@ -22,9 +26,9 @@ namespace Kalus.Modules.Games.GameMode
 		{
 			sessionInfo = await ClientRequest.GetSessionInfo();
 			if (sessionInfo is null) return;
+			rerollsRemaining = sessionInfo["rerollsRemaining"]!.Value<int>();
 
 			if (mainWindow == null) return;
-
 			mainWindow.SetGamemodeName("ARAM");
 			mainWindow.SetGameModeIcon("ARAM");
 
@@ -32,6 +36,12 @@ namespace Kalus.Modules.Games.GameMode
 			{
 				sessionInfo = await ClientRequest.GetSessionInfo();
 				if (sessionInfo == null) return;
+				int currentRerollsRemaining = sessionInfo["rerollsRemaining"]!.Value<int>();
+				if (currentRerollsRemaining < rerollsRemaining)
+				{
+					rerollsRemaining = currentRerollsRemaining;
+					OnReroll.Invoke(this, EventArgs.Empty);
+				}
 
 				switch (sessionInfo.SelectToken("timer.phase")?.ToString())
 				{
@@ -69,8 +79,8 @@ namespace Kalus.Modules.Games.GameMode
 				}
 			}
 
-
 			await UseAramPreferences();
+
 			var currentChampionId = await ClientRequest.GetCurrentChampionId();
 			if (currentChampionId != championId)
 			{
@@ -80,18 +90,36 @@ namespace Kalus.Modules.Games.GameMode
 			}
 		}
 
+		private async void ExecutePreferencesOnReroll(object sender, EventArgs e)
+		{
+
+			int currentChampionId = await ClientRequest.GetCurrentChampionId();
+			if (ClientControl.GetPreference<bool>("aram.repickChampion"))
+			{
+				var aramPicks = DataCache.GetAramPick();
+
+				if (aramPicks == null) return;
+				if (!aramPicks.Any()) return;
+
+				if (!aramPicks.Contains(currentChampionId)) await ClientRequest.AramBenchSwap(championId);
+			}
+		}
+
 		private async Task UseAramPreferences()
 		{
 
-			if (ClientControl.GetPreference<bool>("aram.rerollForChampion") && sessionInfo!["rerollsRemaining"]!.Value<int>() != 0)
+			if (ClientControl.GetPreference<bool>("aram.rerollForChampion") && rerollsRemaining != 0)
 			{
-					await ClientRequest.AramReroll();
+				await ClientRequest.AramReroll();
+				rerollsRemaining--;
 			}
+
 
 			if (ClientControl.GetPreference<bool>("aram.tradeForChampion"))
 			{
-				var availableLikedChampion = sessionInfo!["myTeam"]!.Where(teammate => DataCache.GetAramPick()
-																			.Contains(teammate.Value<int>("championId")))
+				var aramPicks = DataCache.GetAramPick();
+
+				var availableLikedChampion = sessionInfo!["myTeam"]!.Where(teammate => aramPicks.Contains(teammate.Value<int>("championId")))
 																	.Select(teammate => teammate.Value<int>("cellId"))
 																	.ToArray();
 				var availableTrades = sessionInfo?["trades"]?.Where(trade => availableLikedChampion.Contains(trade["cellId"]?.Value<int>() ?? 0) && trade?["state"]?.ToString() == "AVAILABLE");
@@ -102,16 +130,6 @@ namespace Kalus.Modules.Games.GameMode
 				}
 			}
 
-			int currentChampionId = await ClientRequest.GetCurrentChampionId();
-			if (ClientControl.GetPreference<bool>("aram.repickChampion") && currentChampionId != championId)
-			{
-				var aramPicks = DataCache.GetAramPick();
-
-				if (aramPicks == null) return;
-				if (!aramPicks.Any()) return;
-
-				if (!aramPicks.Contains(currentChampionId)) await ClientRequest.AramBenchSwap(championId);
-			}
 		}
 
 		//Get the pick the aram champion to pick if any
