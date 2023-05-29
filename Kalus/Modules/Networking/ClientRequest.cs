@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -102,6 +103,27 @@ namespace Kalus.Modules.Networking
 			return response;
 		}
 
+		internal static async Task<JArray> GetAramTrades()
+		{
+			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-champ-select/v1/session/trades");
+			var trades = JArray.Parse(response);
+			if (trades == null) return new JArray();
+
+			return trades;
+		}
+
+		internal static async Task<string> AramTradeRequest(int id)
+		{
+			var response = await RequestQueue.Request(HttpMethod.Post, $"/lol-champ-select/v1/session/trades/{id}/request");
+			return response;
+		}
+
+		internal static async Task<string> AramReroll()
+		{
+			var response = await RequestQueue.Request(HttpMethod.Post, "/lol-champ-select/v1/session/my-selection/reroll");
+			return response;
+		}
+
 		internal static async Task<int> GetCurrentChampionId()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-champ-select/v1/current-champion");
@@ -172,14 +194,7 @@ namespace Kalus.Modules.Networking
 			return JObject.Parse(response);
 		}
 
-		internal static async Task<JArray> GetChampionsInfo()
-		{
-			string request = Auth.IsAuthSet() ? "/lol-game-data/assets/v1/champion-summary.json" : "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json";
-			var response = await RequestQueue.Request(HttpMethod.Get, request);
-			var champions = JArray.Parse(response);
-			return champions;
-		}
-
+		#region Image Assets
 		internal static async Task<byte[]> GetChampionImageById(int charId)
 		{
 			string request = Auth.IsAuthSet() ? $"/lol-game-data/assets/v1/champion-icons/{charId}.png" : $"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/{charId}.png";
@@ -211,6 +226,16 @@ namespace Kalus.Modules.Networking
 			endpoint += inGame ? "icon-victory.png" : "icon-hover.png";
 			return await RequestQueue.GetImage(endpoint);
 		}
+		#endregion
+
+		#region Champions Informations
+		internal static async Task<JArray> GetChampionsInfo()
+		{
+			string request = Auth.IsAuthSet() ? "/lol-game-data/assets/v1/champion-summary.json" : "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json";
+			var response = await RequestQueue.Request(HttpMethod.Get, request);
+			var champions = JArray.Parse(response);
+			return champions;
+		}
 
 		internal static async Task<JArray?> GetRunesStyles()
 		{
@@ -224,6 +249,7 @@ namespace Kalus.Modules.Networking
 
 			return JArray.Parse(perksStyles);
 		}
+		#endregion
 
 		internal static async Task RestartLCU()
 		{

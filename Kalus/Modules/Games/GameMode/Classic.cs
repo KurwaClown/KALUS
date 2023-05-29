@@ -157,13 +157,10 @@ namespace Kalus.Modules.Games.GameMode
 
 					if (championSelectionId != championId && championSelectionId != 0)
 					{
-						switch (ClientControl.GetPreference("selections.userPreference")?.Value<int>())
+						switch (ClientControl.GetPreference<int>("selections.userPreference"))
 						{
 							default:
 								break;
-
-							case null:
-								return;
 
 							case 0:
 								return;
@@ -179,7 +176,7 @@ namespace Kalus.Modules.Games.GameMode
 
 					if (championId == 0)
 					{
-						switch (ClientControl.GetPreference("noPicks.userPreference")?.Value<int>())
+						switch (ClientControl.GetPreference<int>("noPicks.userPreference"))
 						{
 							default:
 								int randomChampionId = await GetRandomChampionPick();
@@ -188,8 +185,7 @@ namespace Kalus.Modules.Games.GameMode
 								isChampionRandom = true;
 								break;
 
-							case null:
-							case 2:
+							case 0:
 								return;
 						}
 					}
@@ -217,7 +213,7 @@ namespace Kalus.Modules.Games.GameMode
 
 		private async Task ExecutePickBanPreference(string preferenceToken, int actionId, string pickType)
 		{
-			int? preference = ClientControl.GetPreference($"{preferenceToken}.userPreference")?.Value<int>();
+			int? preference = ClientControl.GetPreference<int>($"{preferenceToken}.userPreference");
 			if (preference == null) return;
 			if (preference == 1) return;
 			if (preference == 2)
@@ -226,7 +222,7 @@ namespace Kalus.Modules.Games.GameMode
 				if (delayedPick != null && delayedPickType == pickType) return;
 
 				//+1 to prevent index 0 (5 seconds) to be 0 seconds
-				int? otlTimeIndex = ClientControl.GetPreference($"{preferenceToken}.OTLTimeIndex")?.Value<int>() + 1;
+				int? otlTimeIndex = ClientControl.GetPreference<int>($"{preferenceToken}.OTLTimeIndex") + 1;
 				int? sessionTimer = sessionInfo?.SelectToken("timer.adjustedTimeLeftInPhase")?.Value<int>();
 
 				if (sessionTimer == null || otlTimeIndex == null) return;
@@ -297,15 +293,13 @@ namespace Kalus.Modules.Games.GameMode
 
 		private async Task<int> GetRandomChampionPick()
 		{
-			int? noPicksPreferences = ClientControl.GetPreference("noPicks.userPreference")?.Value<int>();
-
-			if (noPicksPreferences == null) return 0;
+			int noPicksPreferences = ClientControl.GetPreference<int>("noPicks.userPreference");
 
 			var availableChampions = await ClientRequest.GetAvailableChampionsPick();
 			if (availableChampions == null) return 0;
 
 			//Random pick by position
-			if (noPicksPreferences == 0)
+			if (noPicksPreferences == 2)
 			{
 				if (position == null) return 0;
 				var allChampionsByPosition = await ClientControl.GetAllChampionForPosition(position);
@@ -344,8 +338,7 @@ namespace Kalus.Modules.Games.GameMode
 
 		protected override async Task ChangeRunes()
 		{
-			JToken? notSetActivePreference = ClientControl.GetPreference("runes.notSetActive");
-			bool isSetActive = (notSetActivePreference != null) && (bool)notSetActivePreference;
+			bool isSetActive = ClientControl.GetPreference<bool>("runes.notSetActive");
 
 			JObject? activeRunesPage = await ClientRequest.GetActiveRunePage();
 			if (activeRunesPage == null) return;

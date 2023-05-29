@@ -351,6 +351,10 @@ namespace Kalus
 				randomOnPick.IsChecked = preferences.Value<bool>("randomSkin.randomOnPick");
 
 				alwaysSnowball.IsChecked = preferences.Value<bool>("summoners.alwaysSnowball");
+
+				rerollForChampion.IsChecked = preferences.Value<bool>("aram.rerollForChampion");
+				tradeForChampion.IsChecked = preferences.Value<bool>("aram.tradeForChampion");
+				repickChampion.IsChecked = preferences.Value<bool>("aram.repickChampion");
 			}
 			);
 		}

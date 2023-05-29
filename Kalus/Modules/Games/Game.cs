@@ -68,8 +68,8 @@ namespace Kalus.Modules.Games
 			}
 
 			//Random skin on pick
-			JToken? preference = ClientControl.GetPreference("randomSkin.randomOnPick");
-			if (preference != null && (bool)preference)
+			bool randomSkinOnPick = ClientControl.GetPreference<bool>("randomSkin.randomOnPick");
+			if (randomSkinOnPick)
 			{
 				ClientControl.PickRandomSkin();
 			}
