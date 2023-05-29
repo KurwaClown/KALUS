@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,6 @@ namespace Kalus.Modules.Games.GameMode
 {
 	internal class Aram : Game
 	{
-		private int rerollsRemaining = 0;
 
 		internal Aram(MainWindow mainWindow)
 		{
@@ -32,7 +32,6 @@ namespace Kalus.Modules.Games.GameMode
 			{
 				sessionInfo = await ClientRequest.GetSessionInfo();
 				if (sessionInfo == null) return;
-				rerollsRemaining = sessionInfo["rerollsRemaining"]!.Value<int>();
 
 				switch (sessionInfo.SelectToken("timer.phase")?.ToString())
 				{
@@ -84,10 +83,9 @@ namespace Kalus.Modules.Games.GameMode
 		private async Task UseAramPreferences()
 		{
 
-			if (ClientControl.GetPreference<bool>("aram.rerollForChampion") && rerollsRemaining > 0)
+			if (ClientControl.GetPreference<bool>("aram.rerollForChampion") && sessionInfo!["rerollsRemaining"]!.Value<int>() != 0)
 			{
 					await ClientRequest.AramReroll();
-					rerollsRemaining--;
 			}
 
 			if (ClientControl.GetPreference<bool>("aram.tradeForChampion"))
@@ -96,9 +94,9 @@ namespace Kalus.Modules.Games.GameMode
 																			.Contains(teammate.Value<int>("championId")))
 																	.Select(teammate => teammate.Value<int>("cellId"))
 																	.ToArray();
-				var availableTrades = sessionInfo!["trades"]!.Where(trade=> availableLikedChampion.Contains(trade["cellId"].Value<int>()) && trade["state"].ToString() == "AVAILABLE");
+				var availableTrades = sessionInfo?["trades"]?.Where(trade => availableLikedChampion.Contains(trade["cellId"]?.Value<int>() ?? 0) && trade?["state"]?.ToString() == "AVAILABLE");
 
-				if (availableTrades.Any())
+				if (availableTrades != null && availableTrades.Any())
 				{
 					await ClientRequest.AramTradeRequest(availableTrades.First().Value<int>("id"));
 				}
@@ -120,7 +118,6 @@ namespace Kalus.Modules.Games.GameMode
 		protected int GetBenchChampionPick()
 		{
 			var aramPicks = DataCache.GetAramPick();
-
 			if (aramPicks == null) return 0;
 			if (!aramPicks.Any()) return 0;
 
