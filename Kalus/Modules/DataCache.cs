@@ -1,5 +1,6 @@
 ﻿using Kalus.Modules.Networking;
 using Newtonsoft.Json.Linq;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -152,10 +153,10 @@ namespace Kalus.Modules
 			SavePickBan();
 		}
 
-		internal static int[]? GetAramPick()
+		internal static int[] GetAramPick()
 		{
 			var picks = pickBan["Aram"]?.Select(pick => (int)pick).ToArray();
-			if (picks == null) return null;
+			if (picks == null) return Array.Empty<int>();
 			return picks;
 		}
 

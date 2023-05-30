@@ -16,7 +16,7 @@
     "OTLTimeIndex": 0
   },
   "noPicks": {
-    "userPreference": 2
+    "userPreference": 0
   },
   "selections": {
     "userPreference": 0,
@@ -26,5 +26,10 @@
   "bans": {
     "userPreference": 0,
     "OTLTimeIndex": 0
+  },
+  "aram": {
+    "rerollForChampion": false,
+    "tradeForChampion": false,
+    "repickChampion": false
   }
 }

@@ -67,13 +67,24 @@ namespace Kalus.Modules
 			return Process.GetProcessesByName("LeagueClientUxRender").Length > 3;
 		}
 
-		internal static JToken? GetPreference(string token)
+		internal static T? GetPreference<T>(string token)
 		{
 			var preferences = DataCache.GetPreferences();
 
 			var preference = preferences.SelectToken(token);
 
-			return preference;
+
+			if (preference == null) return default;
+			try
+			{
+				var value = preference.Value<T>();
+				return value;
+			}
+			catch (InvalidCastException)
+			{
+
+				return default;
+			}
 		}
 
 		//Checks client phase every 5 seconds
@@ -144,8 +155,7 @@ namespace Kalus.Modules
 			var availableSkinsId = currentChampionSkins.Where(skin => skin.Value<bool>("unlocked"))
 														.Select(skin => skin.Value<int>("id"));
 
-			JToken? preference = GetPreference("randomSkin.addChromas");
-			bool addChromasPreference = (preference != null) && (bool)preference;
+			bool addChromasPreference = GetPreference<bool>("randomSkin.addChromas");
 
 			if (addChromasPreference)
 			{
@@ -325,8 +335,7 @@ namespace Kalus.Modules
 
 			string recommendedRunes = FormatChampRunes(runesRecommendation, championName);
 
-			JToken? preference = ClientControl.GetPreference("runes.overridePage");
-			bool canOverride = (preference != null) && (bool)preference;
+			bool canOverride = ClientControl.GetPreference<bool>("runes.overridePage");
 
 			if (appPageId != null)
 			{
@@ -356,8 +365,7 @@ namespace Kalus.Modules
 
 		internal static async void SetSummonerSpells(int[] recommendedSpells)
 		{
-			JToken? preference = GetPreference("summoners.flashPosition");
-			int flashPosition = (preference != null) ? (int)preference : 2;
+			int flashPosition = GetPreference<int>("summoners.flashPosition");
 
 			if (flashPosition != 2 && recommendedSpells.Contains(4))
 			{
