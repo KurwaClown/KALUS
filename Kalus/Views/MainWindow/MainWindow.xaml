@@ -225,9 +225,8 @@
                 </Grid>
             </GroupBox>
             <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="5,0,5,0">
-                <Button x:Name="random_btn" Content="Random Skin" Click="RandomSkinClick" IsEnabled="False" />
                 <GroupBox Header="Change Runes">
-                    <Grid>
+                    <Grid Margin="0,5,0,3">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
                             <ColumnDefinition/>
@@ -250,6 +249,7 @@
                         </Button>
                     </Grid>
                 </GroupBox>
+                <Button x:Name="random_btn" Content="Random Skin" Click="RandomSkinClick" IsEnabled="False" Margin="0,10,0,0" />
                 <Button Content="Reload League Client" Click="ClientRestart" Margin="0,10,0,0" />
             </StackPanel>
             <GroupBox Header="Automatic Utility" Grid.Column="1" Margin="5,0,0,0">
