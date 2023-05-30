@@ -109,7 +109,9 @@ namespace Kalus.Modules
 						//On champion selection : start and await the end of the champ select handler
 						case "ChampSelect":
 							Game? champSelect = await Game.CreateGame(mainWindow);
+
 							if (champSelect == null) break;
+
 							await champSelect.ChampSelectControl();
 							break;
 
@@ -118,6 +120,7 @@ namespace Kalus.Modules
 							string gameMode = mainWindow.GetGamemodeName();
 							mainWindow.SetGameModeIcon(gameMode, true);
 							mainWindow.EnableRandomSkinButton(false);
+							mainWindow.EnableChangeRuneButton(false);
 							break;
 						//If not in any of the above game phase
 						default:
@@ -131,6 +134,9 @@ namespace Kalus.Modules
 
 								MainWindow.isStatusBoxDefault = true;
 							}
+
+							mainWindow.EnableRandomSkinButton(false);
+							mainWindow.EnableChangeRuneButton(false);
 							break;
 					}
 				}

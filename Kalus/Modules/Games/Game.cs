@@ -60,6 +60,7 @@ namespace Kalus.Modules.Games
 			mainWindow.SetChampionName(championName);
 			//Toggle the random skin button on
 			mainWindow.EnableRandomSkinButton(true);
+			mainWindow.EnableChangeRuneButton(true);
 
 			//Set runes if the the auto rune is toggled
 			if (ClientControl.GetSettingState("runesSwap") && !isRunePageChanged)

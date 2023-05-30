@@ -19,6 +19,8 @@ namespace Kalus.Modules.Games.GameMode
 		{
 			OnReroll += ExecutePreferencesOnReroll;
 			this.mainWindow = mainWindow;
+
+			this.mainWindow.runeChange = this.ChangeRunes;
 		}
 
 		//Handler of the champion selections
@@ -52,6 +54,7 @@ namespace Kalus.Modules.Games.GameMode
 					case "GAME_STARTING":
 					case "":
 						mainWindow.EnableRandomSkinButton(false);
+						mainWindow.EnableChangeRuneButton(false);
 						return;
 				}
 				Thread.Sleep(1000);

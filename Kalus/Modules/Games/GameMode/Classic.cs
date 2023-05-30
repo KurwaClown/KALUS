@@ -24,6 +24,8 @@ namespace Kalus.Modules.Games.GameMode
 		internal Classic(MainWindow mainWindow, string gameType)
 		{
 			this.mainWindow = mainWindow;
+			this.mainWindow.runeChange = this.ChangeRunes;
+
 			this.gameType = gameType;
 			isDraft = gameType == "Draft";
 		}
@@ -47,7 +49,7 @@ namespace Kalus.Modules.Games.GameMode
 			while (Auth.IsAuthSet())
 			{
 				sessionInfo = await ClientRequest.GetSessionInfo();
-				if (sessionInfo is null) return;
+				if (sessionInfo == null) return;
 				//Set the position and cell id after every new session check : in case of cell change
 				SetPositionAndCellId();
 				switch (sessionInfo.SelectToken("timer.phase")?.ToString())
@@ -70,6 +72,7 @@ namespace Kalus.Modules.Games.GameMode
 					case "GAME_STARTING":
 					case "":
 						mainWindow.EnableRandomSkinButton(false);
+						mainWindow.EnableChangeRuneButton(false);
 						return;
 				}
 				Thread.Sleep(1000);
@@ -340,15 +343,15 @@ namespace Kalus.Modules.Games.GameMode
 		{
 			bool isSetActive = ClientControl.GetPreference<bool>("runes.notSetActive");
 
-			JObject? activeRunesPage = await ClientRequest.GetActiveRunePage();
+			string? activeRunesPage = isSetActive ? (await ClientRequest.GetActiveRunePage())?["id"]?.ToString() : "0";
+
 			if (activeRunesPage == null) return;
-			string activeRunesPageId = isSetActive ? activeRunesPage.Value<int>("id").ToString() : "0";
 
 			if (position == null) return;
 			await ClientControl.SetRunesPage(championId, position);
 			isRunePageChanged = true;
 
-			if (isSetActive) await ClientRequest.SetActiveRunePage(activeRunesPageId);
+			if (isSetActive) await ClientRequest.SetActiveRunePage(activeRunesPage);
 		}
 	}
 }

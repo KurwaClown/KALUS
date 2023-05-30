@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -26,6 +27,10 @@ namespace Kalus
 
 		internal static bool isStatusBoxDefault = false;
 
+		internal delegate Task RuneChange();
+
+		internal RuneChange? runeChange;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -40,6 +45,11 @@ namespace Kalus
 		internal void EnableRandomSkinButton(bool isEnabled)
 		{
 			Dispatcher.Invoke(() => random_btn.IsEnabled = isEnabled);
+		}
+
+		internal void EnableChangeRuneButton(bool isEnabled)
+		{
+			Dispatcher.Invoke(() => runes_btn.IsEnabled = isEnabled);
 		}
 
 		internal void ShowLolState(bool isEnabled)
@@ -482,6 +492,7 @@ namespace Kalus
 			});
 		}
 
+
 		internal string GetGamemodeName()
 		{
 			string? gameMode = "";
@@ -497,6 +508,11 @@ namespace Kalus
 				championLbl.Content = championName;
 				isStatusBoxDefault = false;
 			});
+		}
+
+		private void ChangeRunes(object sender, RoutedEventArgs e)
+		{
+			runeChange?.Invoke();
 		}
 	}
 }
