@@ -41,7 +41,7 @@ namespace Kalus.Modules.Games
 
 		protected abstract Task ChangeSpells();
 
-		protected abstract Task ChangeRunes();
+		protected abstract Task ChangeRunes(int recommendationNumber = 0);
 
 		protected async Task PostPickAction()
 		{
@@ -60,7 +60,7 @@ namespace Kalus.Modules.Games
 			mainWindow.SetChampionName(championName);
 			//Toggle the random skin button on
 			mainWindow.EnableRandomSkinButton(true);
-			mainWindow.EnableChangeRuneButton(true);
+			mainWindow.EnableChangeRuneButtons(true);
 
 			//Set runes if the the auto rune is toggled
 			if (ClientControl.GetSettingState("runesSwap") && !isRunePageChanged)

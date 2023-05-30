@@ -27,7 +27,7 @@ namespace Kalus
 
 		internal static bool isStatusBoxDefault = false;
 
-		internal delegate Task RuneChange();
+		internal delegate Task RuneChange(int recommendationNumber = 0);
 
 		internal RuneChange? runeChange;
 
@@ -47,9 +47,13 @@ namespace Kalus
 			Dispatcher.Invoke(() => random_btn.IsEnabled = isEnabled);
 		}
 
-		internal void EnableChangeRuneButton(bool isEnabled)
+		internal void EnableChangeRuneButtons(bool isEnabled)
 		{
-			Dispatcher.Invoke(() => runes_btn.IsEnabled = isEnabled);
+			Dispatcher.Invoke(() => {
+				runes_btn_1.IsEnabled = isEnabled;
+				runes_btn_2.IsEnabled = isEnabled;
+				runes_btn_3.IsEnabled = isEnabled;
+				});
 		}
 
 		internal void ShowLolState(bool isEnabled)
@@ -512,7 +516,8 @@ namespace Kalus
 
 		private void ChangeRunes(object sender, RoutedEventArgs e)
 		{
-			runeChange?.Invoke();
+			int recommendationNumber = int.Parse((sender as Button)!.Content.ToString() ?? "1") - 1;
+			runeChange?.Invoke(recommendationNumber);
 		}
 	}
 }

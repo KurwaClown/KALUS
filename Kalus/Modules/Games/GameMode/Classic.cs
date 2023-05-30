@@ -72,7 +72,7 @@ namespace Kalus.Modules.Games.GameMode
 					case "GAME_STARTING":
 					case "":
 						mainWindow.EnableRandomSkinButton(false);
-						mainWindow.EnableChangeRuneButton(false);
+						mainWindow.EnableChangeRuneButtons(false);
 						return;
 				}
 				Thread.Sleep(1000);
@@ -339,7 +339,7 @@ namespace Kalus.Modules.Games.GameMode
 										.Select(action => action.Value<int>("championId")).ToArray();
 		}
 
-		protected override async Task ChangeRunes()
+		protected override async Task ChangeRunes(int recommendationNumber = 0)
 		{
 			bool isSetActive = ClientControl.GetPreference<bool>("runes.notSetActive");
 
@@ -348,7 +348,7 @@ namespace Kalus.Modules.Games.GameMode
 			if (activeRunesPage == null) return;
 
 			if (position == null) return;
-			await ClientControl.SetRunesPage(championId, position);
+			await ClientControl.SetRunesPage(championId, position, recommendationNumber);
 			isRunePageChanged = true;
 
 			if (isSetActive) await ClientRequest.SetActiveRunePage(activeRunesPage);

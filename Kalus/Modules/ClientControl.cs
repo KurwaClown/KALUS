@@ -120,7 +120,7 @@ namespace Kalus.Modules
 							string gameMode = mainWindow.GetGamemodeName();
 							mainWindow.SetGameModeIcon(gameMode, true);
 							mainWindow.EnableRandomSkinButton(false);
-							mainWindow.EnableChangeRuneButton(false);
+							mainWindow.EnableChangeRuneButtons(false);
 							break;
 						//If not in any of the above game phase
 						default:
@@ -136,7 +136,7 @@ namespace Kalus.Modules
 							}
 
 							mainWindow.EnableRandomSkinButton(false);
-							mainWindow.EnableChangeRuneButton(false);
+							mainWindow.EnableChangeRuneButtons(false);
 							break;
 					}
 				}
@@ -255,18 +255,19 @@ namespace Kalus.Modules
 		}
 
 		//Get the recommended champion runes for a champion depending on its position
-		internal static async Task<JToken?> GetChampRunesByPosition(int champId, string position)
+		internal static async Task<JToken?> GetChampRunesByPosition(int champId, string position, int recommendationNumber)
 		{
 			var runesRecommendation = await GetRecommendedRunesById(champId);
 
 			if (runesRecommendation == null) return null;
 
-			var champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"]?.ToString() == position.ToUpper()).Select(recommendation => recommendation);
+			var champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"]?.ToString() == position.ToUpper()).Select(recommendation => recommendation).ToArray();
 			if (!champRunesByPosition.Any())
 			{
-				champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"]?.ToString() == "NONE").Select(recommendation => recommendation);
+				champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"]?.ToString() == "NONE").Select(recommendation => recommendation).ToArray();
 			}
-			return champRunesByPosition.FirstOrDefault();
+			if(recommendationNumber < champRunesByPosition.Length) return champRunesByPosition[recommendationNumber];
+			return champRunesByPosition[0];
 		}
 
 		//Get the recommended champion spells for a champion depending on its position and the game mode
@@ -325,7 +326,7 @@ namespace Kalus.Modules
 		}
 
 		//Set the recommended rune page
-		internal static async Task SetRunesPage(int champId, string position = "NONE")
+		internal static async Task SetRunesPage(int champId, string position = "NONE", int recommendationNumber = 0)
 		{
 			var appPageId = await DataCache.GetAppRunePageId();
 
@@ -336,7 +337,7 @@ namespace Kalus.Modules
 			if (championName == null) return;
 
 			//Get the recommended rune page
-			var runesRecommendation = await GetChampRunesByPosition(champId, position);
+			var runesRecommendation = await GetChampRunesByPosition(champId, position, recommendationNumber);
 			if (runesRecommendation == null) return;
 
 			string recommendedRunes = FormatChampRunes(runesRecommendation, championName);
