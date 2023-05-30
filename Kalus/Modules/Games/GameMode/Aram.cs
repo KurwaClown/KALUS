@@ -123,9 +123,10 @@ namespace Kalus.Modules.Games.GameMode
 			{
 				var aramPicks = DataCache.GetAramPick();
 
-				var availableLikedChampion = sessionInfo!["myTeam"]!.Where(teammate => aramPicks.Contains(teammate.Value<int>("championId")))
-																	.Select(teammate => teammate.Value<int>("cellId"))
-																	.ToArray();
+				var availableLikedChampion = aramPicks.SelectMany(aramPick => sessionInfo!["myTeam"]!.Where(teammate => teammate.Value<int>("championId") == aramPick))
+														.Select(teammate => teammate.Value<int>("championId"))
+														.ToArray();
+
 				var availableTrades = sessionInfo?["trades"]?.Where(trade => availableLikedChampion.Contains(trade["cellId"]?.Value<int>() ?? 0) && trade?["state"]?.ToString() == "AVAILABLE");
 
 				if (availableTrades != null && availableTrades.Any())
@@ -148,6 +149,7 @@ namespace Kalus.Modules.Games.GameMode
 
 			foreach (var pick in aramPicks)
 			{
+				if (pick == championId) return 0;
 				if (aramBenchIds.Contains(pick)) return pick;
 			}
 			return 0;
