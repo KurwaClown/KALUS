@@ -59,6 +59,7 @@
                     <StackPanel Grid.Column="2" Grid.Row="4" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <Button x:Name="selectionOrderDown" Content="↓" Width="{Binding ActualHeight, ElementName=selectionOrderDown, Mode=OneWay}" Click="ReorderSelectionFromButton" />
                         <Button x:Name="selectionOrderUp" Content="↑" Width="{Binding ActualHeight, ElementName=selectionOrderUp, Mode=OneWay}" Margin="15,0,0,0" Click="ReorderSelectionFromButton" />
+                        <Button x:Name="selectionEmpty" Content="Empty List" Margin="15,0,0,0" Click="EmptySelectionList" />
                     </StackPanel>
                 </Grid>
             </TabItem>

@@ -489,6 +489,12 @@ namespace Kalus
 			champList.ItemsSource = UpdatedListCollection;
 		}
 
+		private void EmptySelectionList(object sender, RoutedEventArgs e)
+		{
+			SelectedListCollection.Clear();
+			SavePicksModification();
+		}
+
 		private void ReorderSelectionFromButton(object sender, RoutedEventArgs e)
 		{
 			bool isPrevious = ((Button)sender).Name == "selectionOrderUp";
