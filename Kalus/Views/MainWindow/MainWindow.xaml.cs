@@ -4,12 +4,15 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -196,7 +199,17 @@ namespace Kalus
 			await ClientRequest.RestartLCU();
 		}
 
-		private void AddSelection(object sender, RoutedEventArgs e)
+		private void AddSelectionFromButton(object sender, RoutedEventArgs e)
+		{
+			AddSelection();
+		}
+
+		private void AddSelectionFromDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		{
+			AddSelection();
+		}
+
+		private void AddSelection()
 		{
 			if (champList.SelectedItem == null) return;
 
@@ -208,7 +221,17 @@ namespace Kalus
 			SavePicksModification();
 		}
 
-		private void RemoveSelection(object sender, RoutedEventArgs e)
+		private void RemoveSelectionFromButton(object sender, RoutedEventArgs e)
+		{
+			RemoveSelection();
+		}
+
+		private void RemoveSelectionFromDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		{
+			RemoveSelection();
+		}
+
+		private void RemoveSelection()
 		{
 			if (selectionList.SelectedItem == null) return;
 
@@ -466,7 +489,13 @@ namespace Kalus
 			champList.ItemsSource = UpdatedListCollection;
 		}
 
-		private void ReorderSelection(object sender, RoutedEventArgs e)
+		private void ReorderSelectionFromButton(object sender, RoutedEventArgs e)
+		{
+			bool isPrevious = ((Button)sender).Name == "selectionOrderUp";
+			ReorderSelection(isPrevious);
+		}
+
+		private void ReorderSelection(bool isPrevious)
 		{
 			if (selectionList.SelectedItem == null) return;
 			if (selectionList.SelectedItem is not ListBoxItem selection) return;
@@ -474,7 +503,7 @@ namespace Kalus
 			if (selectionList.ItemsSource is not ObservableCollection<ListBoxItem> observableCollection) return;
 
 			int oldIndex = observableCollection.IndexOf(selection);
-			bool isPrevious = ((Button)sender).Name == "selectionOrderUp";
+
 			if (isPrevious && oldIndex - 1 >= 0)
 			{
 				observableCollection.Move(oldIndex, oldIndex - 1);
@@ -483,9 +512,9 @@ namespace Kalus
 			{
 				observableCollection.Move(oldIndex, oldIndex + 1);
 			}
-
 			SavePicksModification();
 		}
+
 
 		internal void SetGamemodeName(string gamemodeName)
 		{
@@ -518,6 +547,32 @@ namespace Kalus
 		{
 			int recommendationNumber = int.Parse((sender as Button)!.Content.ToString() ?? "1") - 1;
 			runeChange?.Invoke(recommendationNumber);
+		}
+
+		private void OnSelectionKeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter || e.Key == Key.Delete)
+			{
+				RemoveSelection();
+			}
+			if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.Up)
+			{
+				e.Handled = true;
+				ReorderSelection(true);
+			}
+			else if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.Down)
+			{
+				e.Handled = true;
+				ReorderSelection(false);
+			}
+		}
+
+		private void OnChampionListKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if (e.Key == System.Windows.Input.Key.Enter)
+			{
+				AddSelection();
+			}
 		}
 	}
 }
