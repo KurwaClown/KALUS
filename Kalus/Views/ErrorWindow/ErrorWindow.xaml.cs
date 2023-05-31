@@ -1,18 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Kalus.Views.ErrorWindow
 {
@@ -21,7 +8,10 @@ namespace Kalus.Views.ErrorWindow
     /// </summary>
     public partial class ErrorWindow : Window
     {
-		public string ErrorMessage { get; set; } = "";
+		public string ErrorMessage { get; set; } = "An error was encountered";
+		public string HelpMeImprove { get; set; } = "Help me improve KALUS!\r\r"
+													+ "Add any message you want below then paste the link into your browser and click 'Submit new issue'.\r"
+													+ "Any contributions are most welcomed!";
 		public string Report { get; set; } = "";
 
 		public ErrorWindow()
@@ -38,9 +28,10 @@ namespace Kalus.Views.ErrorWindow
 
 		private void SendReport(object sender, RoutedEventArgs e)
 		{
+			string userMessage = reportMessage.Text == "" ? "No message" : reportMessage.Text;
 			string baseUrl = "https://github.com/KurwaClown/KALUS/issues/new";
-			string issueTitle = "KALUS report";
-			string issueBody = Report;
+			string issueTitle = "KALUS auto report";
+			string issueBody = $"## User Message\r{userMessage}\r"+ Report;
 
 			UriBuilder uriBuilder = new(baseUrl)
 			{

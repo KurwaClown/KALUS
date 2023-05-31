@@ -53,11 +53,13 @@ namespace Kalus
 			// Extract the exception from the event arguments
 			Exception? exception = e.ExceptionObject as Exception;
 
+			string currentGamePhase = ClientControl.gamePhase == "" ? "Client Closed" : ClientControl.gamePhase;
+
 			string newReport =$"## Report\r" +
-								$"### GamePhase: \r`{ClientControl.gamePhase}`\r" +
+								$"### Client Status: \r`{currentGamePhase}`\r" +
 								$"### Type: \r`{exception?.GetType()}`\r" +
 								$"### Exception: \r`{exception?.Message}`\r" +
-								$"### Stack Trace: \r`{exception?.StackTrace}`";
+								$"### Stack Trace: \r```{exception?.StackTrace}";
 
 			// Invoke the error window on the UI thread
 			Dispatcher.Invoke(() =>
@@ -66,13 +68,12 @@ namespace Kalus
 				ErrorWindow errorWindow = new()
 				{
 					// Set the error message
-					ErrorMessage = $"An issues was encountered : {exception?.Message}",
+					ErrorMessage = $"An error was encountered",
 					// Set the report string
 					Report = newReport,
 					// Set the owner of the error window as the MainWindow
 					Owner = this
 				};
-
 				// Pop the error window on top
 				this.Topmost = true;
 				this.Topmost = false;

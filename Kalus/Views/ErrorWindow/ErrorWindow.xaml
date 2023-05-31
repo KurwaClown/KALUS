@@ -5,16 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Kalus.Views.ErrorWindow"
         mc:Ignorable="d"
-        Title="Error" Height="250" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
-    <Grid Margin="5,5,5,5">
+        Title="Error" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" SizeToContent="WidthAndHeight" MaxHeight="400" VerticalAlignment="Top">
+    <Grid Margin="5,5,5,5" Width="300">
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="{Binding ErrorMessage}"  Margin="10,10,10,10" TextAlignment="Center" TextWrapping="Wrap" Grid.RowSpan="1" FontSize="16" />
-        <TextBox Text="Help me improve KALUS! Send a report about the issue, paste the link into your browser and add any details you want. Any contributions are most welcomed!" Margin="10,10,10,10" TextAlignment="Center" TextWrapping="Wrap" Grid.RowSpan="1" Grid.Row="1" BorderThickness="0" IsReadOnly="True" />
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <TextBlock Text="{Binding ErrorMessage}" TextAlignment="Center" TextWrapping="Wrap" Grid.RowSpan="1" FontSize="16" Margin="0,5,0,10" FontWeight="Bold" Foreground="#FFC70000" />
+        <GridSplitter HorizontalAlignment="Center" Height="1" Grid.RowSpan="1" Width="100" VerticalAlignment="Bottom" Background="#FF252525"/>
+        <TextBlock Text="{Binding HelpMeImprove}" Margin="20,10,20,5" TextAlignment="Center" TextWrapping="Wrap" Grid.RowSpan="1" Grid.Row="1" />
+        <TextBox x:Name="reportMessage" Grid.Row="2" TextWrapping="Wrap" Text="" Margin="15,5,15,10" MinHeight="60" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="48"/>
+        <GridSplitter HorizontalAlignment="Center" Height="1" Grid.RowSpan="1" Width="100" VerticalAlignment="Bottom" Background="#FF252525" Grid.Row="2"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" MaxHeight="30" Margin="0,10,0,0">
             <Button x:Name="report_btn" Content="   Copy Report Link   " Height="25" Click="SendReport"/>
             <Button Content="Close" Width="50" Height="25" Click="CloseApp" Margin="10,0,0,0" />
         </StackPanel>
