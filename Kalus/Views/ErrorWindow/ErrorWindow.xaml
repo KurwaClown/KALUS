@@ -1,0 +1,26 @@
+﻿<Window x:Name="Error" x:Class="Kalus.Views.ErrorWindow.ErrorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Kalus.Views.ErrorWindow"
+        mc:Ignorable="d"
+        Title="Error" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" SizeToContent="WidthAndHeight" MaxHeight="400" VerticalAlignment="Top">
+    <Grid Margin="5,5,5,5" Width="300">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="{Binding ErrorMessage}" TextAlignment="Center" TextWrapping="Wrap" Grid.RowSpan="1" FontSize="16" Margin="0,5,0,10" FontWeight="Bold" Foreground="#FFC70000" />
+        <GridSplitter HorizontalAlignment="Center" Height="1" Grid.RowSpan="1" Width="100" VerticalAlignment="Bottom" Background="#FF252525"/>
+        <TextBlock Text="{Binding HelpMeImprove}" Margin="20,10,20,5" TextAlignment="Center" TextWrapping="Wrap" Grid.RowSpan="1" Grid.Row="1" />
+        <TextBox x:Name="reportMessage" Grid.Row="2" TextWrapping="Wrap" Text="" Margin="15,5,15,10" MinHeight="60" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="48"/>
+        <GridSplitter HorizontalAlignment="Center" Height="1" Grid.RowSpan="1" Width="100" VerticalAlignment="Bottom" Background="#FF252525" Grid.Row="2"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" MaxHeight="30" Margin="0,10,0,0">
+            <Button x:Name="report_btn" Content="   Copy Report Link   " Height="25" Click="SendReport"/>
+            <Button Content="Close" Width="50" Height="25" Click="CloseApp" Margin="10,0,0,0" />
+        </StackPanel>
+    </Grid>
+</Window>

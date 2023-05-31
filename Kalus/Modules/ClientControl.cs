@@ -13,7 +13,9 @@ namespace Kalus.Modules
 	internal static class ClientControl
 	{
 		//Random variable used for getting random skins
-		internal static Random random = new();
+		private static readonly Random random = new();
+		internal static string gamePhase = "";
+
 
 		//Ensure that the Authentication is set
 		//Set it when client gets open or is open at startup
@@ -96,8 +98,10 @@ namespace Kalus.Modules
 				//Only act if the authentication is set
 				if (Auth.IsAuthSet())
 				{
+
+					gamePhase = await ClientRequest.GetClientPhase();
 					//Checks the game phase and perform action depending on it
-					switch (await ClientRequest.GetClientPhase())
+					switch (gamePhase)
 					{
 						case "":
 							continue;
