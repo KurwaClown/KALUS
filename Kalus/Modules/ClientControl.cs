@@ -93,6 +93,7 @@ namespace Kalus.Modules
 		//Is used as a worker thread for the app thread
 		internal static async void ClientPhase(MainWindow mainWindow)
 		{
+			throw new NotImplementedException();
 			while (true)
 			{
 				//Only act if the authentication is set

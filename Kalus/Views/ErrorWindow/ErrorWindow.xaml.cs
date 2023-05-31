@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -30,14 +31,25 @@ namespace Kalus.Views.ErrorWindow
             DataContext = this;
         }
 
-		private void Button_Click(object sender, RoutedEventArgs e)
+		private void CloseApp(object sender, RoutedEventArgs e)
 		{
-            this.Close();
+			Close();
 		}
 
-		private void CopyReport(object sender, RoutedEventArgs e)
+		private void SendReport(object sender, RoutedEventArgs e)
 		{
-			Clipboard.SetText(this.Report);
+			string baseUrl = "https://github.com/KurwaClown/KALUS/issues/new";
+			string issueTitle = "KALUS report";
+			string issueBody = Report;
+
+			UriBuilder uriBuilder = new(baseUrl)
+			{
+				Query = $"title={Uri.EscapeDataString(issueTitle)}&body={Uri.EscapeDataString(issueBody)}"
+			};
+
+			string url = uriBuilder.ToString();
+
+			Clipboard.SetText(url);
 		}
 
 	}
