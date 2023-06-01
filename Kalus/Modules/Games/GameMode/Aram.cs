@@ -63,12 +63,20 @@ namespace Kalus.Modules.Games.GameMode
 
 		protected override async Task Finalization()
 		{
+
 			int currentRerollsRemaining = sessionInfo!["rerollsRemaining"]!.Value<int>();
-			Debug.WriteLine(currentRerollsRemaining < rerollsRemaining);
 			if (currentRerollsRemaining < rerollsRemaining)
 			{
 				rerollsRemaining = currentRerollsRemaining;
 				OnReroll.Invoke();
+			}
+
+			var currentChampionId = await ClientRequest.GetCurrentChampionId();
+			if (currentChampionId != championId)
+			{
+				championId = currentChampionId;
+				isRunePageChanged = false;
+				await PostPickAction();
 			}
 
 			if (ClientControl.GetSettingState("aramChampionSwap"))
@@ -83,41 +91,6 @@ namespace Kalus.Modules.Games.GameMode
 					await PostPickAction();
 				}
 			}
-
-			await ExecuteAramPreference();
-
-			var currentChampionId = await ClientRequest.GetCurrentChampionId();
-			if (currentChampionId != championId)
-			{
-				championId = currentChampionId;
-				isRunePageChanged = false;
-				await PostPickAction();
-			}
-		}
-
-		private async void ExecutePreferencesOnReroll()
-		{
-
-			int currentChampionId = await ClientRequest.GetCurrentChampionId();
-			if (ClientControl.GetPreference<bool>("aram.repickChampion"))
-			{
-				var aramPicks = DataCache.GetAramPick();
-
-
-				if (!aramPicks.Contains(currentChampionId)) await ClientRequest.AramBenchSwap(championId);
-			}
-		}
-
-		private async Task ExecuteAramPreference()
-		{
-
-			if (ClientControl.GetPreference<bool>("aram.rerollForChampion") && rerollsRemaining != 0)
-			{
-				await ClientRequest.AramReroll();
-				rerollsRemaining--;
-				OnReroll.Invoke();
-			}
-
 
 			if (ClientControl.GetPreference<bool>("aram.tradeForChampion"))
 			{
@@ -135,6 +108,25 @@ namespace Kalus.Modules.Games.GameMode
 				}
 			}
 
+
+			if (ClientControl.GetPreference<bool>("aram.rerollForChampion") && rerollsRemaining != 0)
+			{
+				await ClientRequest.AramReroll();
+				OnReroll.Invoke();
+			}
+		}
+
+		private async void ExecutePreferencesOnReroll()
+		{
+
+			int currentChampionId = await ClientRequest.GetCurrentChampionId();
+			if (ClientControl.GetPreference<bool>("aram.repickChampion"))
+			{
+				var aramPicks = DataCache.GetAramPick();
+
+
+				if (!aramPicks.Contains(currentChampionId)) await ClientRequest.AramBenchSwap(championId);
+			}
 		}
 
 		//Get the pick the aram champion to pick if any
