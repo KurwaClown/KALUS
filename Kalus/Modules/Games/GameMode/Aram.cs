@@ -96,11 +96,15 @@ namespace Kalus.Modules.Games.GameMode
 			{
 				var aramPicks = DataCache.GetAramPick();
 
-				var availableLikedChampion = aramPicks.SelectMany(aramPick => sessionInfo!["myTeam"]!.Where(teammate => teammate.Value<int>("championId") == aramPick))
-														.Select(teammate => teammate.Value<int>("championId"))
-														.ToArray();
+				var availableLikedChampion = aramPicks
+											.SelectMany(aramPick => sessionInfo!["myTeam"]!
+												.Where(teammate => teammate.Value<int>("championId") == aramPick)
+												.Select(teammate => teammate.Value<int>("championId")))
+											.TakeWhile(championId => championId != this.championId)
+											.ToArray();
 
-				var availableTrades = sessionInfo?["trades"]?.Where(trade => availableLikedChampion.Contains(trade["cellId"]?.Value<int>() ?? 0) && trade?["state"]?.ToString() == "AVAILABLE");
+				var availableTrades = sessionInfo?["trades"]?.Where(trade => availableLikedChampion
+																	.Contains(trade["cellId"]?.Value<int>() ?? 0) && trade?["state"]?.ToString() == "AVAILABLE");
 
 				if (availableTrades != null && availableTrades.Any())
 				{
