@@ -40,7 +40,8 @@ To install KALUS, follow these steps:
 7. Sit back and let KALUS handle your desired actions for you, or utilize the different buttons to execute specific actions as needed.
 
 ## Work in Progress
-- New Features: I am continuously working on adding new features and improvements to KALUS. Stay tuned for upcoming updates that will enhance your experience even further.	
+- New Features: I am continuously working on adding new features and improvements to KALUS. Stay tuned for upcoming updates that will enhance your experience even further.
+	
 	- Currently working on spotify integration so that music is played when the game starts.
 	
 - Bug Fixes and Optimizations: I am actively addressing any reported bugs and optimizing KALUS for better performance and stability. Your feedback is invaluable in helping me improve the application.
@@ -49,7 +50,7 @@ To install KALUS, follow these steps:
 
 **None of the player's personal information is transmitted over the internet.**
 
-KALUS is a third-party application and is not affiliated with Riot Games or League of Legends. The use of this application is at your own risk. The developers of KALUS are not responsible for any consequences arising from the use of this software. Please use it responsibly and adhere to the terms and conditions of the game.
+KALUS is a third-party application and is not affiliated with Riot Games or League of Legends. The use of this application is at your own risk. The developers of KALUS are not responsible for any consequences arising from the use of this software. Please use it responsibly and adhere to the terms and conditions of the game. KALUS is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games and all associated properties are trademarks or registered trademarks of Riot Games, Inc
 
 ## License
 
