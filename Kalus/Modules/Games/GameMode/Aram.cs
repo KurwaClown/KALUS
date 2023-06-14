@@ -112,8 +112,8 @@ namespace Kalus.Modules.Games.GameMode
 				}
 			}
 
-
-			if (ClientControl.GetPreference<bool>("aram.rerollForChampion") && rerollsRemaining != 0)
+			bool needToReroll = !await IsCurrentChampionInSelection();
+			if (needToReroll && ClientControl.GetPreference<bool>("aram.rerollForChampion") && rerollsRemaining != 0)
 			{
 				await ClientRequest.AramReroll();
 				OnReroll.Invoke();
@@ -149,6 +149,18 @@ namespace Kalus.Modules.Games.GameMode
 				if (aramBenchIds.Contains(pick)) return pick;
 			}
 			return 0;
+		}
+
+		private async Task<bool> IsCurrentChampionInSelection()
+		{
+			int championId = await ClientRequest.GetCurrentChampionId();
+
+			if (DataCache.GetAramPick().Contains(championId))
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		//Get the champion benched (their id) in aram

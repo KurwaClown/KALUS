@@ -339,15 +339,12 @@ namespace Kalus
 			{
 				bool isChecked = checkBox.IsChecked ?? false;
 				string? checkboxTag = checkBox.Tag.ToString();
-				if (checkboxTag == null) return;
 
+				if (checkboxTag == null) return;
 				DataCache.SetPreference(checkboxTag, isChecked);
 			}
 			else if (sender is RadioButton radioButton)
 			{
-				bool isChecked = radioButton.IsChecked ?? false;
-				if (isChecked) return;
-
 				if (radioButton.Tag != null && int.TryParse(radioButton.Tag.ToString(), out int parsedValue))
 				{
 					DataCache.SetPreference(radioButton.GroupName, parsedValue);
@@ -398,7 +395,6 @@ namespace Kalus
 		internal void SetPreferences()
 		{
 			var preferences = DataCache.GetPreferences();
-
 			void setRadioByPreference(StackPanel stack, string token)
 			{
 				var preferences = DataCache.GetPreferences();
@@ -428,17 +424,17 @@ namespace Kalus
 				setRadioByPreference(onSelectionPreferences, "selections.userPreference");
 				setRadioByPreference(flashPosition, "summoners.flashPosition");
 
-				notSetPageAsActive.IsChecked = preferences.Value<bool>("runes.notSetActive");
-				overridePage.IsChecked = preferences.Value<bool>("runes.overridePage");
 
-				addChromas.IsChecked = preferences.Value<bool>("randomSkin.addChromas");
-				randomOnPick.IsChecked = preferences.Value<bool>("randomSkin.randomOnPick");
+				notSetPageAsActive.IsChecked = (bool?)preferences.SelectToken("runes.notSetActive");
+				overridePage.IsChecked = (bool?)preferences.SelectToken("runes.overridePage");
 
-				alwaysSnowball.IsChecked = preferences.Value<bool>("summoners.alwaysSnowball");
+				addChromas.IsChecked = (bool?)preferences.SelectToken("randomSkin.addChromas");
+				randomOnPick.IsChecked = (bool?)preferences.SelectToken("randomSkin.randomOnPick");
+				alwaysSnowball.IsChecked = (bool?)preferences.SelectToken("summoners.alwaysSnowball");
 
-				rerollForChampion.IsChecked = preferences.Value<bool>("aram.rerollForChampion");
-				tradeForChampion.IsChecked = preferences.Value<bool>("aram.tradeForChampion");
-				repickChampion.IsChecked = preferences.Value<bool>("aram.repickChampion");
+				rerollForChampion.IsChecked = (bool?)preferences.SelectToken("aram.rerollForChampion");
+				tradeForChampion.IsChecked = (bool?)preferences.SelectToken("aram.tradeForChampion");
+				repickChampion.IsChecked = (bool?)preferences.SelectToken("aram.repickChampion");
 			}
 			);
 		}
