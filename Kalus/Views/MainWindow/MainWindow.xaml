@@ -140,7 +140,7 @@
                         <GroupBox Height="100" Header="Aram">
                             <StackPanel x:Name="aramPreferences">
                                 <CheckBox x:Name="rerollForChampion" Content="Roll until getting a liked champion" Height="15" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="aram.rerollForChampion" />
-                                <CheckBox x:Name="tradeForChampion" Content="Trade for liked champion" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="aram.tradeForChampion" />
+                                <CheckBox x:Name="tradeForChampion" Content="Trade for liked champion (WIP)" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="aram.tradeForChampion" IsEnabled="False" />
                                 <CheckBox x:Name="repickChampion" Content="Pick champion dropped on unliked roll" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="aram.repickChampion" />
                             </StackPanel>
                         </GroupBox>

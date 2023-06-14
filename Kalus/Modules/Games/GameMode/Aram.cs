@@ -92,25 +92,31 @@ namespace Kalus.Modules.Games.GameMode
 				}
 			}
 
-			if (ClientControl.GetPreference<bool>("aram.tradeForChampion"))
-			{
-				var aramPicks = DataCache.GetAramPick();
+			// Disabling the feature
+			//
+			// There is an issue where there is random trades happenning
 
-				var availableLikedChampion = aramPicks
-											.SelectMany(aramPick => sessionInfo!["myTeam"]!
-												.Where(teammate => teammate.Value<int>("championId") == aramPick)
-												.Select(teammate => teammate.Value<int>("championId")))
-											.TakeWhile(championId => championId != this.championId)
-											.ToArray();
+			//if (ClientControl.GetPreference<bool>("aram.tradeForChampion"))
+			//{
+			//	var aramPicks = DataCache.GetAramPick();
 
-				var availableTrades = sessionInfo?["trades"]?.Where(trade => availableLikedChampion
-																	.Contains(trade["cellId"]?.Value<int>() ?? 0) && trade?["state"]?.ToString() == "AVAILABLE");
+			//	var availableLikedChampion = aramPicks
+			//								.SelectMany(aramPick => sessionInfo!["myTeam"]!
+			//									.Where(teammate => teammate.Value<int>("championId") == aramPick)
+			//									.Select(teammate => teammate.Value<int>("championId")))
+			//								.TakeWhile(championId => championId != this.championId)
+			//								.ToArray();
 
-				if (availableTrades != null && availableTrades.Any())
-				{
-					await ClientRequest.AramTradeRequest(availableTrades.First().Value<int>("id"));
-				}
-			}
+			//	var availableTrades = sessionInfo?["trades"]?.Where(trade => availableLikedChampion
+			//														.Contains(trade["cellId"]?.Value<int>() ?? 0) && trade?["state"]?.ToString() == "AVAILABLE");
+
+
+
+			//	if (availableTrades != null && availableTrades.Any())
+			//	{
+			//		await ClientRequest.AramTradeRequest(availableTrades.First().Value<int>("id"));
+			//	}
+			//}
 
 			bool needToReroll = !await IsCurrentChampionInSelection();
 			if (needToReroll && ClientControl.GetPreference<bool>("aram.rerollForChampion") && rerollsRemaining != 0)
