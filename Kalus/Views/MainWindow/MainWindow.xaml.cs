@@ -512,14 +512,19 @@ namespace Kalus
 
 				var champsId = pickType == "Pick" ? DataCache.GetDraftPick(position) : DataCache.GetDraftBan(position);
 				if (champsId == null) return;
-				champListBoxItems = ChampListCollection.Where(champion => champion.Tag != null).Where(champion => champsId.Select(token => token).ToArray().Contains(int.Parse(champion.Tag.ToString()!)));
+				champListBoxItems = champsId.Join(ChampListCollection,
+													id => id,
+													champion => int.Parse(champion.Tag.ToString()!),
+													(id, champion) => champion);
 			}
 			else
 			{
 				var champsId = gameType == "Blind" ? DataCache.GetBlindPick() : DataCache.GetAramPick();
 				if (champsId == null) return;
-
-				champListBoxItems = ChampListCollection.Where(champion => champion.Tag != null).Where(champion => champsId.Select(token => token).ToArray().Contains(int.Parse(champion.Tag.ToString()!)));
+				champListBoxItems = champsId.Join(ChampListCollection,
+													id => id,
+													champion => int.Parse(champion.Tag.ToString()!),
+													(id, champion) => champion);
 			}
 
 			SelectedListCollection.Clear();

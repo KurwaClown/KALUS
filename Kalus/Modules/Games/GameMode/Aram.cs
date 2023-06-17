@@ -96,27 +96,30 @@ namespace Kalus.Modules.Games.GameMode
 			//
 			// There is an issue where there is random trades happenning
 
-			//if (ClientControl.GetPreference<bool>("aram.tradeForChampion"))
-			//{
-			//	var aramPicks = DataCache.GetAramPick();
+			if (ClientControl.GetPreference<bool>("aram.tradeForChampion"))
+			{
+				var aramPicks = DataCache.GetAramPick();
 
-			//	var availableLikedChampion = aramPicks
-			//								.SelectMany(aramPick => sessionInfo!["myTeam"]!
-			//									.Where(teammate => teammate.Value<int>("championId") == aramPick)
-			//									.Select(teammate => teammate.Value<int>("championId")))
-			//								.TakeWhile(championId => championId != this.championId)
-			//								.ToArray();
+				var availableTrades = sessionInfo?["trades"]?
+											.Where(trade => trade?["state"]?.ToString() == "AVAILABLE")
+											.ToList();
 
-			//	var availableTrades = sessionInfo?["trades"]?.Where(trade => availableLikedChampion
-			//														.Contains(trade["cellId"]?.Value<int>() ?? 0) && trade?["state"]?.ToString() == "AVAILABLE");
+				if (availableTrades != null && availableTrades.Any())
+				{
+					var wantedTrades = sessionInfo!["myTeam"]!.Where(teammate => availableTrades.Any(trade => trade["cellId"]?.Value<int>() == teammate.Value<int>("cellId"))
+																	&& aramPicks.Contains(teammate.Value<int>("championId")));
 
+                    if (Array.IndexOf(aramPicks, championId) != -1) wantedTrades = wantedTrades.Where(teammate => Array.IndexOf(aramPicks, teammate.Value<int>("championId")) < Array.IndexOf(aramPicks, championId));
 
-
-			//	if (availableTrades != null && availableTrades.Any())
-			//	{
-			//		await ClientRequest.AramTradeRequest(availableTrades.First().Value<int>("id"));
-			//	}
-			//}
+                    int? tradeId = wantedTrades.OrderBy(teammate => Array.IndexOf(aramPicks, teammate.Value<int>("championId")))
+												.Select(teammate => availableTrades.FirstOrDefault(trade => trade["cellId"]?.Value<int>() == teammate.Value<int>("cellId"))?.Value<int>("id"))
+												.FirstOrDefault();
+					if (tradeId.HasValue && tradeId != 0)
+					{
+						await ClientRequest.AramTradeRequest(tradeId.Value);
+					}
+				}
+			}
 
 			bool needToReroll = !await IsCurrentChampionInSelection();
 			if (needToReroll && ClientControl.GetPreference<bool>("aram.rerollForChampion") && rerollsRemaining != 0)
