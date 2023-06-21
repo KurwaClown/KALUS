@@ -92,13 +92,11 @@ namespace Kalus.Modules.Games.GameMode
 				}
 			}
 
-			// Disabling the feature
-			//
-			// There is an issue where there is random trades happenning
 
 			bool tradeSent = sessionInfo?["trades"]?.Where(trade => trade?["state"]?.ToString() == "SENT").Any() ?? false;
 
 			if (tradeSent) return;
+
 			if (ClientControl.GetPreference<bool>("aram.tradeForChampion"))
 			{
 				var aramPicks = DataCache.GetAramPick();
@@ -120,13 +118,14 @@ namespace Kalus.Modules.Games.GameMode
 					if (tradeId.HasValue && tradeId != 0)
 					{
 						await ClientRequest.AramTradeRequest(tradeId.Value);
+						return;
 					}
 				}
 			}
 
 
 			bool needToReroll = !await IsCurrentChampionInSelection();
-			if (needToReroll && !tradeSent && ClientControl.GetPreference<bool>("aram.rerollForChampion") && rerollsRemaining != 0)
+			if (needToReroll && ClientControl.GetPreference<bool>("aram.rerollForChampion") && rerollsRemaining != 0)
 			{
 				await ClientRequest.AramReroll();
 				OnReroll.Invoke();
