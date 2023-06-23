@@ -8,6 +8,7 @@ namespace Kalus.Modules.Networking
 {
 	internal class ClientRequest
 	{
+		#region Client
 		internal static async Task<string> GetClientPhase()
 		{
 			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-gameflow/v1/gameflow-phase");
@@ -29,6 +30,7 @@ namespace Kalus.Modules.Networking
 
 			return session;
 		}
+		#endregion
 
 		#region Current Summoner
 
@@ -197,13 +199,6 @@ namespace Kalus.Modules.Networking
 		}
 
 		#endregion Runes
-
-		internal static async Task<JObject?> GetLobbyInfo()
-		{
-			var response = await RequestQueue.Request(HttpMethod.Get, $"/lol-lobby/v2/lobby");
-			if (response == "") return null;
-			return JObject.Parse(response);
-		}
 
 		#region Image Assets
 		internal static async Task<byte[]> GetChampionImageById(int charId)

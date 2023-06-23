@@ -23,9 +23,7 @@ namespace Kalus.Modules.Games
 			JObject? session = await ClientRequest.GetSessionInfo();
 			if (session is null) return null;
 
-			int mapId = session.Value<int>("map.id");
 			string? gameMode = session.Value<string>("map.gameMode");
-
 			if (gameMode == null) return null;
 
 			//if the gamemode is aram set to ARAM
@@ -36,6 +34,7 @@ namespace Kalus.Modules.Games
 			{
 				string? gameType = session.Value<string>("gameData.queue.gameTypeConfig.name");
 				if (gameType == null) return null;
+
 				if (gameType == "GAME_CFG_TEAM_BUILDER_DRAFT") return new GameMode.Classic(mainWindow, "Draft");
 				else if (gameType == "GAME_CFG_TEAM_BUILDER_BLIND") return new GameMode.Classic(mainWindow, "Blind");
 			}
