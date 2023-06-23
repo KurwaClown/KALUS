@@ -75,7 +75,7 @@ namespace Kalus.Modules.Games.GameMode
 						mainWindow.EnableChangeRuneButtons(false);
 						return;
 				}
-				Thread.Sleep(1000);
+				Thread.Sleep(ClientControl.checkInterval);
 			}
 		}
 

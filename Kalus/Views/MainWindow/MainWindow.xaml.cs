@@ -628,5 +628,19 @@ namespace Kalus
 				AddSelection();
 			}
 		}
-	}
+
+		private void SetCheckInterval(object sender, RoutedEventArgs e)
+		{
+			MenuItem interval = (MenuItem)sender;
+
+			foreach (var siblingInterval in ((MenuItem)interval.Parent).Items.OfType<MenuItem>())
+			{
+				siblingInterval.IsChecked = false;
+			}
+
+			interval.IsChecked = true;
+
+			ClientControl.checkInterval = int.Parse(interval.Header.ToString()!);
+		}
+    }
 }

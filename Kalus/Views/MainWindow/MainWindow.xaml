@@ -14,6 +14,17 @@
             <RowDefinition />
             <RowDefinition Height="150" />
         </Grid.RowDefinitions>
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Checks Interval">
+                    <MenuItem Header="300" Click="SetCheckInterval" />
+                    <MenuItem Header="500" Click="SetCheckInterval" />
+                    <MenuItem Header="1000" Click="SetCheckInterval" />
+                    <MenuItem Header="3000" Click="SetCheckInterval" />
+                    <MenuItem Header="5000" Click="SetCheckInterval" />
+                </MenuItem>
+            </ContextMenu>
+        </Grid.ContextMenu>
         <TabControl Margin="5,5,5,5">
             <TabItem Header="Characters">
                 <!-- Content for Tab 1 -->

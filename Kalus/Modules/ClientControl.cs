@@ -19,6 +19,7 @@ namespace Kalus.Modules
 		private static readonly Random random = new();
 		internal static string gamePhase = "";
 
+		internal static int checkInterval = 1000;
 
 		//Ensure that the Authentication is set
 		//Set it when client gets open or is open at startup
@@ -61,7 +62,7 @@ namespace Kalus.Modules
 						mainWindow.ShowLolState(true);
 					}
 				}
-				Thread.Sleep(1000);
+				Thread.Sleep(checkInterval);
 			} while (true);
 		}
 
@@ -147,7 +148,7 @@ namespace Kalus.Modules
 							break;
 					}
 				}
-				Thread.Sleep(1000);
+				Thread.Sleep(checkInterval);
 			}
 		}
 
