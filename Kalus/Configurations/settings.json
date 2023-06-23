@@ -1,4 +1,7 @@
 {
+  "options": {
+    "checkIntervalIndex": 2
+  },
   "championPick": false,
   "banPick": false,
   "aramChampionSwap": false,

@@ -16,7 +16,7 @@
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
             <ContextMenu>
-                <MenuItem Header="Checks Interval">
+                <MenuItem x:Name="checkInterval" Header="Checks Interval">
                     <MenuItem Header="300" Click="SetCheckInterval" />
                     <MenuItem Header="500" Click="SetCheckInterval" />
                     <MenuItem Header="1000" Click="SetCheckInterval" />

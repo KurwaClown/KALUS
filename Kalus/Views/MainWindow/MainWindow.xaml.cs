@@ -443,8 +443,17 @@ namespace Kalus
 		{
 			var settings = DataCache.GetSettings();
 
+			JToken checkIntervalIndex = settings.SelectToken("options.checkIntervalIndex") ?? new JValue(2);
+			if (checkIntervalIndex.Value<int>()  > checkInterval.Items.Count) {
+				checkIntervalIndex = new JValue(2);
+				DataCache.SetSetting("options.checkIntervalIndex", 2);
+			}
+			ClientControl.checkInterval = int.Parse(((MenuItem)checkInterval.Items[checkIntervalIndex.Value<int>()]).Header.ToString()!);
+
 			Dispatcher.Invoke(() =>
 			{
+				((MenuItem)checkInterval.Items[checkIntervalIndex.Value<int>()]).IsChecked = true;
+
 				autoPickSetting.IsChecked = settings.Value<bool>("championPick");
 				autoBanSetting.IsChecked = settings.Value<bool>("banPick");
 				autoReadySetting.IsChecked = settings.Value<bool>("aramChampionSwap");
@@ -632,15 +641,20 @@ namespace Kalus
 		private void SetCheckInterval(object sender, RoutedEventArgs e)
 		{
 			MenuItem interval = (MenuItem)sender;
-
+			int newIntervalIndex = 0;
 			foreach (var siblingInterval in ((MenuItem)interval.Parent).Items.OfType<MenuItem>())
 			{
 				siblingInterval.IsChecked = false;
+
+				if(siblingInterval == interval) DataCache.SetSetting("options.checkIntervalIndex", newIntervalIndex);
+				else newIntervalIndex++;
 			}
 
 			interval.IsChecked = true;
 
-			ClientControl.checkInterval = int.Parse(interval.Header.ToString()!);
+			int newIntervalValue = int.Parse(interval.Header.ToString()!);
+
+			ClientControl.checkInterval = newIntervalValue;
 		}
     }
 }
