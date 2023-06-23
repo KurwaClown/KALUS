@@ -19,6 +19,17 @@ namespace Kalus.Modules.Networking
 			return client_phase;
 		}
 
+		internal static async Task<JObject?> GetClientSession()
+		{
+			var response = await RequestQueue.Request(HttpMethod.Get, "/lol-gameflow/v1/session");
+
+			if (response == "") return null;
+
+			JObject session = JObject.Parse(response);
+
+			return session;
+		}
+
 		#region Current Summoner
 
 		internal static async Task<JObject> GetSummonerAndAccountId()

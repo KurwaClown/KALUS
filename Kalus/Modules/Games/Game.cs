@@ -1,7 +1,9 @@
 ﻿using Kalus.Modules.Networking;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Kalus.Modules.Games
@@ -18,19 +20,44 @@ namespace Kalus.Modules.Games
 
 		internal static async Task<Game?> CreateGame(MainWindow mainWindow)
 		{
-			JObject? lobbyInfo = await ClientRequest.GetLobbyInfo();
-			if (lobbyInfo is null) return null;
-			string? gameMode = lobbyInfo.SelectToken("gameConfig.gameMode")?.ToString();
+			JObject? session = await ClientRequest.GetSessionInfo();
+			if (session is null) return null;
+
+			int mapId = session.Value<int>("map.id");
+			string? gameMode = session.Value<string>("map.gameMode");
+
 			if (gameMode == null) return null;
-			bool hasPositions = lobbyInfo.Value<bool>("gameConfig.showPositionSelector");
 
 			//if the gamemode is aram set to ARAM
 			if (gameMode == "ARAM") return new GameMode.Aram(mainWindow);
 
-			//if it's not aram and has positions set to Draft
-			if (hasPositions) return new GameMode.Classic(mainWindow, "Draft");
+			//if it's classic, we are determine if it's a blind or a draft gametype
+			if (gameMode == "CLASSIC")
+			{
+				string? gameType = session.Value<string>("gameData.queue.gameTypeConfig.name");
+				if (gameType == null) return null;
+				if (gameType == "GAME_CFG_TEAM_BUILDER_DRAFT") return new GameMode.Classic(mainWindow, "Draft");
+				else if (gameType == "GAME_CFG_TEAM_BUILDER_BLIND") return new GameMode.Classic(mainWindow, "Blind");
+			}
 
-			return new GameMode.Classic(mainWindow, "Blind");
+			if (gameMode == "TFT") return null;
+
+			return DetermineGameMode(session, mainWindow);
+		}
+
+		// Used if the game mode cannot be created by solely checking the gamemode and gametype
+		internal static Game? DetermineGameMode(JObject session, MainWindow mainWindow)
+		{
+			return session.Value<int>("gameData.queue.id") switch
+			{
+				//Refers to draft, ranked solo/due, ranked flex ids
+				400 or 420 or 440 => new GameMode.Classic(mainWindow, "Draft"),
+				//Refers to aram gamemode id
+				450 => new GameMode.Aram(mainWindow),
+				//Refers to tft gamemodes ids
+				1090 or 1100 or 1130 or 1160 => null,
+				_ => new GameMode.Classic(mainWindow, "Blind"),
+			};
 		}
 
 		//Handler of the champion selections
