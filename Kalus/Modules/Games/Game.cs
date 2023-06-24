@@ -20,7 +20,7 @@ namespace Kalus.Modules.Games
 
 		internal static async Task<Game?> CreateGame(MainWindow mainWindow)
 		{
-			JObject? session = await ClientRequest.GetSessionInfo();
+			JObject? session = await ClientRequest.GetClientSession();
 			if (session is null) return null;
 
 			string? gameMode = session.Value<string>("map.gameMode");
