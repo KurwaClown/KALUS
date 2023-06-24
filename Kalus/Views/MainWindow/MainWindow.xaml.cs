@@ -94,15 +94,15 @@ namespace Kalus
 
 		internal void EnableRandomSkinButton(bool isEnabled)
 		{
-			Dispatcher.Invoke(() => random_btn.IsEnabled = isEnabled);
+			Dispatcher.Invoke(() => controlPanel.random_btn.IsEnabled = isEnabled);
 		}
 
 		internal void EnableChangeRuneButtons(bool isEnabled)
 		{
 			Dispatcher.Invoke(() => {
-				runes_btn_1.IsEnabled = isEnabled;
-				runes_btn_2.IsEnabled = isEnabled;
-				runes_btn_3.IsEnabled = isEnabled;
+				controlPanel.runes_btn_1.IsEnabled = isEnabled;
+				controlPanel.runes_btn_2.IsEnabled = isEnabled;
+				controlPanel.runes_btn_3.IsEnabled = isEnabled;
 				});
 		}
 
@@ -110,12 +110,12 @@ namespace Kalus
 		{
 			Color borderColor = isEnabled ? Colors.Green : Colors.Red;
 
-			Dispatcher.Invoke(() => statusBorder.BorderBrush = new SolidColorBrush(borderColor));
+			Dispatcher.Invoke(() => controlPanel.statusBorder.BorderBrush = new SolidColorBrush(borderColor));
 		}
 
 		internal void SetChampionIcon(byte[] image)
 		{
-			SetImageBrush(characterIcon, image);
+			SetImageBrush(controlPanel.characterIcon, image);
 
 			Dispatcher.Invoke(() => isStatusBoxDefault = false);
 		}
@@ -150,8 +150,8 @@ namespace Kalus
 
 		internal void SetRunesIcons(byte[] primaryRune, byte[] subRune)
 		{
-			SetImageBrush(mainStyleIcon, primaryRune);
-			SetImageBrush(subStyleIcon, subRune);
+			SetImageBrush(controlPanel.mainStyleIcon, primaryRune);
+			SetImageBrush(controlPanel.subStyleIcon, subRune);
 
 			Dispatcher.Invoke(() => isStatusBoxDefault = false);
 		}
@@ -165,7 +165,7 @@ namespace Kalus
 				_ => await DataCache.GetDefaultMapIcon(),
 			};
 
-			SetImageSource(gameModeIcon, icon);
+			SetImageSource(controlPanel.gameModeIcon, icon);
 
 			Dispatcher.Invoke(() => isStatusBoxDefault = false);
 		}
@@ -173,12 +173,12 @@ namespace Kalus
 		internal async void SetDefaultIcons()
 		{
 			byte[] defaultRunesIcon = await DataCache.GetDefaultRuneIcon();
-			SetImageBrush(mainStyleIcon, defaultRunesIcon);
-			SetImageBrush(subStyleIcon, defaultRunesIcon);
+			SetImageBrush(controlPanel.mainStyleIcon, defaultRunesIcon);
+			SetImageBrush(controlPanel.subStyleIcon, defaultRunesIcon);
 
 			SetChampionIcon(await DataCache.GetDefaultChampionIcon());
 
-			SetImageSource(gameModeIcon, await DataCache.GetDefaultMapIcon());
+			SetImageSource(controlPanel.gameModeIcon, await DataCache.GetDefaultMapIcon());
 		}
 
 		internal async void LoadAndSetCharacterList()
@@ -454,12 +454,12 @@ namespace Kalus
 			{
 				((MenuItem)checkInterval.Items[checkIntervalIndex.Value<int>()]).IsChecked = true;
 
-				autoPickSetting.IsChecked = settings.Value<bool>("championPick");
-				autoBanSetting.IsChecked = settings.Value<bool>("banPick");
-				autoReadySetting.IsChecked = settings.Value<bool>("aramChampionSwap");
-				autoRunesSetting.IsChecked = settings.Value<bool>("runesSwap");
-				autoSpellSetting.IsChecked = settings.Value<bool>("autoSummoner");
-				autoSwapSetting.IsChecked = settings.Value<bool>("autoReady");
+				controlPanel.autoPickSetting.IsChecked = settings.Value<bool>("championPick");
+				controlPanel.autoBanSetting.IsChecked = settings.Value<bool>("banPick");
+				controlPanel.autoReadySetting.IsChecked = settings.Value<bool>("aramChampionSwap");
+				controlPanel.autoRunesSetting.IsChecked = settings.Value<bool>("runesSwap");
+				controlPanel.autoSpellSetting.IsChecked = settings.Value<bool>("autoSummoner");
+				controlPanel.autoSwapSetting.IsChecked = settings.Value<bool>("autoReady");
 			}
 			);
 		}
@@ -488,9 +488,9 @@ namespace Kalus
 		{
 			Dispatcher.Invoke(() =>
 			{
-				gameModeLbl.Content = "Lobby";
-				runesLbl.Content = "Runes";
-				championLbl.Content = "Champion";
+				controlPanel.gameModeLbl.Content = "Lobby";
+				controlPanel.runesLbl.Content = "Runes";
+				controlPanel.championLbl.Content = "Champion";
 			});
 		}
 
@@ -583,7 +583,7 @@ namespace Kalus
 		{
 			Dispatcher.Invoke(() =>
 			{
-				gameModeLbl.Content = gamemodeName;
+				controlPanel.gameModeLbl.Content = gamemodeName;
 				isStatusBoxDefault = false;
 			});
 		}
@@ -592,7 +592,7 @@ namespace Kalus
 		internal string GetGamemodeName()
 		{
 			string? gameMode = "";
-			Dispatcher.Invoke(() => gameMode = gameModeLbl.Content.ToString());
+			Dispatcher.Invoke(() => gameMode = controlPanel.gameModeLbl.Content.ToString());
 			if (gameMode == null) return "GameMode";
 			return gameMode;
 		}
@@ -601,7 +601,7 @@ namespace Kalus
 		{
 			Dispatcher.Invoke(() =>
 			{
-				championLbl.Content = championName;
+				controlPanel.championLbl.Content = championName;
 				isStatusBoxDefault = false;
 			});
 		}

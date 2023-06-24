@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Kalus"
+        xmlns:panel="clr-namespace:Kalus.Controls.ControlPanel"
         mc:Ignorable="d"
         Title="Kalus" Height="640" Width="800"
         Loaded="Window_Loaded"
@@ -160,7 +161,8 @@
                 <!-- Content for Tab 2 -->
             </TabItem>
         </TabControl>
-        <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="1" Margin="5,0,5,5">
+        <panel:ControlPanel x:Name="controlPanel" Grid.Row="1" Grid.Column="1" Grid.RowSpan="1" Margin="5,0,5,5"></panel:ControlPanel>
+        <!--<Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="1" Margin="5,0,5,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition />
@@ -274,7 +276,7 @@
                     <CheckBox x:Name="autoReadySetting" Content="Ready Check" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="autoReady" VerticalAlignment="Center" Margin="0,3,0,0" />
                 </StackPanel>
             </GroupBox>
-            <!-- Add other tools here -->
-        </Grid>
+            --><!-- Add other tools here --><!--
+        </Grid>-->
     </Grid>
 </Window>
