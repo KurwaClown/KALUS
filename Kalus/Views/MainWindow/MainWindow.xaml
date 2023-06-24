@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Kalus"
         xmlns:panel="clr-namespace:Kalus.Controls.ControlPanel"
+        xmlns:tabs="clr-namespace:Kalus.Controls.Tabs"
         mc:Ignorable="d"
         Title="Kalus" Height="640" Width="800"
         Loaded="Window_Loaded"
@@ -28,53 +29,10 @@
         </Grid.ContextMenu>
         <TabControl Margin="5,5,5,5">
             <TabItem Header="Characters">
-                <!-- Content for Tab 1 -->
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition MinHeight="25" />
-                        <RowDefinition Height="4*" />
-                        <RowDefinition Height="4*" />
-                        <RowDefinition Height="4*" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="2*" />
-                    </Grid.ColumnDefinitions>
-                    <ListBox x:Name="champList" ItemsSource="{Binding updatedListCollection}" Grid.RowSpan="3" Grid.Row="1" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" MouseDoubleClick="AddSelectionFromDoubleClick" PreviewKeyDown="OnChampionListKeyDown" />
-                    <ListBox x:Name="selectionList" ItemsSource="{Binding selectedListCollection}" Grid.Column="3" Grid.RowSpan="3" Grid.Row="1" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" MouseDoubleClick="RemoveSelectionFromButton" PreviewKeyDown="OnSelectionKeyDown" />
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" Width="100" MinHeight="50" MinWidth="100">
-                        <ComboBox x:Name="selectionListGameType" SelectionChanged="SelectionListChange">
-                            <ComboBoxItem Content="Blind" IsSelected="True" />
-                            <ComboBoxItem x:Name="draftMode" Content="Draft" />
-                            <ComboBoxItem Content="ARAM" />
-                        </ComboBox>
-                        <ComboBox x:Name="selectionListType" Margin="0,10,0,0" IsEnabled="{Binding IsSelected, ElementName=draftMode}" SelectionChanged="SelectionListChange">
-                            <ComboBoxItem Content="Pick" IsSelected="True" />
-                            <ComboBoxItem Content="Ban" />
-                        </ComboBox>
-                        <ComboBox x:Name="selectionListPosition" Margin="0,10,0,0" VerticalAlignment="Top" IsEnabled="{Binding IsSelected, ElementName=draftMode}"  SelectionChanged="SelectionListChange">
-                            <ComboBoxItem Content="Top" IsSelected="True" />
-                            <ComboBoxItem Content="Jungle" />
-                            <ComboBoxItem Content="Middle" />
-                            <ComboBoxItem Content="Bottom" />
-                            <ComboBoxItem Content="Support" />
-                        </ComboBox>
-                    </StackPanel>
-                    <Label Content="Champions List" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    <Label Grid.Column="3" Content="Selected Champions" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="2" MinHeight="50" Width="100" MinWidth="100">
-                        <Button x:Name="selectionListAdd" Content="Add →" Click="AddSelectionFromButton" />
-                        <Button x:Name="selectionListRemove" Content="← Remove " Margin="0,10,0,0" Click="RemoveSelectionFromButton" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="2" Grid.Row="4" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Button x:Name="selectionOrderDown" Content="↓" Width="{Binding ActualHeight, ElementName=selectionOrderDown, Mode=OneWay}" Click="ReorderSelectionFromButton" />
-                        <Button x:Name="selectionOrderUp" Content="↑" Width="{Binding ActualHeight, ElementName=selectionOrderUp, Mode=OneWay}" Margin="15,0,0,0" Click="ReorderSelectionFromButton" />
-                        <Button x:Name="selectionEmpty" Content="Empty List" Margin="15,0,0,0" Click="EmptySelectionList" />
-                    </StackPanel>
-                </Grid>
+                <tabs:Characters x:Name="charactersTab"></tabs:Characters>
+
             </TabItem>
+
             <TabItem Header="Preferences">
                 <Grid>
                     <Grid.RowDefinitions>
