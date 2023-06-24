@@ -24,7 +24,9 @@ namespace Kalus.Modules.Games
 			if (session is null) return null;
 
 			string? gameMode = session.Value<string>("map.gameMode");
-			if (gameMode == null) return null;
+			Debug.WriteLine(gameMode);
+
+			if (gameMode == null) return DetermineGameMode(session, mainWindow);
 
 			//if the gamemode is aram set to ARAM
 			if (gameMode == "ARAM") return new GameMode.Aram(mainWindow);
@@ -33,14 +35,13 @@ namespace Kalus.Modules.Games
 			if (gameMode == "CLASSIC")
 			{
 				string? gameType = session.Value<string>("gameData.queue.gameTypeConfig.name");
-				if (gameType == null) return null;
+				if (gameType == null) return DetermineGameMode(session, mainWindow);
 
 				if (gameType == "GAME_CFG_TEAM_BUILDER_DRAFT") return new GameMode.Classic(mainWindow, "Draft");
 				else if (gameType == "GAME_CFG_TEAM_BUILDER_BLIND") return new GameMode.Classic(mainWindow, "Blind");
 			}
 
 			if (gameMode == "TFT") return null;
-
 			return DetermineGameMode(session, mainWindow);
 		}
 
