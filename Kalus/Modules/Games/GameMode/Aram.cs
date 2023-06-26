@@ -20,7 +20,7 @@ namespace Kalus.Modules.Games.GameMode
 			OnReroll += ExecutePreferencesOnReroll;
 			this.mainWindow = mainWindow;
 
-			this.mainWindow.runeChange = this.ChangeRunes;
+			this.mainWindow.controlPanel.runeChange = this.ChangeRunes;
 		}
 
 		//Handler of the champion selections
@@ -31,8 +31,8 @@ namespace Kalus.Modules.Games.GameMode
 			rerollsRemaining = sessionInfo["rerollsRemaining"]!.Value<int>();
 
 			if (mainWindow == null) return;
-			mainWindow.SetGamemodeName("ARAM");
-			mainWindow.SetGameModeIcon("ARAM");
+			mainWindow.controlPanel.SetGamemodeName("ARAM");
+			mainWindow.controlPanel.SetGameModeIcon("ARAM");
 
 			while (Auth.IsAuthSet())
 			{
@@ -53,8 +53,8 @@ namespace Kalus.Modules.Games.GameMode
 
 					case "GAME_STARTING":
 					case "":
-						mainWindow.EnableRandomSkinButton(false);
-						mainWindow.EnableChangeRuneButtons(false);
+						mainWindow.controlPanel.EnableRandomSkinButton(false);
+						mainWindow.controlPanel.EnableChangeRuneButtons(false);
 						return;
 				}
 				Thread.Sleep(ClientControl.checkInterval);

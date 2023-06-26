@@ -24,7 +24,7 @@ namespace Kalus.Modules.Games.GameMode
 		internal Classic(MainWindow mainWindow, string gameType)
 		{
 			this.mainWindow = mainWindow;
-			this.mainWindow.runeChange = this.ChangeRunes;
+			this.mainWindow.controlPanel.runeChange = this.ChangeRunes;
 
 			this.gameType = gameType;
 			isDraft = gameType == "Draft";
@@ -43,8 +43,8 @@ namespace Kalus.Modules.Games.GameMode
 		{
 			if (mainWindow == null) return;
 
-			mainWindow.SetGamemodeName(gameType);
-			mainWindow.SetGameModeIcon(gameType);
+			mainWindow.controlPanel.SetGamemodeName(gameType);
+			mainWindow.controlPanel.SetGameModeIcon(gameType);
 
 			while (Auth.IsAuthSet())
 			{
@@ -71,8 +71,8 @@ namespace Kalus.Modules.Games.GameMode
 
 					case "GAME_STARTING":
 					case "":
-						mainWindow.EnableRandomSkinButton(false);
-						mainWindow.EnableChangeRuneButtons(false);
+						mainWindow.controlPanel.EnableRandomSkinButton(false);
+						mainWindow.controlPanel.EnableChangeRuneButtons(false);
 						return;
 				}
 				Thread.Sleep(ClientControl.checkInterval);
@@ -84,7 +84,7 @@ namespace Kalus.Modules.Games.GameMode
 		{
 			var currentRuneIcons = await ClientControl.GetRunesIcons();
 
-			if (currentRuneIcons != null && mainWindow != null) mainWindow.SetRunesIcons(currentRuneIcons.Item1, currentRuneIcons.Item2); ;
+			if (currentRuneIcons != null && mainWindow != null) mainWindow.controlPanel.SetRunesIcons(currentRuneIcons.Item1, currentRuneIcons.Item2); ;
 
 			if (championId == 0) championId = await ClientRequest.GetCurrentChampionId();
 			if (delayedPick != null)

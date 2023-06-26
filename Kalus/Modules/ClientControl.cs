@@ -38,7 +38,7 @@ namespace Kalus.Modules
 				if (!isClientOpen && authenticated)
 				{
 					//Modify GroupBox style
-					mainWindow.ShowLolState(false);
+					mainWindow.controlPanel.ShowLolState(false);
 					//Reset cached data
 					DataCache.ResetCachedData();
 					//If authenticated : reset the auth
@@ -59,7 +59,7 @@ namespace Kalus.Modules
 						if (filename == null) return;
 
 						Auth.SetBasicAuth(filename);
-						mainWindow.ShowLolState(true);
+						mainWindow.controlPanel.ShowLolState(true);
 					}
 				}
 				Thread.Sleep(checkInterval);
@@ -126,25 +126,25 @@ namespace Kalus.Modules
 						case "GameStart":
 						case "InProgress":
 							string gameMode = mainWindow.GetGamemodeName();
-							mainWindow.SetGameModeIcon(gameMode, true);
-							mainWindow.EnableRandomSkinButton(false);
-							mainWindow.EnableChangeRuneButtons(false);
+							mainWindow.controlPanel.SetGameModeIcon(gameMode, true);
+							mainWindow.controlPanel.EnableRandomSkinButton(false);
+							mainWindow.controlPanel.EnableChangeRuneButtons(false);
 							break;
 						//If not in any of the above game phase
 						default:
 							//Set the icon to default if it is not already
 							if (!MainWindow.isStatusBoxDefault)
 							{
-								mainWindow.SetChampionIcon(await DataCache.GetDefaultChampionIcon());
+								mainWindow.controlPanel.SetChampionIcon(await DataCache.GetDefaultChampionIcon());
 
-								mainWindow.SetDefaultIcons();
-								mainWindow.SetDefaultLabels();
+								mainWindow.controlPanel.SetDefaultIcons();
+								mainWindow.controlPanel.SetDefaultLabels();
 
 								MainWindow.isStatusBoxDefault = true;
 							}
 
-							mainWindow.EnableRandomSkinButton(false);
-							mainWindow.EnableChangeRuneButtons(false);
+							mainWindow.controlPanel.EnableRandomSkinButton(false);
+							mainWindow.controlPanel.EnableChangeRuneButtons(false);
 							break;
 					}
 				}

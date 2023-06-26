@@ -23,8 +23,7 @@ namespace Kalus.Modules.Games
 			JObject? session = await ClientRequest.GetClientSession();
 			if (session is null) return null;
 
-			string? gameMode = session.Value<string>("map.gameMode");
-			Debug.WriteLine(gameMode);
+			string? gameMode = session.SelectToken("map.gameMode")?.ToString();
 
 			if (gameMode == null) return DetermineGameMode(session, mainWindow);
 
@@ -83,11 +82,11 @@ namespace Kalus.Modules.Games
 			if (mainWindow == null) return;
 
 			//Set the current champion image and name on the UI
-			mainWindow.SetChampionIcon(imageBytes);
-			mainWindow.SetChampionName(championName);
+			mainWindow.controlPanel.SetChampionIcon(imageBytes);
+			mainWindow.controlPanel.SetChampionName(championName);
 			//Toggle the random skin button on
-			mainWindow.EnableRandomSkinButton(true);
-			mainWindow.EnableChangeRuneButtons(true);
+			mainWindow.controlPanel.EnableRandomSkinButton(true);
+			mainWindow.controlPanel.EnableChangeRuneButtons(true);
 
 			//Set runes if the the auto rune is toggled
 			if (ClientControl.GetSettingState("runesSwap") && !isRunePageChanged)
