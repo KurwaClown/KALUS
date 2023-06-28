@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Kalus"
         xmlns:panel="clr-namespace:Kalus.Controls.ControlPanel"
+        xmlns:console="clr-namespace:Kalus.Controls.Console"
         xmlns:tabs="clr-namespace:Kalus.Controls.Tabs"
         mc:Ignorable="d"
         Title="Kalus" Height="640" Width="800"
@@ -36,123 +37,11 @@
             <TabItem Header="Preferences">
                 <tabs:Preferences x:Name="preferencesTab"/>
             </TabItem>
+            <TabItem Header="Console">
+                <console:ConsoleView x:Name="consoleTab" x:FieldModifier="public"></console:ConsoleView>
+            </TabItem>
         </TabControl>
         <panel:ControlPanel x:Name="controlPanel" Grid.Row="1" Grid.Column="1" Grid.RowSpan="1" Margin="5,0,5,5"></panel:ControlPanel>
-        <!--<Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="1" Margin="5,0,5,5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <GroupBox x:Name="statusBorder" Header="Status" BorderBrush="#FFFF0303" Grid.ColumnSpan="2" Grid.Column="2" BorderThickness="2,2,2,2" Margin="5,0,0,0">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Image x:Name="gameModeIcon" Grid.RowSpan="3" Width="80" Height="80" />
-                    <GridSplitter Height="100" Grid.RowSpan="4" Width="1" />
-                    <Grid x:Name="stylesIcon" Grid.Column="1" Grid.RowSpan="4">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="3*" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Grid HorizontalAlignment="Center" Height="81" VerticalAlignment="Center" Width="94">
-                            <Ellipse x:Name="mainStyle" StrokeThickness="6" Stroke="#FF333333" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="50" MinHeight="50" MaxWidth="100" MaxHeight="100" Height="{Binding ActualWidth, ElementName=mainStyle, Mode=OneWay}" Width="70" Panel.ZIndex="1">
-                                <Ellipse.Fill>
-                                    <ImageBrush x:Name="mainStyleIcon" Stretch="None" ViewboxUnits="RelativeToBoundingBox">
-                                        <ImageBrush.RelativeTransform>
-                                            <TransformGroup>
-                                                <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleX="1.2" ScaleY="1.2" />
-                                                <SkewTransform CenterX="0.5" CenterY="0.5" />
-                                                <RotateTransform CenterX="0.5" CenterY="0.5" />
-                                                <TranslateTransform />
-                                            </TransformGroup>
-                                        </ImageBrush.RelativeTransform>
-                                    </ImageBrush>
-                                </Ellipse.Fill>
-                            </Ellipse>
-                            <Path Stroke="{Binding Stroke, ElementName=mainStyle, Mode=TwoWay}" StrokeThickness="4" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="Fill" Margin="54,41,0,0" Data="M20,20 A30,30,0,1,1,0,50">
-                                <Path.Fill>
-                                    <ImageBrush x:Name="subStyleIcon" Stretch="None">
-                                        <ImageBrush.RelativeTransform>
-                                            <TransformGroup>
-                                                <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleX="0.7" ScaleY="0.7" />
-                                                <SkewTransform CenterX="0.5" CenterY="0.5" />
-                                                <RotateTransform CenterX="0.5" CenterY="0.5" />
-                                                <TranslateTransform />
-                                            </TransformGroup>
-                                        </ImageBrush.RelativeTransform>
-                                    </ImageBrush>
-                                </Path.Fill>
-                            </Path>
-                        </Grid>
-                        <Label x:Name="runesLbl" Content="Runes" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" />
-                    </Grid>
-                    <GridSplitter Height="100" Grid.RowSpan="4" Width="1" Grid.Column="1" />
-                    <Grid Grid.Column="2" HorizontalAlignment="Center" Height="116" Grid.RowSpan="4" VerticalAlignment="Center" Width="120">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="3*" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Ellipse StrokeThickness="8" Stroke="#FF333333" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="50" MinHeight="50" MaxWidth="100" MaxHeight="100" Height="80" Width="80" Grid.RowSpan="1">
-                            <Ellipse.Fill>
-                                <ImageBrush x:Name="characterIcon" />
-                            </Ellipse.Fill>
-                        </Ellipse>
-                        <GridSplitter Height="1" Width="50" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1" />
-                        <Label x:Name="championLbl" Content="Champ Picked" HorizontalAlignment="Center" VerticalAlignment="Top" FontWeight="UltraBold" FontSize="16" Grid.Row="1" />
-                    </Grid>
-                    <Label x:Name="gameModeLbl" Content="Game Mode" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" />
-                </Grid>
-            </GroupBox>
-            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="5,0,5,0">
-                <GroupBox Header="Change Runes">
-                    <Grid Margin="0,5,0,3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Button x:Name="runes_btn_1" Content="1" Click="ChangeRunes" IsEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Width="{Binding ActualHeight, ElementName=random_btn, Mode=OneWay}">
-                            <Button.ToolTip>
-                                <ToolTip Content="" />
-                            </Button.ToolTip>
-                        </Button>
-                        <Button x:Name="runes_btn_2" Content="2" Click="ChangeRunes" IsEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Width="{Binding ActualHeight, ElementName=random_btn, Mode=OneWay}" Grid.Column="1">
-                            <Button.ToolTip>
-                                <ToolTip Content="" />
-                            </Button.ToolTip>
-                        </Button>
-                        <Button x:Name="runes_btn_3" Content="3" Click="ChangeRunes" IsEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Width="{Binding ActualHeight, ElementName=random_btn, Mode=OneWay}" Grid.Column="2">
-                            <Button.ToolTip>
-                                <ToolTip Content="" />
-                            </Button.ToolTip>
-                        </Button>
-                    </Grid>
-                </GroupBox>
-                <Button x:Name="random_btn" Content="Random Skin" Click="RandomSkinClick" IsEnabled="False" Margin="0,10,0,0" />
-                <Button Content="Reload League Client" Click="ClientRestart" Margin="0,10,0,0" />
-            </StackPanel>
-            <GroupBox Header="Automatic Utility" Grid.Column="1" Margin="5,0,0,0">
-                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
-                    <CheckBox x:Name="autoPickSetting" Content="Pick Champion" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="championPick" VerticalAlignment="Center" />
-                    <CheckBox x:Name="autoBanSetting" Content="Ban Champion" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="banPick" VerticalAlignment="Center" Margin="0,3,0,0" />
-                    <CheckBox x:Name="autoSwapSetting" Content="Swap in ARAM" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="aramChampionSwap" VerticalAlignment="Center" Margin="0,3,0,0" />
-                    <CheckBox x:Name="autoRunesSetting" Content="Set Runes" Height="15"  Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="runesSwap" VerticalAlignment="Center" Margin="0,3,0,0" />
-                    <CheckBox x:Name="autoSpellSetting" Content="Set Summoner Spell" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="autoSummoner" VerticalAlignment="Center" Margin="0,3,0,0" />
-                    <CheckBox x:Name="autoReadySetting" Content="Ready Check" Checked="OnSettingsControlInteraction" Unchecked="OnSettingsControlInteraction" Tag="autoReady" VerticalAlignment="Center" Margin="0,3,0,0" />
-                </StackPanel>
-            </GroupBox>
-            --><!-- Add other tools here --><!--
-        </Grid>-->
+        
     </Grid>
 </Window>
