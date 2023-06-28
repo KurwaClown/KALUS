@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="Kalus.Controls.Console.Log"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:Kalus.Controls.Console.Converters"
+             mc:Ignorable="d"
+>
+    
+<UserControl.Resources>
+        <converters:LogLevelToColor x:Key="LogLevelToColorConverter" />
+        <converters:ClientStateToColor x:Key="ClientStateToColorConverter" />
+    </UserControl.Resources>
+    <Grid Background="{Binding Level, Mode=OneTime, Converter={StaticResource LogLevelToColorConverter}, ConverterParameter='BACKGROUND'}">
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="125" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock x:Name="timestamp"
+                       Text="{Binding Timestamp, StringFormat='dd/MM'}"
+                       Padding="5,0,0,0"
+                       VerticalAlignment="Center" />
+            <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm:ss'}" />
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
+            <Border Margin="3,0,5,0"
+                    BorderBrush="{Binding Level, Mode=OneTime, Converter={StaticResource LogLevelToColorConverter}}"
+                    BorderThickness="1"
+                    CornerRadius="2" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center">
+                <TextBlock Padding="5,2,5,2"
+                           Text="{Binding Level}"
+                           TextAlignment="Center"
+                           FontWeight="DemiBold"
+                           Background="{Binding Level, Converter={StaticResource LogLevelToColorConverter}}"
+                           Foreground="{Binding Level, Converter={StaticResource LogLevelToColorConverter}, ConverterParameter='FONT'}"/>
+            </Border>
+            <Border Margin="0,0,3,0"
+                    BorderBrush="{Binding State, Mode=OneTime, Converter={StaticResource ClientStateToColorConverter}}"
+                    BorderThickness="1"
+                    CornerRadius="2" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center">
+                <TextBlock Padding="5,2,5,2"
+                           Text="{Binding State}"
+                           TextAlignment="Center"
+                           FontWeight="DemiBold"
+                           Foreground="{Binding State, Converter={StaticResource ClientStateToColorConverter}, ConverterParameter='FONT'}"
+                           Background="{Binding State, Converter={StaticResource ClientStateToColorConverter}}"/>
+            </Border>
+        </StackPanel>
+
+        <TextBlock x:Name="message"
+                   Grid.Column="2"
+                   Padding="5,0,5,0"
+                   Text="{Binding Message}"
+                   TextAlignment="Left"
+                   FontSize="13"
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Center" />
+    </Grid>
+</UserControl>
