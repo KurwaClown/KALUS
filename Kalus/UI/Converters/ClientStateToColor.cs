@@ -22,13 +22,13 @@ namespace Kalus.UI.Converters
 
             string colorResourceKey = value switch
             {
-                ClientState.NoClient => "STATE_NOCLIENT",
-                ClientState.Blind => "STATE_BLIND",
-                ClientState.Draft => "STATE_DRAFT",
+                ClientState.NOCLIENT => "STATE_NOCLIENT",
+                ClientState.BLIND => "STATE_BLIND",
+                ClientState.DRAFT => "STATE_DRAFT",
                 ClientState.ARAM => "STATE_ARAM",
-                ClientState.ChampSelect => "STATE_CHAMPSELECT",
-                ClientState.ReadyCheck => "STATE_READYCHECK",
-                ClientState.Lobby => "STATE_LOBBY",
+                ClientState.CHAMPSELECT => "STATE_CHAMPSELECT",
+                ClientState.READYCHECK => "STATE_READYCHECK",
+                ClientState.LOBBY => "STATE_LOBBY",
                 _ => "STATE_DEFAULT"
             };
 

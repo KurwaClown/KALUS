@@ -28,32 +28,42 @@
         </StackPanel>
 
         <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
-            <Border Margin="3,0,5,0"
-                    BorderBrush="{Binding Level, Mode=OneTime, Converter={StaticResource LogLevelToColorConverter}}"
-                    BorderThickness="1"
-                    CornerRadius="2"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,5,0">
+                <Rectangle Fill="{Binding Level, Mode=OneTime, Converter={StaticResource LogLevelToColorConverter}}"
+                           Opacity="0.2"
+                           RadiusX="2"
+                           RadiusY="2"/>
+                <Rectangle Stroke="{Binding Level, Mode=OneTime, Converter={StaticResource LogLevelToColorConverter}}"
+                           StrokeThickness="1"
+                           RadiusX="2"
+                           RadiusY="2"/>
+
                 <TextBlock Padding="5,2,5,2"
                            Text="{Binding Level}"
+
                            TextAlignment="Center"
-                           FontWeight="DemiBold"
-                           Background="{Binding Level, Converter={StaticResource LogLevelToColorConverter}}"
-                           Foreground="{Binding Level, Converter={StaticResource LogLevelToColorConverter}, ConverterParameter='FONT'}"/>
-            </Border>
-            <Border Margin="0,0,3,0"
-                    BorderBrush="{Binding State, Mode=OneTime, Converter={StaticResource ClientStateToColorConverter}}"
-                    BorderThickness="1"
-                    CornerRadius="2"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
+                           FontWeight="Medium"
+                           Foreground="{Binding Level, Converter={StaticResource LogLevelToColorConverter}}"/>
+
+            </Grid>
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Rectangle Fill="{Binding State, Mode=OneTime, Converter={StaticResource ClientStateToColorConverter}}"
+                           Opacity="0.2"
+                           RadiusX="2"
+                           RadiusY="2"/>
+                <Rectangle Stroke="{Binding State, Mode=OneTime, Converter={StaticResource ClientStateToColorConverter}}"
+                           StrokeThickness="1"
+                           RadiusX="2"
+                           RadiusY="2"/>
+
                 <TextBlock Padding="5,2,5,2"
                            Text="{Binding State}"
                            TextAlignment="Center"
-                           FontWeight="DemiBold"
-                           Foreground="{Binding State, Converter={StaticResource ClientStateToColorConverter}, ConverterParameter='FONT'}"
-                           Background="{Binding State, Converter={StaticResource ClientStateToColorConverter}}"/>
-            </Border>
+                           FontWeight="Medium"
+                           Foreground="#262626"/>
+
+            </Grid>
+
         </StackPanel>
 
         <TextBlock x:Name="message"
@@ -62,6 +72,7 @@
                    Text="{Binding Message}"
                    TextAlignment="Left"
                    FontSize="13"
+                   Foreground="Black"
                    TextWrapping="Wrap"
                    VerticalAlignment="Center" />
     </Grid>

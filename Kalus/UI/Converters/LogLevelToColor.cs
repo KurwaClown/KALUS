@@ -19,9 +19,9 @@ namespace Kalus.UI.Converters
 
             string colorResourceKey = value switch
             {
-                LogLevel.Info => "LOG_INFO",
-                LogLevel.Warn => "LOG_WARN",
-                LogLevel.Error => "LOG_ERROR",
+                LogLevel.INFO => "LOG_INFO",
+                LogLevel.WARN => "LOG_WARN",
+                LogLevel.ERROR => "LOG_ERROR",
                 _ => "LOG_DEFAULT"
             };
 

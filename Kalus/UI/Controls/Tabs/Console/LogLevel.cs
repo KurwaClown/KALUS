@@ -8,8 +8,8 @@ namespace Kalus.UI.Controls.Tabs.Console
 {
     public enum LogLevel
     {
-        Info,
-        Warn,
-        Error
+        INFO,
+        WARN,
+        ERROR
     }
 }

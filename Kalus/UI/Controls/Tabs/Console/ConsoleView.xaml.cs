@@ -68,7 +68,7 @@ namespace Kalus.UI.Controls.Tabs.Console
 
         internal void AddLog(LogData log)
         {
-            Logs.Add(log);
+            Application.Current.Dispatcher.Invoke(() =>Logs.Add(log));
             // Scroll to the bottom of the ScrollViewer
             scrollViewer.ScrollToEnd();
         }

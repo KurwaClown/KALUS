@@ -18,11 +18,11 @@ namespace Kalus.UI.Controls.Tabs.Console
             DependencyProperty.Register("Message", typeof(string), typeof(Log), new PropertyMetadata(string.Empty));
 
         public static readonly DependencyProperty LevelProperty =
-            DependencyProperty.Register("Level", typeof(LogLevel), typeof(Log), new PropertyMetadata(LogLevel.Error));
+            DependencyProperty.Register("Level", typeof(LogLevel), typeof(Log), new PropertyMetadata(LogLevel.ERROR));
 
 
         public static readonly DependencyProperty StateProperty =
-            DependencyProperty.Register("State", typeof(ClientState), typeof(Log), new PropertyMetadata(ClientState.NoClient));
+            DependencyProperty.Register("State", typeof(ClientState), typeof(Log), new PropertyMetadata(ClientState.NOCLIENT));
 
         public DateTime Timestamp
         {

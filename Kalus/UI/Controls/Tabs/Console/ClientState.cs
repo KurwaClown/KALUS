@@ -9,11 +9,11 @@ namespace Kalus.UI.Controls.Tabs.Console
     public enum ClientState
     {
         ARAM,
-        Draft,
-        Blind,
-        Lobby,
-        NoClient,
-        ChampSelect,
-        ReadyCheck
+        DRAFT,
+        BLIND,
+        LOBBY,
+        NOCLIENT,
+        CHAMPSELECT,
+        READYCHECK
     }
 }

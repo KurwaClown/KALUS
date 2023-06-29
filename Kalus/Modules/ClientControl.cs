@@ -1,5 +1,6 @@
 ﻿using Kalus.Modules.Games;
 using Kalus.Modules.Networking;
+using Kalus.UI.Controls.Tabs.Console;
 using Kalus.UI.Views;
 using Newtonsoft.Json.Linq;
 using System;
@@ -20,7 +21,7 @@ namespace Kalus.Modules
 		internal static string gamePhase = "";
 
 		internal static int checkInterval = 1000;
-
+		internal static ClientState state = ClientState.NOCLIENT;
 		//Ensure that the Authentication is set
 		//Set it when client gets open or is open at startup
 		//Reset it when it gets closed or is closed at startup
@@ -60,6 +61,8 @@ namespace Kalus.Modules
 
 						Auth.SetBasicAuth(filename);
 						mainWindow.controlPanel.ShowLolState(true);
+						LogData clientReady = new("KALUS is ready", LogLevel.INFO, state);
+						mainWindow.consoleTab.AddLog(clientReady);
 					}
 				}
 				Thread.Sleep(checkInterval);
