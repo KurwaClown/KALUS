@@ -29,7 +29,7 @@ namespace Kalus.Modules.Games.GameMode
 		protected internal override async Task ChampSelectControl()
 		{
 			sessionInfo = await ClientRequest.GetSessionInfo();
-			if (sessionInfo is null) return;
+			if (sessionInfo == null) return;
 			rerollsRemaining = sessionInfo["rerollsRemaining"]!.Value<int>();
 
 			if (mainWindow == null) return;
