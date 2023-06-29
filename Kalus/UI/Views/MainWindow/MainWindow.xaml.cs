@@ -1,5 +1,4 @@
 ﻿using Kalus.Modules;
-using Kalus.Views.ErrorWindow;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
-namespace Kalus
+namespace Kalus.UI.Views
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml

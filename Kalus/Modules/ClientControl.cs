@@ -1,5 +1,6 @@
 ﻿using Kalus.Modules.Games;
 using Kalus.Modules.Networking;
+using Kalus.UI.Views;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace Kalus.Modules
 {

@@ -6,9 +6,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using static Kalus.MainWindow;
+using static Kalus.UI.Views.MainWindow;
 
-namespace Kalus.Controls.ControlPanel
+namespace Kalus.UI.Controls
 {
 	/// <summary>
 	/// Interaction logic for ControlPanel.xaml

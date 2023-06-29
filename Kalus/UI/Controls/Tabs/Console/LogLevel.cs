@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kalus.Controls.Console
+namespace Kalus.UI.Controls.Tabs.Console
 {
     public enum LogLevel
     {
         Info,
-        Warn, 
+        Warn,
         Error
     }
 }

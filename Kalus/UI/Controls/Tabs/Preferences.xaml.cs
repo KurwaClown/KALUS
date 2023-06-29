@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Kalus.Controls.Tabs
+namespace Kalus.UI.Controls.Tabs
 {
     /// <summary>
     /// Interaction logic for Preferences.xaml

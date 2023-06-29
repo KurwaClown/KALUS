@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="Kalus.Controls.Console.ConsoleView"
+﻿<UserControl x:Class="Kalus.UI.Controls.Tabs.Console.ConsoleView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Kalus.Controls.Console"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Kalus.UI.Controls.Tabs.Console"
              mc:Ignorable="d">
     <Grid>
         <ScrollViewer x:Name="scrollViewer" VerticalScrollBarVisibility="Auto">

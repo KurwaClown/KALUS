@@ -2,8 +2,9 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using Kalus.UI.Controls.Tabs.Console;
 
-namespace Kalus.Controls.Console
+namespace Kalus.UI.Controls.Tabs.Console
 {
     /// <summary>
     /// Interaction logic for Log.xaml

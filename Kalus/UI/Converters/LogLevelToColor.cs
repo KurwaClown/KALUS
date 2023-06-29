@@ -2,15 +2,16 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using Kalus.UI.Controls.Tabs.Console;
 
-namespace Kalus.Controls.Console.Converters
+namespace Kalus.UI.Converters
 {
     class LogLevelToColor : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool isBackground = false;
-            if(parameter is string strParameter)
+            if (parameter is string strParameter)
             {
                 if (strParameter == "FONT") return Application.Current.Resources["LOG_FONT"];
                 else if (strParameter == "BACKGROUND") isBackground = true;
@@ -24,8 +25,8 @@ namespace Kalus.Controls.Console.Converters
                 _ => "LOG_DEFAULT"
             };
 
-            if (isBackground)colorResourceKey += "_BACKGROUND";
-            
+            if (isBackground) colorResourceKey += "_BACKGROUND";
+
             return Application.Current.Resources[colorResourceKey];
         }
 

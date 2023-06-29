@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kalus.Controls.Console
+namespace Kalus.UI.Controls.Tabs.Console
 {
     public class LogData
     {
@@ -15,7 +15,7 @@ namespace Kalus.Controls.Console
 
         public LogData(string message, LogLevel level, ClientState state)
         {
-            
+
             Timestamp = DateTime.Now;
             Message = message;
             Level = level;

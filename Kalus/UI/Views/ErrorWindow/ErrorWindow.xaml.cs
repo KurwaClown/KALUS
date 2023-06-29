@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace Kalus.Views.ErrorWindow
+namespace Kalus.UI.Views
 {
     /// <summary>
     /// Interaction logic for ErrorWindow.xaml

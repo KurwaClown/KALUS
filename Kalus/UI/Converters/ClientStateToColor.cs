@@ -7,12 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using Kalus.UI.Controls.Tabs.Console;
 
-namespace Kalus.Controls.Console.Converters
+namespace Kalus.UI.Converters
 {
     class ClientStateToColor : IValueConverter
     {
-        public object Convert(object value, Type targetType,  object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (parameter is string strParameter)
             {
