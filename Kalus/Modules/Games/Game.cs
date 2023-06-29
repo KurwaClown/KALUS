@@ -17,7 +17,12 @@ namespace Kalus.Modules.Games
 
 		protected bool isRunePageChanged = false;
 
-		protected MainWindow? mainWindow;
+		protected MainWindow mainWindow;
+
+
+		internal Game(MainWindow mainWindow) {
+			this.mainWindow = mainWindow;
+		}
 
 		internal static async Task<Game?> CreateGame(MainWindow mainWindow)
 		{

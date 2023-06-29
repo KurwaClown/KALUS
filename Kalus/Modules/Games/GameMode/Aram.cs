@@ -17,10 +17,9 @@ namespace Kalus.Modules.Games.GameMode
 		private delegate void OnRerollHandler();
 		private event OnRerollHandler OnReroll;
 
-		internal Aram(MainWindow mainWindow)
+		internal Aram(MainWindow mainWindow) : base(mainWindow)
 		{
 			OnReroll += ExecutePreferencesOnReroll;
-			this.mainWindow = mainWindow;
 
 			this.mainWindow.controlPanel.runeChange = this.ChangeRunes;
 		}

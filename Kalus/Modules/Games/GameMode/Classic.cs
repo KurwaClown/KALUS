@@ -22,7 +22,7 @@ namespace Kalus.Modules.Games.GameMode
 		private Timer? delayedPick;
 		private string delayedPickType = string.Empty;
 
-		internal Classic(MainWindow mainWindow, string gameType)
+		internal Classic(MainWindow mainWindow, string gameType) : base(mainWindow)
 		{
 			this.mainWindow = mainWindow;
 			this.mainWindow.controlPanel.runeChange = this.ChangeRunes;
