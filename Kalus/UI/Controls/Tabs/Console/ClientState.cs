@@ -8,12 +8,12 @@ namespace Kalus.UI.Controls.Tabs.Console
 {
     public enum ClientState
     {
-        ARAM,
-        DRAFT,
-        BLIND,
-        LOBBY,
         NOCLIENT,
+        NONE,
+        LOBBY,
+        MATCHMAKING,
+        READYCHECK,
         CHAMPSELECT,
-        READYCHECK
+        GAMESTART
     }
 }

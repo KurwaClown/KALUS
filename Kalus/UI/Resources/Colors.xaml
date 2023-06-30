@@ -4,9 +4,9 @@
     <SolidColorBrush x:Key="LOG_FONT">#121212</SolidColorBrush>
 
     <SolidColorBrush x:Key="LOG_INFO">#BF044BCC</SolidColorBrush>
-    <SolidColorBrush x:Key="LOG_INFO_BACKGROUND">#F0F8FF</SolidColorBrush>
+    <SolidColorBrush x:Key="LOG_INFO_BACKGROUND">#30044BCC</SolidColorBrush>
 
-    <SolidColorBrush x:Key="LOG_WARN">#FAF520</SolidColorBrush>
+    <SolidColorBrush x:Key="LOG_WARN">#FFEC46</SolidColorBrush>
     <SolidColorBrush x:Key="LOG_WARN_BACKGROUND">#FAFAD2</SolidColorBrush>
 
     <SolidColorBrush x:Key="LOG_ERROR">#DC041C</SolidColorBrush>
@@ -18,11 +18,11 @@
     <SolidColorBrush x:Key="STATE_FONT">#121212</SolidColorBrush>
 
     <SolidColorBrush x:Key="STATE_NOCLIENT">#DC244C</SolidColorBrush>
-    <SolidColorBrush x:Key="STATE_ARAM">#90EE90</SolidColorBrush>
-    <SolidColorBrush x:Key="STATE_BLIND">#87CEFA</SolidColorBrush>
-    <SolidColorBrush x:Key="STATE_DRAFT">#87CEFA</SolidColorBrush>
-    <SolidColorBrush x:Key="STATE_CHAMPSELECT">#D3D3D3</SolidColorBrush>
-    <SolidColorBrush x:Key="STATE_LOBBY">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="STATE_NONE">#CCCCCC</SolidColorBrush>
+    <SolidColorBrush x:Key="STATE_LOBBY">#24DCD7</SolidColorBrush>
+    <SolidColorBrush x:Key="STATE_MATCHMAKING">#FF8E1E</SolidColorBrush>
     <SolidColorBrush x:Key="STATE_READYCHECK">#15BB15</SolidColorBrush>
-    <SolidColorBrush x:Key="STATE_DEFAULT">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="STATE_CHAMPSELECT">#FEE147</SolidColorBrush>
+    <SolidColorBrush x:Key="STATE_GAMESTART">#8B2FFC</SolidColorBrush>
+    <SolidColorBrush x:Key="STATE_DEFAULT">#800000</SolidColorBrush>
 </ResourceDictionary>

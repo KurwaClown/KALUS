@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using Kalus.Modules;
 using Kalus.UI.Controls.Tabs.Console;
 
 namespace Kalus.UI.Controls.Tabs.Console
@@ -66,11 +67,15 @@ namespace Kalus.UI.Controls.Tabs.Console
             Down
         }
 
-        internal void AddLog(LogData log)
+        internal void AddLog(string message, LogLevel level)
         {
-            Application.Current.Dispatcher.Invoke(() =>Logs.Add(log));
-            // Scroll to the bottom of the ScrollViewer
-            scrollViewer.ScrollToEnd();
+            LogData newLog = new(message, level);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Logs.Add(newLog);
+                // Scroll to the bottom of the ScrollViewer
+                scrollViewer.ScrollToEnd();
+            });
         }
     }
 }

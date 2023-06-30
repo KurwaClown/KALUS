@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kalus.Modules;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,13 +14,13 @@ namespace Kalus.UI.Controls.Tabs.Console
         public LogLevel Level { get; }
         public ClientState State { get; }
 
-        public LogData(string message, LogLevel level, ClientState state)
+        public LogData(string message, LogLevel level)
         {
 
             Timestamp = DateTime.Now;
             Message = message;
             Level = level;
-            State = state;
+            State = ClientControl.state;
         }
     }
 }

@@ -19,7 +19,7 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,5,0,5">
             <TextBlock x:Name="timestamp"
                        Text="{Binding Timestamp, StringFormat='dd/MM'}"
                        Padding="5,0,0,0"
@@ -34,16 +34,15 @@
                            RadiusX="2"
                            RadiusY="2"/>
                 <Rectangle Stroke="{Binding Level, Mode=OneTime, Converter={StaticResource LogLevelToColorConverter}}"
-                           StrokeThickness="1"
+                           StrokeThickness="1.5"
                            RadiusX="2"
                            RadiusY="2"/>
 
                 <TextBlock Padding="5,2,5,2"
                            Text="{Binding Level}"
-
                            TextAlignment="Center"
-                           FontWeight="Medium"
-                           Foreground="{Binding Level, Converter={StaticResource LogLevelToColorConverter}}"/>
+                           FontWeight="SemiBold"
+                           Foreground="#262626"/>
 
             </Grid>
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -52,16 +51,15 @@
                            RadiusX="2"
                            RadiusY="2"/>
                 <Rectangle Stroke="{Binding State, Mode=OneTime, Converter={StaticResource ClientStateToColorConverter}}"
-                           StrokeThickness="1"
+                           StrokeThickness="1.5"
                            RadiusX="2"
                            RadiusY="2"/>
 
                 <TextBlock Padding="5,2,5,2"
                            Text="{Binding State}"
                            TextAlignment="Center"
-                           FontWeight="Medium"
+                           FontWeight="Normal"
                            Foreground="#262626"/>
-
             </Grid>
 
         </StackPanel>

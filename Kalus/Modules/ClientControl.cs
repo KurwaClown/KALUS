@@ -38,12 +38,15 @@ namespace Kalus.Modules
 				// When the client is closed
 				if (!isClientOpen && authenticated)
 				{
+					state = ClientState.NOCLIENT;
+					mainWindow.consoleTab.AddLog("Client has been closed", LogLevel.WARN);
 					//Modify GroupBox style
 					mainWindow.controlPanel.ShowLolState(false);
 					//Reset cached data
 					DataCache.ResetCachedData();
 					//If authenticated : reset the auth
 					Auth.ResetAuth();
+
 					continue;
 				}
 
@@ -53,6 +56,8 @@ namespace Kalus.Modules
 					//If the client is open : set the authentication and player id
 					if (isClientOpen)
 					{
+						state = ClientState.NONE;
+						mainWindow.consoleTab.AddLog("Client Found", LogLevel.INFO);
 						ProcessModule? leagueProcess = Process.GetProcessesByName("LeagueClientUx").First().MainModule;
 						if (leagueProcess == null) return;
 
@@ -61,8 +66,8 @@ namespace Kalus.Modules
 
 						Auth.SetBasicAuth(filename);
 						mainWindow.controlPanel.ShowLolState(true);
-						LogData clientReady = new("KALUS is ready", LogLevel.INFO, state);
-						mainWindow.consoleTab.AddLog(clientReady);
+
+						mainWindow.consoleTab.AddLog("KALUS is ready", LogLevel.INFO);
 					}
 				}
 				Thread.Sleep(checkInterval);
@@ -112,13 +117,24 @@ namespace Kalus.Modules
 					{
 						case "":
 							continue;
+						case "None":
+							state = ClientState.NONE;
+							break;
+						case "Lobby":
+							state = ClientState.LOBBY;
+							break;
+						case "Matchmaking":
+							state = ClientState.MATCHMAKING;
+							break;
 						//On ready check
 						case "ReadyCheck":
+							state = ClientState.READYCHECK;
 							//If the setting to get automatically ready is on : accept the game
 							if (GetSettingState("autoReady")) await ClientRequest.Accept();
 							break;
 						//On champion selection : start and await the end of the champ select handler
 						case "ChampSelect":
+							state = ClientState.CHAMPSELECT;
 							Game? champSelect = await Game.CreateGame(mainWindow);
 
 							if (champSelect == null) break;
@@ -128,6 +144,7 @@ namespace Kalus.Modules
 
 						case "GameStart":
 						case "InProgress":
+							state = ClientState.GAMESTART;
 							string gameMode = mainWindow.GetGamemodeName();
 							mainWindow.controlPanel.SetGameModeIcon(gameMode, true);
 							mainWindow.controlPanel.EnableRandomSkinButton(false);

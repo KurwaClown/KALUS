@@ -23,12 +23,12 @@ namespace Kalus.UI.Converters
             string colorResourceKey = value switch
             {
                 ClientState.NOCLIENT => "STATE_NOCLIENT",
-                ClientState.BLIND => "STATE_BLIND",
-                ClientState.DRAFT => "STATE_DRAFT",
-                ClientState.ARAM => "STATE_ARAM",
-                ClientState.CHAMPSELECT => "STATE_CHAMPSELECT",
-                ClientState.READYCHECK => "STATE_READYCHECK",
+                ClientState.NONE => "STATE_NONE",
                 ClientState.LOBBY => "STATE_LOBBY",
+                ClientState.MATCHMAKING => "STATE_MATCHMAKING",
+                ClientState.READYCHECK => "STATE_READYCHECK",
+                ClientState.CHAMPSELECT => "STATE_CHAMPSELECT",
+                ClientState.GAMESTART => "STATE_GAMESTART",
                 _ => "STATE_DEFAULT"
             };
 
