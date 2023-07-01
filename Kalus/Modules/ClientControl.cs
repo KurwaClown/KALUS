@@ -39,7 +39,7 @@ namespace Kalus.Modules
 				if (!isClientOpen && authenticated)
 				{
 					state = ClientState.NOCLIENT;
-					mainWindow.consoleTab.AddLog("Client has been closed", LogLevel.WARN);
+					mainWindow.consoleTab.AddLog("Client has been closed", Utility.CLIENT, LogLevel.WARN);
 					//Modify GroupBox style
 					mainWindow.controlPanel.ShowLolState(false);
 					//Reset cached data
@@ -57,7 +57,7 @@ namespace Kalus.Modules
 					if (isClientOpen)
 					{
 						state = ClientState.NONE;
-						mainWindow.consoleTab.AddLog("Client Found", LogLevel.INFO);
+						mainWindow.consoleTab.AddLog("Client Found", Utility.CLIENT, LogLevel.INFO);
 						ProcessModule? leagueProcess = Process.GetProcessesByName("LeagueClientUx").First().MainModule;
 						if (leagueProcess == null) return;
 
@@ -67,7 +67,7 @@ namespace Kalus.Modules
 						Auth.SetBasicAuth(filename);
 						mainWindow.controlPanel.ShowLolState(true);
 
-						mainWindow.consoleTab.AddLog("KALUS is ready", LogLevel.INFO);
+						mainWindow.consoleTab.AddLog("KALUS is ready", Utility.KALUS, LogLevel.INFO);
 					}
 				}
 				Thread.Sleep(checkInterval);
@@ -130,7 +130,11 @@ namespace Kalus.Modules
 						case "ReadyCheck":
 							state = ClientState.READYCHECK;
 							//If the setting to get automatically ready is on : accept the game
-							if (GetSettingState("autoReady")) await ClientRequest.Accept();
+							if (GetSettingState("autoReady"))
+							{
+								await ClientRequest.Accept();
+								mainWindow.consoleTab.AddLog("Accepting Ready Check", Utility.READY, LogLevel.INFO);
+							}
 							break;
 						//On champion selection : start and await the end of the champ select handler
 						case "ChampSelect":

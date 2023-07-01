@@ -105,15 +105,30 @@ namespace Kalus.Modules.Games
 			if (randomSkinOnPick)
 			{
 				ClientControl.PickRandomSkin();
+				mainWindow.consoleTab.AddLog("Changing skin randomly on champion pick", UI.Controls.Tabs.Console.Utility.SKIN, UI.Controls.Tabs.Console.LogLevel.INFO);
+
 			}
 
-			if (ClientControl.GetSettingState("autoSummoner")) await ChangeSpells();
+			if (ClientControl.GetSettingState("autoSummoner"))
+			{
+				await ChangeSpells();
+				mainWindow.consoleTab.AddLog("Setting summoner's spells", UI.Controls.Tabs.Console.Utility.SPELL, UI.Controls.Tabs.Console.LogLevel.INFO);
+			}
 		}
 
 		//Get sessions actions
 		internal IEnumerable<JObject>? GetSessionActions()
 		{
 			return sessionInfo?["actions"]?.SelectMany(innerArray => innerArray).OfType<JObject>();
+		}
+
+		internal async Task<string> ChampionIdtoName(int championId)
+		{
+			var champions = await DataCache.GetChampionsInformations();
+			return champions.Where(champion => champion.Value<int>("id") == championId)
+											.Select(champion => champion["name"]?.ToString())
+											.FirstOrDefault()
+											?? "undefined";
 		}
 	}
 }

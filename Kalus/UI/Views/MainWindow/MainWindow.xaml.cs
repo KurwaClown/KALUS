@@ -61,10 +61,10 @@ namespace Kalus.UI.Views
 
 				// Disable the MainWindow while the error window is displayed
 				this.IsEnabled = false;
-
 				// Show the error window as a dialog
 				errorWindow.ShowDialog();
 
+				this.consoleTab.AddLog("An error occured : " + exception?.GetType(), Controls.Tabs.Console.Utility.KALUS, Controls.Tabs.Console.LogLevel.ERROR);
 				// Re-enable the MainWindow after the error window is closed
 				this.IsEnabled = true;
 
@@ -122,6 +122,8 @@ namespace Kalus.UI.Views
 			preferencesTab.SetPreferences();
 			controlPanel.SetDefaultIcons();
 			controlPanel.SetDefaultLabels();
+
+			this.consoleTab.AddLog("UI Initialized", Controls.Tabs.Console.Utility.KALUS, Controls.Tabs.Console.LogLevel.INFO);
 		}
 
 		internal string GetGamemodeName()
@@ -149,6 +151,8 @@ namespace Kalus.UI.Views
 			int newIntervalValue = int.Parse(interval.Header.ToString()!);
 
 			ClientControl.checkInterval = newIntervalValue;
+
+			this.consoleTab.AddLog("Changing checks interval", Controls.Tabs.Console.Utility.KALUS, Controls.Tabs.Console.LogLevel.INFO);
 		}
 	}
 }

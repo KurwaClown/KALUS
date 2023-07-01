@@ -29,6 +29,7 @@ namespace Kalus.Modules.Games.GameMode
 
 			this.gameType = gameType;
 			isDraft = gameType == "Draft";
+			mainWindow.consoleTab.AddLog($"Joined {gameType} Game", UI.Controls.Tabs.Console.Utility.GAME, UI.Controls.Tabs.Console.LogLevel.INFO);
 		}
 
 		//Setting the player position and cell position id
