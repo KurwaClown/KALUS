@@ -28,14 +28,14 @@
             </ContextMenu>
         </Grid.ContextMenu>
         <TabControl Margin="5,5,5,5">
+            <TabItem Header="Console">
+                <console:ConsoleView x:Name="consoleTab" x:FieldModifier="public"/>
+            </TabItem>
             <TabItem Header="Characters">
                 <tabs:Characters x:Name="charactersTab"/>
             </TabItem>
             <TabItem Header="Preferences">
                 <tabs:Preferences x:Name="preferencesTab"/>
-            </TabItem>
-            <TabItem Header="Console">
-                <console:ConsoleView x:Name="consoleTab" x:FieldModifier="public"/>
             </TabItem>
         </TabControl>
         <controls:ControlPanel x:Name="controlPanel" Grid.Row="1" Grid.Column="1" Grid.RowSpan="1" Margin="5,0,5,5"></controls:ControlPanel>
