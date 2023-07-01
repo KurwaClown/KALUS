@@ -67,9 +67,9 @@ namespace Kalus.UI.Controls.Tabs.Console
             Down
         }
 
-        internal void AddLog(string message, LogLevel level)
+        internal void AddLog(string message, Utility utility, LogLevel level)
         {
-            LogData newLog = new(message, level);
+            LogData newLog = new(message, utility, level);
             Application.Current.Dispatcher.Invoke(() =>
             {
                 Logs.Add(newLog);

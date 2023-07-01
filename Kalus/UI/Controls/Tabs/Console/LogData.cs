@@ -11,14 +11,16 @@ namespace Kalus.UI.Controls.Tabs.Console
     {
         public DateTime Timestamp { get; }
         public string Message { get; }
+        public Utility Utility { get; }
         public LogLevel Level { get; }
         public ClientState State { get; }
 
-        public LogData(string message, LogLevel level)
+        public LogData(string message, Utility utility, LogLevel level)
         {
 
             Timestamp = DateTime.Now;
             Message = message;
+            Utility = utility;
             Level = level;
             State = ClientControl.state;
         }
