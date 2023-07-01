@@ -18,8 +18,7 @@ namespace Kalus.UI.Controls.Tabs.Console
 		{
 			KALUS,
 			CLIENT,
-			RUNES,
-			SPELL,
+			POSTPICK,
 			SWAPPING,
 			READY,
 			SKIN,

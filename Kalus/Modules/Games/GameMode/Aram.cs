@@ -80,7 +80,6 @@ namespace Kalus.Modules.Games.GameMode
 			if (currentChampionId != championId)
 			{
 				championId = currentChampionId;
-				mainWindow.consoleTab.AddLog($"Setting runes for {await ChampionIdtoName(championId)}", UI.Controls.Tabs.Console.Utility.RUNES, UI.Controls.Tabs.Console.LogLevel.INFO);
 
 				isRunePageChanged = false;
 				await PostPickAction();

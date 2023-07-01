@@ -77,6 +77,7 @@ namespace Kalus.Modules.Games
 
 		protected async Task PostPickAction()
 		{
+			List<string> logMessages = new List<string>();
 			var imageBytes = await ClientRequest.GetChampionImageById(championId);
 
 			var champions = await DataCache.GetChampionsInformations();
@@ -94,26 +95,32 @@ namespace Kalus.Modules.Games
 			mainWindow.controlPanel.EnableRandomSkinButton(true);
 			mainWindow.controlPanel.EnableChangeRuneButtons(true);
 
-			//Set runes if the the auto rune is toggled
-			if (ClientControl.GetSettingState("runesSwap") && !isRunePageChanged)
-			{
-				await ChangeRunes();
-			}
-
 			//Random skin on pick
 			bool randomSkinOnPick = ClientControl.GetPreference<bool>("randomSkin.randomOnPick");
 			if (randomSkinOnPick)
 			{
 				ClientControl.PickRandomSkin();
-				mainWindow.consoleTab.AddLog("Changing skin randomly on champion pick", UI.Controls.Tabs.Console.Utility.SKIN, UI.Controls.Tabs.Console.LogLevel.INFO);
-
+				logMessages.Add("Changing skin randomly on champion pick");
 			}
+
+			//Set runes if the the auto rune is toggled
+			if (ClientControl.GetSettingState("runesSwap") && !isRunePageChanged)
+			{
+				await ChangeRunes();
+				logMessages.Add($"Setting runes for {await ChampionIdtoName(championId)}");
+			}
+
 
 			if (ClientControl.GetSettingState("autoSummoner"))
 			{
 				await ChangeSpells();
-				mainWindow.consoleTab.AddLog("Setting summoner's spells", UI.Controls.Tabs.Console.Utility.SPELL, UI.Controls.Tabs.Console.LogLevel.INFO);
+				logMessages.Add("Setting summoner's spells");
 			}
+
+			string concatLog = string.Join(" | ", logMessages);
+
+			mainWindow.consoleTab.AddLog(concatLog, UI.Controls.Tabs.Console.Utility.POSTPICK , UI.Controls.Tabs.Console.LogLevel.INFO);
+
 		}
 
 		//Get sessions actions
