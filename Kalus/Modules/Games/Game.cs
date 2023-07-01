@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Kalus.UI.Views;
+using Kalus.UI.Windows;
 
 namespace Kalus.Modules.Games
 {

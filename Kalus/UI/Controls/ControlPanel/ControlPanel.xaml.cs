@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using static Kalus.UI.Views.MainWindow;
+using static Kalus.UI.Windows.MainWindow;
 
 namespace Kalus.UI.Controls
 {

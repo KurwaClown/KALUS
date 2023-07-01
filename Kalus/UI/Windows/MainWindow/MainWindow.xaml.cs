@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
-namespace Kalus.UI.Views
+namespace Kalus.UI.Windows
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml

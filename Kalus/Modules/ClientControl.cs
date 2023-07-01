@@ -1,7 +1,7 @@
 ﻿using Kalus.Modules.Games;
 using Kalus.Modules.Networking;
 using Kalus.UI.Controls.Tabs.Console;
-using Kalus.UI.Views;
+using Kalus.UI.Windows;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
