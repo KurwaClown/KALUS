@@ -135,6 +135,11 @@ namespace Kalus.Modules
 								await ClientRequest.Accept();
 								mainWindow.consoleTab.AddLog("Accepting Ready Check", Utility.READY, LogLevel.INFO);
 							}
+							//Prevent being auto-ready multiple times
+							while (await ClientRequest.GetClientPhase() == "ReadyCheck")
+							{
+								Thread.Sleep(checkInterval);
+							}
 							break;
 						//On champion selection : start and await the end of the champ select handler
 						case "ChampSelect":

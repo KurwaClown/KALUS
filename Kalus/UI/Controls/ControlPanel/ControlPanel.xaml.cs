@@ -1,5 +1,7 @@
 ﻿using Kalus.Modules;
 using Kalus.Modules.Networking;
+using Kalus.UI.Windows;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -161,5 +163,20 @@ namespace Kalus.UI.Controls
 				isStatusBoxDefault = false;
 			});
 		}
-	}
+
+		private void ToggleLiteMode(object sender, RoutedEventArgs e)
+		{
+			DependencyObject? parent = VisualTreeHelper.GetParent(this);
+			while (parent != null && parent is not MainWindow)
+			{
+				parent = VisualTreeHelper.GetParent(parent);
+			}
+
+			if (parent != null && parent is MainWindow mainWindow) {
+				if (mainWindow.mainTabControl.Visibility == Visibility.Visible) mainWindow.mainTabControl.Visibility = Visibility.Collapsed;
+				else mainWindow.mainTabControl.Visibility = Visibility.Visible;
+
+			}
+        }
+    }
 }

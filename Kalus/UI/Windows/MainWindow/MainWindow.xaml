@@ -7,9 +7,10 @@
         xmlns:tabs="clr-namespace:Kalus.UI.Controls.Tabs"
         xmlns:console="clr-namespace:Kalus.UI.Controls.Tabs.Console"
         mc:Ignorable="d"
-        Title="Kalus" Height="640" Width="800"
+        Title="Kalus" MaxHeight="640" MaxWidth="800"
         Loaded="Window_Loaded"
-        Closing="Window_Closing" MinWidth="720" MinHeight="440"
+        Closing="Window_Closing" MinWidth="720"
+        SizeToContent="WidthAndHeight"
         ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
@@ -27,7 +28,7 @@
                 </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
-        <TabControl Margin="5,5,5,5">
+        <TabControl Margin="5,5,5,5" x:Name="mainTabControl" MinHeight="390">
             <TabItem Header="Console">
                 <console:ConsoleView x:Name="consoleTab" x:FieldModifier="public"/>
             </TabItem>
@@ -38,7 +39,7 @@
                 <tabs:Preferences x:Name="preferencesTab"/>
             </TabItem>
         </TabControl>
-        <controls:ControlPanel x:Name="controlPanel" Grid.Row="1" Grid.Column="1" Grid.RowSpan="1" Margin="5,0,5,5"></controls:ControlPanel>
+        <controls:ControlPanel x:Name="controlPanel" Grid.Row="1" Margin="5,0,5,5"></controls:ControlPanel>
 
     </Grid>
 </Window>

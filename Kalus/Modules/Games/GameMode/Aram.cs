@@ -32,7 +32,7 @@ namespace Kalus.Modules.Games.GameMode
 		{
 			sessionInfo = await ClientRequest.GetSessionInfo();
 			if (sessionInfo == null) return;
-			rerollsRemaining = sessionInfo["rerollsRemaining"]!.Value<int>();
+			rerollsRemaining = (sessionInfo["rerollsRemaining"] ?? new JValue("0")).Value<int>();
 
 			if (mainWindow == null) return;
 			mainWindow.controlPanel.SetGamemodeName("ARAM");
