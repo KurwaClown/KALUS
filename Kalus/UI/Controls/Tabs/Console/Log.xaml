@@ -11,15 +11,10 @@
         <converters:LogLevelToColor x:Key="LogLevelToColorConverter" />
         <converters:ClientStateToColor x:Key="ClientStateToColorConverter" />
     </UserControl.Resources>
-    <Grid Background="{Binding Level, Mode=OneTime, Converter={StaticResource LogLevelToColorConverter}, ConverterParameter='BACKGROUND'}">
+    <WrapPanel Orientation="Horizontal" Background="{Binding Level, Mode=OneTime, Converter={StaticResource LogLevelToColorConverter}, ConverterParameter='BACKGROUND'}">
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="150" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,5,0,5">
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,5,0,5">
             <TextBlock x:Name="timestamp"
                        Text="{Binding Timestamp, StringFormat='dd/MM'}"
                        Padding="5,0,0,0"
@@ -27,7 +22,7 @@
             <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm:ss'}" />
         </StackPanel>
 
-        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
+        <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,5,0">
                 <Rectangle Fill="{Binding Level, Mode=OneTime, Converter={StaticResource LogLevelToColorConverter}}"
                            Opacity="0.2"
@@ -73,5 +68,7 @@
                    Foreground="Black"
                    TextWrapping="Wrap"
                    VerticalAlignment="Center" />
-    </Grid>
+
+
+    </WrapPanel>
 </UserControl>
