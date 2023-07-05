@@ -326,10 +326,10 @@ namespace Kalus.Modules
 		}
 
 		//Format the champion runes for the rune request
-		internal static string FormatChampRunes(JToken runes, string champion)
+		internal static string FormatChampRunes(JToken runes, string champion, string position)
 		{
 			//Create a template for the request body
-			string runesTemplate = $"{{\"current\": true,\"name\": \"KALUS - {champion}\",\"primaryStyleId\": 0,\"subStyleId\": 0, \"selectedPerkIds\": []}}";
+			string runesTemplate = $"{{\"current\": true,\"name\": \"KALUS - {champion} - {position}\",\"primaryStyleId\": 0,\"subStyleId\": 0, \"selectedPerkIds\": []}}";
 			JObject runesObject = JObject.Parse(runesTemplate);
 
 			//Set the values from the recommended runes
@@ -377,7 +377,7 @@ namespace Kalus.Modules
 			var runesRecommendation = await GetChampRunesByPosition(champId, position, recommendationNumber);
 			if (runesRecommendation == null) return;
 
-			string recommendedRunes = FormatChampRunes(runesRecommendation, championName);
+			string recommendedRunes = FormatChampRunes(runesRecommendation, championName, position);
 
 			bool canOverride = ClientControl.GetPreference<bool>("runes.overridePage");
 

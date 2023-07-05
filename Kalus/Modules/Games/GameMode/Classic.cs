@@ -84,6 +84,8 @@ namespace Kalus.Modules.Games.GameMode
 		//Act on finalization
 		protected override async Task Finalization()
 		{
+			if (championId != await ClientRequest.GetCurrentChampionId()) champSelectFinalized = false;
+
 			var currentRuneIcons = await ClientControl.GetRunesIcons();
 
 			if (currentRuneIcons != null && mainWindow != null) mainWindow.controlPanel.SetRunesIcons(currentRuneIcons.Item1, currentRuneIcons.Item2); ;
@@ -321,6 +323,7 @@ namespace Kalus.Modules.Games.GameMode
 		//Get if it's the current player turn and output the action id and type of action
 		internal bool IsCurrentPlayerTurn(IEnumerable<JObject> actions, out int actionId, out string? type)
 		{
+			SetPositionAndCellId();
 			var currentPlayerAction = actions.Where(action => action.Value<int>("actorCellId") == cellId && action.Value<bool>("isInProgress") == true)
 				.Select(action => action).ToArray();
 
