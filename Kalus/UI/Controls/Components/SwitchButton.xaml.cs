@@ -40,6 +40,18 @@ namespace Kalus.UI.Controls.Components
 		public SwitchButton()
 		{
 			InitializeComponent();
+
+			this.Loaded += SwitchButton_Loaded;
+		}
+
+		private void SwitchButton_Loaded(object sender, RoutedEventArgs e)
+		{
+			Binding binding = new("Height")
+			{
+				Source = switchButton,
+				Converter = new Converters.ToggleSwitchHeightToWidth()
+			};
+			switchButton.SetBinding(WidthProperty, binding);
 		}
 
 		private void ToggleAnimation(bool toggleOn, ToggleButton switchButton, double animationDuration = 0.2)

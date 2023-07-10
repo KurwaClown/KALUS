@@ -7,13 +7,15 @@
              xmlns:local="clr-namespace:Kalus.UI.Controls.Components"
              xmlns:converter="clr-namespace:Kalus.UI.Converters"
              mc:Ignorable="d"
-             d:DesignHeight="64" 
-             d:DesignWidth="128" 
-             d:Background="White"
-             VerticalAlignment="Center" 
-             HorizontalAlignment="Center"
+             d:DesignHeight="64"
+             MinHeight="8"
              Height="16"
-             Width="32">
+             d:DesignWidth="128"
+             MinWidth="16"
+             d:Background="White"
+             VerticalAlignment="Center"
+             HorizontalAlignment="Center"
+             >
     <UserControl.Resources>
         <converter:HeightToCornerRadius x:Key="HeightToCornerRadius"></converter:HeightToCornerRadius>
         <converter:BackgroundToBubbleHeight x:Key="BackgroundToBubbleHeight"></converter:BackgroundToBubbleHeight>
