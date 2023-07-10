@@ -15,7 +15,7 @@ namespace Kalus.UI.Converters
         {
             if(value is double backgroundHeight)
             {
-                return backgroundHeight * 0.5;
+                return backgroundHeight * 0.65;
             }
 
             return value;

@@ -53,27 +53,37 @@ namespace Kalus.UI.Controls.Components
 				Duration = TimeSpan.FromSeconds(animationDuration)
 			};
 
+
 			ColorAnimation backgroundColorAnimation = new()
 			{
-				To = toggleOn ? Color.FromRgb(0, 120, 215) : Colors.Gray,
+				To = toggleOn ? Color.FromRgb(0, 120, 215) : Colors.Transparent,
+				Duration = TimeSpan.FromSeconds(animationDuration)
+			};
+			ColorAnimation backgroundStrokeAnimation = new()
+			{
+				To = toggleOn ? Colors.Transparent : Color.FromRgb(33,33,33),
 				Duration = TimeSpan.FromSeconds(animationDuration)
 			};
 
 			ColorAnimation bubbleColorAnimation = new()
 			{
-				To = toggleOn ? Colors.Black : Colors.White,
+				To = toggleOn ? Colors.White : Color.FromRgb(33,33,33),
 				Duration = TimeSpan.FromSeconds(animationDuration)
 			};
 
 			// Create the Storyboard and add the animation to it
 			Storyboard storyboard = new();
 			storyboard.Children.Add(backgroundColorAnimation);
+			storyboard.Children.Add(backgroundStrokeAnimation);
 			storyboard.Children.Add(bubbleMarginAnimation);
 			storyboard.Children.Add(bubbleColorAnimation);
 
 			// Set the target and property of the animation
 			Storyboard.SetTarget(backgroundColorAnimation, background);
 			Storyboard.SetTargetProperty(backgroundColorAnimation, new PropertyPath("(Rectangle.Fill).(SolidColorBrush.Color)"));
+
+			Storyboard.SetTarget(backgroundStrokeAnimation, background);
+			Storyboard.SetTargetProperty(backgroundStrokeAnimation, new PropertyPath("(Rectangle.Stroke).(SolidColorBrush.Color)"));
 
 			Storyboard.SetTarget(bubbleMarginAnimation, bubble);
 			Storyboard.SetTargetProperty(bubbleMarginAnimation, new PropertyPath("Margin"));
@@ -90,8 +100,8 @@ namespace Kalus.UI.Controls.Components
 
 			DoubleAnimation bubbleSizeAnimation = new()
 			{
-				To = isHover ? bubble.Width * 1.2 : bubble.Width / 1.2,
-				Duration = TimeSpan.FromMilliseconds(100)
+				To = isHover ? bubble.Width * 1.1 : bubble.Width / 1.1,
+				Duration = TimeSpan.FromMilliseconds(200)
 			};
 
 			bubble.BeginAnimation(WidthProperty, bubbleSizeAnimation);

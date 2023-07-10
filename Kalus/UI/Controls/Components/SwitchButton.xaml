@@ -1,4 +1,5 @@
 ﻿<UserControl x:Class="Kalus.UI.Controls.Components.SwitchButton"
+             x:Name="switchButton"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,7 +7,13 @@
              xmlns:local="clr-namespace:Kalus.UI.Controls.Components"
              xmlns:converter="clr-namespace:Kalus.UI.Converters"
              mc:Ignorable="d"
-             d:DesignHeight="64" d:DesignWidth="128">
+             d:DesignHeight="64" 
+             d:DesignWidth="128" 
+             d:Background="White"
+             VerticalAlignment="Center" 
+             HorizontalAlignment="Center"
+             Height="16"
+             Width="32">
     <UserControl.Resources>
         <converter:HeightToCornerRadius x:Key="HeightToCornerRadius"></converter:HeightToCornerRadius>
         <converter:BackgroundToBubbleHeight x:Key="BackgroundToBubbleHeight"></converter:BackgroundToBubbleHeight>
@@ -15,11 +22,12 @@
         <ControlTemplate x:Key="switchButton" TargetType="ToggleButton">
             <Grid>
                 <Rectangle x:Name="background"
-                           Fill="Gray"
+                           Fill="Transparent"
+                           Stroke="#FF212121"
                            RadiusX="{Binding Height, Converter={StaticResource HeightToCornerRadius}, RelativeSource={RelativeSource TemplatedParent}}"
                            RadiusY="{Binding RadiusX, ElementName=background}"/>
                 <Ellipse x:Name="bubble"
-                         Fill="White"
+                         Fill="#FF212121"
                          Width="{Binding Height, Converter={StaticResource BackgroundToBubbleHeight}, RelativeSource={RelativeSource TemplatedParent}}"
                          Margin="{Binding Height, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource HeightToDefaultMargin}}"
                          Height="{Binding Width, ElementName=bubble}"
