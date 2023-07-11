@@ -1,29 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
+using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Input;
+using System.Windows.Data;
+using System.Globalization;
+using Kalus.UI.Converters;
+using System.Windows.Controls;
 
 namespace Kalus.UI.Controls.Components
 {
-	/// <summary>
-	/// Interaction logic for SwitchButton.xaml
-	/// </summary>
-	public partial class SwitchButton : UserControl
+	public class ToggleSwitch : ToggleButton
 	{
-
 		private BubblePosition? _bubblePosition;
 		internal class BubblePosition
 		{
@@ -37,21 +27,69 @@ namespace Kalus.UI.Controls.Components
 			}
 		}
 
-		public SwitchButton()
+		static ToggleSwitch()
 		{
-			InitializeComponent();
+			DefaultStyleKeyProperty.OverrideMetadata(typeof(ToggleSwitch), new FrameworkPropertyMetadata(typeof(ToggleSwitch)));
+		}
 
-			this.Loaded += SwitchButton_Loaded;
+		public ToggleSwitch()
+		{
+			Checked += OnSwitchOn;
+			Unchecked += OnSwitchOff;
+			MouseEnter += OnMouseEnter;
+			MouseLeave += OnMouseLeave;
+			Loaded += SwitchButton_Loaded;
+
+			ResourceDictionary resourceDictionary = new()
+			{
+				Source = new Uri("/Kalus;component/UI/Resources/Template/ToggleSwitch.xaml", UriKind.Relative)
+			};
+			Style = (Style)resourceDictionary["ToggleSwitchStyle"];
+		}
+
+		protected override Size ArrangeOverride(Size arrangeBounds)
+		{
+			if (ActualHeight > 0)
+			{
+				ToggleSwitchHeightToWidth converter = new ToggleSwitchHeightToWidth(); // Create an instance of the converter
+				double width = (double)converter.Convert(ActualHeight, typeof(double), null, CultureInfo.CurrentCulture);
+				if (!double.IsNaN(width))
+				{
+					Width = width;
+				}
+			}
+
+			return base.ArrangeOverride(arrangeBounds);
 		}
 
 		private void SwitchButton_Loaded(object sender, RoutedEventArgs e)
 		{
-			Binding binding = new("Height")
+			Binding binding = new("ActualHeight")
 			{
-				Source = switchButton,
+				Source = this,
 				Converter = new Converters.ToggleSwitchHeightToWidth()
 			};
-			switchButton.SetBinding(WidthProperty, binding);
+			this.SetBinding(WidthProperty, binding);
+		}
+
+		private void OnSwitchOn(object sender, System.Windows.RoutedEventArgs e)
+		{
+			ToggleAnimation(true, (ToggleButton)sender);
+		}
+
+		private void OnSwitchOff(object sender, RoutedEventArgs e)
+		{
+			ToggleAnimation(false, (ToggleButton)sender);
+		}
+
+		private void OnMouseEnter(object sender, MouseEventArgs e)
+		{
+			HoverAnimation(true, (ToggleButton)sender);
+		}
+
+		private void OnMouseLeave(object sender, MouseEventArgs e)
+		{
+			HoverAnimation(false, (ToggleButton)sender);
 		}
 
 		private void ToggleAnimation(bool toggleOn, ToggleButton switchButton, double animationDuration = 0.2)
@@ -73,13 +111,13 @@ namespace Kalus.UI.Controls.Components
 			};
 			ColorAnimation backgroundStrokeAnimation = new()
 			{
-				To = toggleOn ? Colors.Transparent : Color.FromRgb(33,33,33),
+				To = toggleOn ? Colors.Transparent : Color.FromRgb(33, 33, 33),
 				Duration = TimeSpan.FromSeconds(animationDuration)
 			};
 
 			ColorAnimation bubbleColorAnimation = new()
 			{
-				To = toggleOn ? Colors.White : Color.FromRgb(33,33,33),
+				To = toggleOn ? Colors.White : Color.FromRgb(33, 33, 33),
 				Duration = TimeSpan.FromSeconds(animationDuration)
 			};
 
@@ -117,26 +155,6 @@ namespace Kalus.UI.Controls.Components
 			};
 
 			bubble.BeginAnimation(WidthProperty, bubbleSizeAnimation);
-		}
-
-		private void OnSwitchOn(object sender, System.Windows.RoutedEventArgs e)
-		{
-			ToggleAnimation(true, (ToggleButton)sender);
-		}
-
-		private void OnSwitchOff(object sender, RoutedEventArgs e)
-		{
-			ToggleAnimation(false, (ToggleButton)sender);
-		}
-
-		private void OnMouseEnter(object sender, MouseEventArgs e)
-		{
-			HoverAnimation(true, (ToggleButton)sender);
-		}
-
-		private void OnMouseLeave(object sender, MouseEventArgs e)
-		{
-			HoverAnimation(false, (ToggleButton)sender);
 		}
 	}
 }
