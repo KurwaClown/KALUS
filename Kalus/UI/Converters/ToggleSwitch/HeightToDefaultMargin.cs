@@ -13,7 +13,7 @@ namespace Kalus.UI.Converters
         public object Convert(object value, Type targetType,  object parameter, System.Globalization.CultureInfo culture) {
             if(value is double backgroundHeight)
             {
-                return new Thickness(backgroundHeight * 0.2, 0, 0, 0);
+                return new Thickness(backgroundHeight / 4, 0, 0, 0);
             }
             return new Thickness(5, 0, 0, 0);
         }

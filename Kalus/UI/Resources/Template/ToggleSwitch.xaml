@@ -23,9 +23,8 @@
                         <Ellipse x:Name="bubble"
                                  Fill="#FF212121"
                                  Width="{Binding ActualHeight, Converter={StaticResource BackgroundToBubbleHeight}, RelativeSource={RelativeSource TemplatedParent}}"
-                                 Margin="{Binding ActualHeight, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource HeightToDefaultMargin}}"
                                  Height="{Binding ActualWidth, ElementName=bubble}"
-                                 HorizontalAlignment="Left" />
+                                 HorizontalAlignment="Center" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
