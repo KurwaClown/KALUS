@@ -130,5 +130,86 @@ namespace Kalus.Properties {
                 this["aramRepickChampion"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool utilityPick {
+            get {
+                return ((bool)(this["utilityPick"]));
+            }
+            set {
+                this["utilityPick"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool utilityBan {
+            get {
+                return ((bool)(this["utilityBan"]));
+            }
+            set {
+                this["utilityBan"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool utilityAram {
+            get {
+                return ((bool)(this["utilityAram"]));
+            }
+            set {
+                this["utilityAram"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool utilityRunes {
+            get {
+                return ((bool)(this["utilityRunes"]));
+            }
+            set {
+                this["utilityRunes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool utilityReadyCheck {
+            get {
+                return ((bool)(this["utilityReadyCheck"]));
+            }
+            set {
+                this["utilityReadyCheck"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool utilitySummoners {
+            get {
+                return ((bool)(this["utilitySummoners"]));
+            }
+            set {
+                this["utilitySummoners"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public float settingCheckInterval {
+            get {
+                return ((float)(this["settingCheckInterval"]));
+            }
+        }
     }
 }
