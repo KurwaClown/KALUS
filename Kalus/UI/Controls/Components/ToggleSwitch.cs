@@ -69,12 +69,12 @@ namespace Kalus.UI.Controls.Components
 			if(Template.FindName("bubble", this) is Ellipse bubble) bubble.RenderTransform = new TranslateTransform(-_transformToState, 0);
 		}
 
-		private void OnSwitchOn(object sender, System.Windows.RoutedEventArgs e)
+		internal void OnSwitchOn(object sender, System.Windows.RoutedEventArgs e)
 		{
 			ToggleAnimation(true);
 		}
 
-		private void OnSwitchOff(object sender, RoutedEventArgs e)
+		internal void OnSwitchOff(object sender, RoutedEventArgs e)
 		{
 			ToggleAnimation(false);
 		}

@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="Kalus.UI.Controls.UtilityBanner"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Kalus.UI.Controls"
+             xmlns:components="clr-namespace:Kalus.UI.Controls.Components"
+             mc:Ignorable="d"
+             d:Background="White">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Border Background="AliceBlue" Grid.ColumnSpan="2" CornerRadius="2"/>
+        <Label d:Content="Utility Testing" Grid.Column="0"></Label>
+        <components:ToggleSwitch x:Name="toggleSwitch" Grid.Column="1" IsChecked="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+    </Grid>
+</UserControl>
