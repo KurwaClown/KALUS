@@ -94,12 +94,13 @@ namespace Kalus.UI.Windows
 			{
 				((MenuItem)checkInterval.Items[checkIntervalIndex.Value<int>()]).IsChecked = true;
 
+
 				controlPanel.autoPickSetting.IsChecked = settings.Value<bool>("championPick");
 				controlPanel.autoBanSetting.IsChecked = settings.Value<bool>("banPick");
-				controlPanel.autoReadySetting.IsChecked = settings.Value<bool>("aramChampionSwap");
+				controlPanel.autoReadySetting.IsChecked = settings.Value<bool>("autoReady");
 				controlPanel.autoRunesSetting.IsChecked = settings.Value<bool>("runesSwap");
 				controlPanel.autoSpellSetting.IsChecked = settings.Value<bool>("autoSummoner");
-				controlPanel.autoSwapSetting.IsChecked = settings.Value<bool>("autoReady");
+				controlPanel.autoSwapSetting.IsChecked = settings.Value<bool>("aramChampionSwap");
 			}
 			);
 		}
