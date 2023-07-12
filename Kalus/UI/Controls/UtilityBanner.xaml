@@ -7,13 +7,13 @@
              xmlns:components="clr-namespace:Kalus.UI.Controls.Components"
              mc:Ignorable="d"
              d:Background="White">
-    <Grid>
+    <Grid MouseEnter="MouseEnterBackground" MouseLeave="MouseLeaveBackground">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <Border Background="AliceBlue" Grid.ColumnSpan="2" CornerRadius="2"/>
-        <Label d:Content="Utility Testing" Grid.Column="0"></Label>
+        <Border x:Name="background" Background="White" Grid.ColumnSpan="2" CornerRadius="4" />
+        <Label Content="{Binding LabelText, RelativeSource={RelativeSource AncestorType=UserControl}}" Grid.Column="0" Padding="5,0,0,0"></Label>
         <components:ToggleSwitch x:Name="toggleSwitch" Grid.Column="1" IsChecked="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
     </Grid>
 </UserControl>
