@@ -16,6 +16,7 @@ namespace Kalus.UI.Controls.Components
 	{
 		private double _transformToState;
 
+		private double _defaultBubbleWidth;
 
 		static ToggleSwitch()
 		{
@@ -67,6 +68,7 @@ namespace Kalus.UI.Controls.Components
 
 			_transformToState = ActualHeight / 2;
 			if(Template.FindName("bubble", this) is Ellipse bubble) bubble.RenderTransform = new TranslateTransform(-_transformToState, 0);
+			_defaultBubbleWidth = ((Ellipse)Template.FindName("bubble", this)).ActualWidth;
 		}
 
 		internal void OnSwitchOn(object sender, System.Windows.RoutedEventArgs e)
@@ -147,7 +149,7 @@ namespace Kalus.UI.Controls.Components
 
 			DoubleAnimation bubbleSizeAnimation = new()
 			{
-				To = isHover ? bubble.Width * 1.1 : bubble.Width / 1.1,
+				To = isHover ? _defaultBubbleWidth * 1.2 : _defaultBubbleWidth,
 				Duration = TimeSpan.FromMilliseconds(200)
 			};
 
