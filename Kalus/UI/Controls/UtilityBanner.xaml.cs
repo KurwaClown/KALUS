@@ -9,7 +9,7 @@ namespace Kalus.UI.Controls
 	/// </summary>
 	public partial class UtilityBanner : UserControl
 	{
-		public static readonly DependencyProperty IsCheckedProperty = DependencyProperty.Register("IsChecked", typeof(bool), typeof(UtilityBanner));
+		public static readonly DependencyProperty IsCheckedProperty = DependencyProperty.Register("IsChecked", typeof(bool), typeof(UtilityBanner), new PropertyMetadata(false, OnIsCheckedPropertyChanged));
 		public static readonly DependencyProperty LabelTextProperty = DependencyProperty.Register("LabelText", typeof(string), typeof(UtilityBanner));
 
 		public bool IsChecked
@@ -27,6 +27,11 @@ namespace Kalus.UI.Controls
 		public UtilityBanner()
 		{
 			InitializeComponent();
+		}
+
+		private static void OnIsCheckedPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			Properties.Settings.Default.Save();
 		}
 
 		private void MouseEnterBackground(object sender, System.Windows.Input.MouseEventArgs e)
