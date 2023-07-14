@@ -11,7 +11,7 @@
         <converters:LogLevelToColor x:Key="LogLevelToColorConverter" />
         <converters:ClientStateToColor x:Key="ClientStateToColorConverter" />
     </UserControl.Resources>
-    <WrapPanel Orientation="Horizontal" Background="{Binding Level, Mode=OneTime, Converter={StaticResource LogLevelToColorConverter}, ConverterParameter='BACKGROUND'}">
+    <StackPanel Orientation="Horizontal" Background="{Binding Level, Mode=OneTime, Converter={StaticResource LogLevelToColorConverter}, ConverterParameter='BACKGROUND'}">
 
 
         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,5,0,5">
@@ -70,5 +70,5 @@
                    VerticalAlignment="Center" />
 
 
-    </WrapPanel>
+    </StackPanel>
 </UserControl>
