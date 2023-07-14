@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Kalus.Modules
 {
@@ -39,6 +40,15 @@ namespace Kalus.Modules
 				{
 					state = ClientState.NOCLIENT;
 					mainWindow.consoleTab.AddLog("Client has been closed", Utility.CLIENT, LogLevel.WARN);
+
+					if ((bool)Properties.Settings.Default["closeWithClient"])
+					{
+						Application.Current.Dispatcher.Invoke(() =>
+						{
+							Application.Current.Shutdown();
+							Environment.Exit(0);
+						});
+					}
 					//Modify GroupBox style
 					mainWindow.controlPanel.ShowLolState(false);
 					//Reset cached data
