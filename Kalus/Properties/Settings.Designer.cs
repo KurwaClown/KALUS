@@ -203,15 +203,6 @@ namespace Kalus.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public float settingCheckInterval {
-            get {
-                return ((float)(this["settingCheckInterval"]));
-            }
-        }
-        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
@@ -293,6 +284,66 @@ namespace Kalus.Properties {
             }
             set {
                 this["banOTL"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int checkInterval {
+            get {
+                return ((int)(this["checkInterval"]));
+            }
+            set {
+                this["checkInterval"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool openOnWindowsStart {
+            get {
+                return ((bool)(this["openOnWindowsStart"]));
+            }
+            set {
+                this["openOnWindowsStart"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool runInBackground {
+            get {
+                return ((bool)(this["runInBackground"]));
+            }
+            set {
+                this["runInBackground"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool openWithClient {
+            get {
+                return ((bool)(this["openWithClient"]));
+            }
+            set {
+                this["openWithClient"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool closeWithClient {
+            get {
+                return ((bool)(this["closeWithClient"]));
+            }
+            set {
+                this["closeWithClient"] = value;
             }
         }
     }

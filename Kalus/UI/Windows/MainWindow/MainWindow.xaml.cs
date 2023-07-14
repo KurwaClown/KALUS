@@ -1,7 +1,5 @@
 ﻿using Kalus.Modules;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -55,6 +53,7 @@ namespace Kalus.UI.Windows
 					// Set the owner of the error window as the MainWindow
 					Owner = this
 				};
+
 				// Pop the error window on top
 				this.Topmost = true;
 				this.Topmost = false;
@@ -78,25 +77,6 @@ namespace Kalus.UI.Windows
 			Environment.Exit(0);
 		}
 
-		internal void SetSettings()
-		{
-			var settings = DataCache.GetSettings();
-
-			JToken checkIntervalIndex = settings.SelectToken("options.checkIntervalIndex") ?? new JValue(2);
-			if (checkIntervalIndex.Value<int>() > checkInterval.Items.Count)
-			{
-				checkIntervalIndex = new JValue(2);
-				DataCache.SetSetting("options.checkIntervalIndex", 2);
-			}
-			ClientControl.checkInterval = int.Parse(((MenuItem)checkInterval.Items[checkIntervalIndex.Value<int>()]).Header.ToString()!);
-
-			Dispatcher.Invoke(() =>
-			{
-				((MenuItem)checkInterval.Items[checkIntervalIndex.Value<int>()]).IsChecked = true;
-			}
-			);
-		}
-
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			charactersTab.LoadAndSetCharacterList();
@@ -111,7 +91,6 @@ namespace Kalus.UI.Windows
 			populateComboBox(30, preferencesTab.picksTimeLeft);
 			populateComboBox(30, preferencesTab.bansTimeLeft);
 
-			SetSettings();
 			controlPanel.SetDefaultIcons();
 			controlPanel.SetDefaultLabels();
 
@@ -122,29 +101,9 @@ namespace Kalus.UI.Windows
 		{
 			string? gameMode = "";
 			Dispatcher.Invoke(() => gameMode = controlPanel.gameModeLbl.Content.ToString());
-			if (gameMode == null) return "GameMode";
+			if (gameMode == null)
+				return "GameMode";
 			return gameMode;
-		}
-
-		private void SetCheckInterval(object sender, RoutedEventArgs e)
-		{
-			MenuItem interval = (MenuItem)sender;
-			int newIntervalIndex = 0;
-			foreach (var siblingInterval in ((MenuItem)interval.Parent).Items.OfType<MenuItem>())
-			{
-				siblingInterval.IsChecked = false;
-
-				if (siblingInterval == interval) DataCache.SetSetting("options.checkIntervalIndex", newIntervalIndex);
-				else newIntervalIndex++;
-			}
-
-			interval.IsChecked = true;
-
-			int newIntervalValue = int.Parse(interval.Header.ToString()!);
-
-			ClientControl.checkInterval = newIntervalValue;
-
-			this.consoleTab.AddLog("Changing checks interval", Controls.Tabs.Console.Utility.KALUS, Controls.Tabs.Console.LogLevel.INFO);
 		}
 	}
 }

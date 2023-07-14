@@ -20,7 +20,6 @@ namespace Kalus.Modules
 		private static readonly Random random = new();
 		internal static string gamePhase = "";
 
-		internal static int checkInterval = 1000;
 		internal static ClientState state = ClientState.NOCLIENT;
 		//Ensure that the Authentication is set
 		//Set it when client gets open or is open at startup
@@ -70,7 +69,7 @@ namespace Kalus.Modules
 						mainWindow.consoleTab.AddLog("KALUS is ready", Utility.KALUS, LogLevel.INFO);
 					}
 				}
-				Thread.Sleep(checkInterval);
+				Thread.Sleep((int)Properties.Settings.Default["checkInterval"]);
 			} while (true);
 		}
 
@@ -119,7 +118,7 @@ namespace Kalus.Modules
 							//Prevent being auto-ready multiple times
 							while (await ClientRequest.GetClientPhase() == "ReadyCheck")
 							{
-								Thread.Sleep(checkInterval);
+								Thread.Sleep((int)Properties.Settings.Default["checkInterval"]);
 							}
 							break;
 						//On champion selection : start and await the end of the champ select handler
@@ -158,7 +157,7 @@ namespace Kalus.Modules
 							break;
 					}
 				}
-				Thread.Sleep(checkInterval);
+				Thread.Sleep((int)Properties.Settings.Default["checkInterval"]);
 			}
 		}
 

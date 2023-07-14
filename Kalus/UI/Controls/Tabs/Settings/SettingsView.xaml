@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="Kalus.UI.Controls.Tabs.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Kalus.UI.Controls.Tabs"
+             xmlns:properties="clr-namespace:Kalus.Properties"
+             xmlns:converter ="clr-namespace:Kalus.UI.Converters"
+             xmlns:components ="clr-namespace:Kalus.UI.Controls.Components"
+             mc:Ignorable="d"
+             d:Height="390" d:Width="700"
+             d:Background="White">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Vertical">
+            <GroupBox Header="Check Interval">
+                <components:SaveableSlider x:Name="checkIntervalSlider" Value="{Binding Source={x:Static properties:Settings.Default}, Path=checkInterval, Mode=TwoWay}" AutoToolTipPlacement="TopLeft" Minimum="500" Maximum="5000" TickFrequency="100" IsSnapToTickEnabled="True" LargeChange="500" SmallChange="100"/>
+            </GroupBox>
+            <GroupBox Header="KALUS start/close behaviour">
+                <StackPanel>
+                    <components:SaveableCheckbox x:Name="runOnStartupCheckBox" Content="Open on Windows Start" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=openOnWindowsStart, Mode=TwoWay}"></components:SaveableCheckbox>
+                    <components:SaveableCheckbox x:Name="runInBackGround" Content="Run in the background" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=runInBackground, Mode=TwoWay}"></components:SaveableCheckbox>
+                    <components:SaveableCheckbox x:Name="openWithClient" Content="Open KALUS window with client" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=openWithClient, Mode=TwoWay}"></components:SaveableCheckbox>
+                    <components:SaveableCheckbox x:Name="closeWithClient" Content="Close on client exit" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=closeWithClient, Mode=TwoWay}"></components:SaveableCheckbox>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+    </Grid>
+</UserControl>

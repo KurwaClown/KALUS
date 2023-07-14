@@ -17,18 +17,7 @@
             <RowDefinition />
             <RowDefinition Height="150" />
         </Grid.RowDefinitions>
-        <Grid.ContextMenu>
-            <ContextMenu>
-                <MenuItem x:Name="checkInterval" Header="Checks Interval">
-                    <MenuItem Header="300" Click="SetCheckInterval" />
-                    <MenuItem Header="500" Click="SetCheckInterval" />
-                    <MenuItem Header="1000" Click="SetCheckInterval" />
-                    <MenuItem Header="3000" Click="SetCheckInterval" />
-                    <MenuItem Header="5000" Click="SetCheckInterval" />
-                </MenuItem>
-            </ContextMenu>
-        </Grid.ContextMenu>
-        <TabControl Margin="5,5,5,5" x:Name="mainTabControl" Height="390" Width="700 ">
+        <TabControl Margin="5,5,5,5" x:Name="mainTabControl" Height="390" Width="700">
             <TabItem Header="Console">
                 <console:ConsoleView x:Name="consoleTab" x:FieldModifier="public"/>
             </TabItem>
@@ -37,6 +26,9 @@
             </TabItem>
             <TabItem Header="Preferences">
                 <tabs:Preferences x:Name="preferencesTab"/>
+            </TabItem>
+            <TabItem Header="Settings">
+                <tabs:SettingsView x:Name="settingsTab"/>
             </TabItem>
         </TabControl>
         <controls:ControlPanel x:Name="controlPanel" Grid.Row="1" Margin="5,0,5,5"></controls:ControlPanel>
