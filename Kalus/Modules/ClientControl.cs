@@ -81,25 +81,6 @@ namespace Kalus.Modules
 			return Process.GetProcessesByName("LeagueClientUxRender").Length > 3;
 		}
 
-		internal static T? GetPreference<T>(string token)
-		{
-			var preferences = DataCache.GetPreferences();
-
-			var preference = preferences.SelectToken(token);
-
-
-			if (preference == null) return default;
-			try
-			{
-				var value = preference.Value<T>();
-				return value;
-			}
-			catch (InvalidCastException)
-			{
-
-				return default;
-			}
-		}
 
 		//Checks client phase every 5 seconds
 		//Is used as a worker thread for the app thread
@@ -130,7 +111,7 @@ namespace Kalus.Modules
 						case "ReadyCheck":
 							state = ClientState.READYCHECK;
 							//If the setting to get automatically ready is on : accept the game
-							if (GetSettingState("autoReady"))
+							if ((bool)Properties.Settings.Default["utilityReadyCheck"])
 							{
 								await ClientRequest.Accept();
 								mainWindow.consoleTab.AddLog("Accepting Ready Check", Utility.READY, LogLevel.INFO);
@@ -181,12 +162,6 @@ namespace Kalus.Modules
 			}
 		}
 
-		//Returns a setting state by checking in the setting json
-		internal static bool GetSettingState(string settingName)
-		{
-			var settings = DataCache.GetSettings();
-			return settings.Value<bool>(settingName);
-		}
 
 		#region Random Skin
 
@@ -198,9 +173,8 @@ namespace Kalus.Modules
 			var availableSkinsId = currentChampionSkins.Where(skin => skin.Value<bool>("unlocked"))
 														.Select(skin => skin.Value<int>("id"));
 
-			bool addChromasPreference = GetPreference<bool>("randomSkin.addChromas");
 
-			if (addChromasPreference)
+			if ((bool)Properties.Settings.Default["randomSkinAddChromas"])
 			{
 				var availableChromasId = currentChampionSkins.SelectMany(skin =>
 				{
@@ -379,8 +353,6 @@ namespace Kalus.Modules
 
 			string recommendedRunes = FormatChampRunes(runesRecommendation, championName, position);
 
-			bool canOverride = ClientControl.GetPreference<bool>("runes.overridePage");
-
 			if (appPageId != null)
 			{
 				await ClientRequest.EditRunePage(appPageId, recommendedRunes);
@@ -389,7 +361,7 @@ namespace Kalus.Modules
 			{
 				await ClientRequest.CreateNewRunePage(recommendedRunes);
 			}
-			else if (canOverride)
+			else if ((bool)Properties.Settings.Default["runesOverrideOldestPage"])
 			{
 				await EditOldestRunePage(recommendedRunes);
 			}
@@ -409,7 +381,7 @@ namespace Kalus.Modules
 
 		internal static async void SetSummonerSpells(int[] recommendedSpells)
 		{
-			int flashPosition = GetPreference<int>("summoners.flashPosition");
+			int flashPosition = (int)Properties.Settings.Default["flashPosition"];
 
 			if (flashPosition != 2 && recommendedSpells.Contains(4))
 			{

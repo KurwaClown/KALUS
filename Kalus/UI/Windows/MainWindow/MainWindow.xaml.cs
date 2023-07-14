@@ -93,14 +93,6 @@ namespace Kalus.UI.Windows
 			Dispatcher.Invoke(() =>
 			{
 				((MenuItem)checkInterval.Items[checkIntervalIndex.Value<int>()]).IsChecked = true;
-
-
-				controlPanel.autoPickSetting.IsChecked = settings.Value<bool>("championPick");
-				controlPanel.autoBanSetting.IsChecked = settings.Value<bool>("banPick");
-				controlPanel.autoReadySetting.IsChecked = settings.Value<bool>("autoReady");
-				controlPanel.autoRunesSetting.IsChecked = settings.Value<bool>("runesSwap");
-				controlPanel.autoSpellSetting.IsChecked = settings.Value<bool>("autoSummoner");
-				controlPanel.autoSwapSetting.IsChecked = settings.Value<bool>("aramChampionSwap");
 			}
 			);
 		}
@@ -120,7 +112,6 @@ namespace Kalus.UI.Windows
 			populateComboBox(30, preferencesTab.bansTimeLeft);
 
 			SetSettings();
-			preferencesTab.SetPreferences();
 			controlPanel.SetDefaultIcons();
 			controlPanel.SetDefaultLabels();
 

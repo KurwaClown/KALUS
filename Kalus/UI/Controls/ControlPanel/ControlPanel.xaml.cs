@@ -32,15 +32,6 @@ namespace Kalus.UI.Controls
 			runeChange?.Invoke(recommendationNumber);
 		}
 
-		private void OnSettingsControlInteraction(object sender, RoutedEventArgs e)
-		{
-			if (sender is not CheckBox checkBox) return;
-			bool isChecked = checkBox.IsChecked ?? false;
-			string? checkboxTag = checkBox.Tag.ToString();
-			if (checkboxTag == null) return;
-
-			DataCache.SetSetting(checkboxTag, isChecked);
-		}
 
 		private void RandomSkinClick(object sender, RoutedEventArgs e)
 		{

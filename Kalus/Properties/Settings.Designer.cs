@@ -37,7 +37,7 @@ namespace Kalus.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool runesOverrideOldestPage {
             get {
                 return ((bool)(this["runesOverrideOldestPage"]));
@@ -49,7 +49,7 @@ namespace Kalus.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool randomSkinAddChromas {
             get {
                 return ((bool)(this["randomSkinAddChromas"]));
@@ -61,7 +61,7 @@ namespace Kalus.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool randomSkinOnPick {
             get {
                 return ((bool)(this["randomSkinOnPick"]));
@@ -85,7 +85,7 @@ namespace Kalus.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool summonersAlwaysSnowball {
             get {
                 return ((bool)(this["summonersAlwaysSnowball"]));
@@ -109,7 +109,7 @@ namespace Kalus.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool aramTradeForChampion {
             get {
                 return ((bool)(this["aramTradeForChampion"]));
@@ -121,7 +121,7 @@ namespace Kalus.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool aramRepickChampion {
             get {
                 return ((bool)(this["aramRepickChampion"]));
@@ -209,6 +209,90 @@ namespace Kalus.Properties {
         public float settingCheckInterval {
             get {
                 return ((float)(this["settingCheckInterval"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int pick {
+            get {
+                return ((int)(this["pick"]));
+            }
+            set {
+                this["pick"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int ban {
+            get {
+                return ((int)(this["ban"]));
+            }
+            set {
+                this["ban"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int noAvailablePick {
+            get {
+                return ((int)(this["noAvailablePick"]));
+            }
+            set {
+                this["noAvailablePick"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int onSelection {
+            get {
+                return ((int)(this["onSelection"]));
+            }
+            set {
+                this["onSelection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int flashPosition {
+            get {
+                return ((int)(this["flashPosition"]));
+            }
+            set {
+                this["flashPosition"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int pickOTL {
+            get {
+                return ((int)(this["pickOTL"]));
+            }
+            set {
+                this["pickOTL"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int banOTL {
+            get {
+                return ((int)(this["banOTL"]));
+            }
+            set {
+                this["banOTL"] = value;
             }
         }
     }

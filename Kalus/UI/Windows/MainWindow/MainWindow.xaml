@@ -1,4 +1,4 @@
-﻿<Window x:Class="Kalus.UI.Windows.MainWindow"
+﻿<Window x:Name="window" x:Class="Kalus.UI.Windows.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -28,7 +28,7 @@
                 </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
-        <TabControl Margin="5,5,5,5" x:Name="mainTabControl" MinHeight="390">
+        <TabControl Margin="5,5,5,5" x:Name="mainTabControl" Height="390" Width="700 ">
             <TabItem Header="Console">
                 <console:ConsoleView x:Name="consoleTab" x:FieldModifier="public"/>
             </TabItem>

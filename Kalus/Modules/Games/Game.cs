@@ -96,22 +96,21 @@ namespace Kalus.Modules.Games
 			mainWindow.controlPanel.EnableChangeRuneButtons(true);
 
 			//Random skin on pick
-			bool randomSkinOnPick = ClientControl.GetPreference<bool>("randomSkin.randomOnPick");
-			if (randomSkinOnPick)
+			if ((bool)Properties.Settings.Default["randomSkinOnPick"])
 			{
 				ClientControl.PickRandomSkin();
 				logMessages.Add("Changing skin randomly on champion pick");
 			}
 
 			//Set runes if the the auto rune is toggled
-			if (ClientControl.GetSettingState("runesSwap") && !isRunePageChanged)
+			if ((bool)Properties.Settings.Default["utilityRunes"] && !isRunePageChanged)
 			{
 				await ChangeRunes();
 				logMessages.Add($"Setting runes for {await ChampionIdtoName(championId)}");
 			}
 
 
-			if (ClientControl.GetSettingState("autoSummoner"))
+			if ((bool)Properties.Settings.Default["utilitySummoners"])
 			{
 				await ChangeSpells();
 				logMessages.Add("Setting summoner's spells");

@@ -4,8 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Kalus.UI.Controls.Tabs"
+             xmlns:converters="clr-namespace:Kalus.UI.Converters"
+             xmlns:components="clr-namespace:Kalus.UI.Controls.Components"
+             xmlns:properties="clr-namespace:Kalus.Properties"
              mc:Ignorable="d"
+             d:Background="White"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:GroupNameAndTagToCheckedState x:Key="GroupNameAndTagToCheckedState"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -15,75 +22,74 @@
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <StackPanel x:Name="leftPanel" Grid.RowSpan="3" Margin="5,0,5,0">
+        <StackPanel x:Name="leftPanel" Grid.RowSpan="3" Margin="5,0,0,0">
             <GroupBox Height="100" Header="Runes">
                 <StackPanel x:Name="runesPreferences">
-                    <CheckBox x:Name="notSetPageAsActive" Content="Do not set page as active" Height="15" SnapsToDevicePixels="True" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="runes.notSetActive" />
-                    <CheckBox x:Name="overridePage" Content="Erase oldest page when no slot available" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="runes.overridePage" />
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=runesPageNotAsActive, Mode=TwoWay}" Content="Do not set page as active" Height="15"/>
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=runesOverrideOldestPage, Mode=TwoWay}" Content="Erase page when no slot available" Height="15" Margin="0,5,0,0"/>
                 </StackPanel>
             </GroupBox>
             <GroupBox Height="100" Header="Random Skin">
                 <StackPanel x:Name="randomSkinPreferences">
-                    <CheckBox x:Name="addChromas" Content="Add chroma skins to randomizer" Height="15" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="randomSkin.addChromas" />
-                    <CheckBox x:Name="randomOnPick" Content="Randomize skin on champion pick " Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="randomSkin.randomOnPick" />
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=randomSkinAddChromas, Mode=TwoWay}" Content="Add chroma skins to randomizer" Height="15" />
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=randomSkinOnPick, Mode=TwoWay}" Content="Randomize skin on champion pick " Height="15" Margin="0,5,0,0"/>
                 </StackPanel>
             </GroupBox>
             <GroupBox Height="100" Header="Summoner Spells">
                 <StackPanel x:Name="summonerPreferences">
-                    <CheckBox x:Name="alwaysSnowball" Content="Always have snowball in aram" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="summoners.alwaysSnowball" />
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=summonersAlwaysSnowball, Mode=TwoWay}" Content="Always have snowball in aram" Height="15" Margin="0,5,0,0"  />
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                         <Label Content="Flash position :" HorizontalAlignment="Left" Margin="-3,0,0,0" VerticalAlignment="Center" />
                         <StackPanel x:Name="flashPosition" Width="100">
                             <StackPanel Orientation="Horizontal">
-                                <RadioButton Content="Left" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="0" />
-                                <RadioButton Content="Right" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="1" Margin="5,0,0,0" />
+                                <components:SaveableRadioButton Content="Left" GroupName="flashPosition" Tag="0" />
+                                <components:SaveableRadioButton Content="Right" GroupName="flashPosition" Tag="1" Margin="5,0,0,0" />
                             </StackPanel>
-                            <RadioButton Content="Indifferent" GroupName="summoners.flashPosition" Checked="OnControlInteraction" Tag="2" />
+                            <components:SaveableRadioButton Content="Indifferent" GroupName="flashPosition" Tag="2" />
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
-        <StackPanel x:Name="middlePanel" Grid.Column="1" Grid.RowSpan="3" Margin="5,0,5,0">
+        <StackPanel x:Name="middlePanel" Grid.Column="1" Grid.RowSpan="3" Margin="5,0">
             <GroupBox  Header="Picks" MinHeight="85">
                 <StackPanel x:Name="picksPreferences" UseLayoutRounding="False" VerticalAlignment="Top" Tag="picks">
-                    <RadioButton Content="Instant" GroupName="picks.userPreference" Height="15"  Tag="0" Checked="OnControlInteraction" />
-                    <RadioButton Content="Select and Wait" GroupName="picks.userPreference" Height="15" Margin="0,5,0,0" Tag="1" Checked="OnControlInteraction" />
-
-                    <RadioButton x:Name="pickOTL" Content="On time left" GroupName="picks.userPreference" VerticalAlignment="Center" Tag="2" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" />
-                    <ComboBox x:Name="picksTimeLeft" HorizontalAlignment="Left" IsEnabled="{Binding IsChecked, ElementName=pickOTL}" IsEnabledChanged="IsEnabledModified" SelectionChanged="OTLChange" Margin="20,5,0,0" Tag="picks.OTLTimeIndex" />
+                    <components:SaveableRadioButton GroupName="pick" Content="Instant" Height="15" Tag="0" />
+                    <components:SaveableRadioButton GroupName="pick" Content="Select and Wait" Height="15" Margin="0,5,0,0" Tag="1" />
+                    <components:SaveableRadioButton GroupName="pick" Content="On time left" Height="15" Margin="0,5,0,0" Tag="2" x:Name="pickOTL"/>
+                    <components:SaveableCombobox x:Name="picksTimeLeft" SelectedValue="{Binding Source={x:Static properties:Settings.Default}, Path=pickOTL, Mode=TwoWay}" HorizontalAlignment="Left" IsEnabled="{Binding IsChecked, ElementName=pickOTL}" Margin="20,5,0,0" />
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="No Available Picks" MinHeight="85">
                 <StackPanel x:Name="noAvailablePreferences" Tag="noPicks">
-                    <RadioButton Tag="1" GroupName="noPicks.userPreference" Content="Select random from current role" Checked="OnControlInteraction" Height="15" />
-                    <RadioButton Tag="2" GroupName="noPicks.userPreference" Content="Select random from any role" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0" />
-                    <RadioButton Tag="0" GroupName="noPicks.userPreference" Content="Do nothing"  Checked="OnControlInteraction" Height="15" Margin="0,5,0,5" />
+                    <components:SaveableRadioButton Tag="1" GroupName="noAvailablePick" Content="Select random from current role" Height="15" />
+                    <components:SaveableRadioButton Tag="2" GroupName="noAvailablePick" Content="Select random from any role" Height="15" Margin="0,5,0,0" />
+                    <components:SaveableRadioButton Tag="0" GroupName="noAvailablePick" Content="Do nothing" Height="15" Margin="0,5,0,5" />
                 </StackPanel>
             </GroupBox>
             <GroupBox Height="100" Header="On Champion Selection" MinHeight="85">
                 <StackPanel x:Name="onSelectionPreferences" Tag="selections">
                     <TextBlock TextWrapping="Wrap" Text="Behavior on champion selection before pick phase" FontSize="9" HorizontalAlignment="Left" Margin="5,0,0,0" />
-                    <RadioButton Tag="0" GroupName="selections.userPreference" Content="Do nothing" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0" />
-                    <RadioButton Tag="1" x:Name="stillAutoPick" GroupName="selections.userPreference" Content="Still use normal auto pick" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0" />
-                    <RadioButton Tag="2" x:Name="pickSelection" GroupName="selections.userPreference" Content="Use selection for auto pick" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0" />
+                    <components:SaveableRadioButton Tag="0" GroupName="onSelection" Content="Do nothing" Height="15" Margin="0,5,0,0" />
+                    <components:SaveableRadioButton Tag="1" GroupName="onSelection" Content="Still use normal auto pick" Height="15" Margin="0,5,0,0" />
+                    <components:SaveableRadioButton Tag="2" GroupName="onSelection" Content="Use selection for auto pick" Height="15" Margin="0,5,0,0" />
                 </StackPanel>
             </GroupBox>
         </StackPanel>
-        <StackPanel x:Name="rightPanel" Grid.Column="2" Margin="5,0,5,0">
+        <StackPanel x:Name="rightPanel" Grid.Column="2" Margin="0,0,5,0">
             <GroupBox Header="Bans">
-                <StackPanel x:Name="bansPreferences" UseLayoutRounding="False" VerticalAlignment="Center" Margin="0,0,-2,0" Tag="bans">
-                    <RadioButton Tag="0" Content="Instant" GroupName="bans.userPreference" Checked="OnControlInteraction" Height="15" />
-                    <RadioButton Tag="1" Content="Select and Wait" GroupName="bans.userPreference" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0" />
-                    <RadioButton x:Name="bansOTL" Tag="2" Content="On time left" GroupName="bans.userPreference" Checked="OnControlInteraction" Height="15" Margin="0,5,0,0" />
-                    <ComboBox x:Name="bansTimeLeft" HorizontalAlignment="Left" Margin="20,5,0,0" IsEnabled="{Binding IsChecked, ElementName=bansOTL}" IsEnabledChanged="IsEnabledModified"  SelectionChanged="OTLChange" Tag="bans.OTLTimeIndex" />
+                <StackPanel x:Name="bansPreferences" Tag="bans">
+                    <components:SaveableRadioButton Tag="0" Content="Instant" GroupName="ban" Height="15" />
+                    <components:SaveableRadioButton Tag="1" Content="Select and Wait" GroupName="ban" Height="15" Margin="0,5,0,0" />
+                    <components:SaveableRadioButton x:Name="bansOTL" Tag="2" Content="On time left" GroupName="ban" Height="15" Margin="0,5,0,0" />
+                    <components:SaveableCombobox x:Name="bansTimeLeft" SelectedValue="{Binding Source={x:Static properties:Settings.Default}, Path=banOTL, Mode=TwoWay}" HorizontalAlignment="Left" Margin="20,5,0,0" IsEnabled="{Binding IsChecked, ElementName=bansOTL}" />
                 </StackPanel>
             </GroupBox>
             <GroupBox Height="100" Header="Aram">
                 <StackPanel x:Name="aramPreferences">
-                    <CheckBox x:Name="rerollForChampion" Content="Roll until getting a liked champion" Height="15" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="aram.rerollForChampion" />
-                    <CheckBox x:Name="tradeForChampion" Content="Trade for liked champion" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="aram.tradeForChampion"/>
-                    <CheckBox x:Name="repickChampion" Content="Pick champion dropped on unliked roll" Height="15" Margin="0,5,0,0" Checked="OnControlInteraction" Unchecked="OnControlInteraction" Tag="aram.repickChampion" />
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=aramRerollForChampion, Mode=TwoWay}" Content="Roll until getting a liked champion" Height="15" />
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=aramTradeForChampion, Mode=TwoWay}" Content="Trade for liked champion" Height="15" Margin="0,5,0,0" />
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=aramRepickChampion, Mode=TwoWay}" Content="Pick back champion on unliked roll" Height="15" Margin="0,5,0,0"  />
                 </StackPanel>
             </GroupBox>
         </StackPanel>

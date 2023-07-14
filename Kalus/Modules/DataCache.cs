@@ -12,9 +12,6 @@ namespace Kalus.Modules
 		private static readonly string settingsPath = "Configurations/settings.json";
 		private static readonly JObject settings = JObject.Parse(File.ReadAllText(settingsPath));
 
-		private static readonly string preferencesPath = "Configurations/preferences.json";
-		private static readonly JObject preferences = JObject.Parse(File.ReadAllText(preferencesPath));
-
 		private static readonly string pickBanPath = "Picks/PickBan.json";
 		private static readonly JObject pickBan = InitializePickBan();
 
@@ -60,17 +57,12 @@ namespace Kalus.Modules
 			}
 		}
 
+		#region Configuration
 		internal static JObject GetSettings()
 		{
 			return settings;
 		}
 
-		internal static bool GetSetting(string settingName, out string? setting)
-		{
-			setting = settings.SelectToken(settingName)?.ToString();
-			if (setting == null) return false;
-			return true;
-		}
 
 		internal static void SetSetting(string settingName, dynamic newValue)
 		{
@@ -82,30 +74,10 @@ namespace Kalus.Modules
 			File.WriteAllText(settingsPath, settings.ToString());
 		}
 
-		internal static JObject GetPreferences()
-		{
-			return preferences;
-		}
+		#endregion Configuration
 
 
-
-		internal static bool GetPreference(string preferenceToken, out string? preference)
-		{
-			preference = preferences.SelectToken(preferenceToken)?.ToString();
-			if (preference == null) return false;
-			return true;
-		}
-
-		internal static void SetPreference(string preferenceToken, dynamic newValue)
-		{
-			if (preferences.SelectToken(preferenceToken) != null)
-			{
-				preferences.SelectToken(preferenceToken)?.Replace(newValue);
-			}
-
-			File.WriteAllText(preferencesPath, preferences.ToString());
-		}
-
+		#region PickBan
 		internal static void SavePickBan()
 		{
 			File.WriteAllText(pickBanPath, pickBan.ToString());
@@ -166,6 +138,7 @@ namespace Kalus.Modules
 
 			SavePickBan();
 		}
+		#endregion PickBan
 
 		#endregion Files
 
