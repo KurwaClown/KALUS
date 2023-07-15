@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
@@ -28,7 +29,7 @@ namespace Kalus.Modules.Networking
 
 		internal static void SetClient()
 		{
-			var certFilePath = "Certificates/riotgames.pem";
+			var certFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Certificates/riotgames.pem");
 			var certCollection = new X509Certificate2Collection();
 			certCollection.Import(certFilePath);
 			var riotCert = certCollection[0];

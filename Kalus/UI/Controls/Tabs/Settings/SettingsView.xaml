@@ -22,7 +22,7 @@
             </GroupBox>
             <GroupBox Header="KALUS start/close behaviour">
                 <StackPanel>
-                    <components:SaveableCheckbox x:Name="runOnStartupCheckBox" Content="Open on Windows Start" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=openOnWindowsStart, Mode=TwoWay}"></components:SaveableCheckbox>
+                    <components:SaveableCheckbox x:Name="runOnStartupCheckBox" Content="Open on Windows Start" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=openOnWindowsStart, Mode=TwoWay}" Checked="AddRunOnStartup" Unchecked="RemoveRunOnStartup"></components:SaveableCheckbox>
                     <components:SaveableCheckbox x:Name="runInBackGround" Content="Run in the background" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=runInBackground, Mode=TwoWay}"></components:SaveableCheckbox>
                     <components:SaveableCheckbox x:Name="openWithClient" Content="Open KALUS window with client" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=openWithClient, Mode=TwoWay}"></components:SaveableCheckbox>
                     <components:SaveableCheckbox x:Name="closeWithClient" Content="Close on client exit" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=closeWithClient, Mode=TwoWay}"></components:SaveableCheckbox>

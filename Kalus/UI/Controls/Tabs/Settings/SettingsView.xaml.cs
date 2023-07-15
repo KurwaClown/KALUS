@@ -1,13 +1,10 @@
 ﻿using Kalus.UI.Controls.Tabs.Settings;
+using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 
 namespace Kalus.UI.Controls.Tabs
 {
@@ -16,7 +13,7 @@ namespace Kalus.UI.Controls.Tabs
     /// </summary>
     public partial class SettingsView : UserControl
 	{
-		private Thickness? margin = null;
+
 
 		public SettingsView()
 		{
@@ -27,32 +24,17 @@ namespace Kalus.UI.Controls.Tabs
 			DataContext = settingsViewModel;
  		}
 
-		private void SwitchButtonAnimation(bool toggleOn, ToggleButton switchButton, double animationDuration = 0.2)
+		private void AddRunOnStartup(object sender, RoutedEventArgs e)
 		{
-
-			Ellipse bubble = (Ellipse)switchButton.Template.FindName("bubble", switchButton);
-			if (margin != null) margin = bubble.Margin;
-
-			Thickness[] thicknesses = { margin ?? bubble.Margin, new Thickness(switchButton.Width - bubble.Width - bubble.Margin.Left, 0, 0, 0) };
-			Debug.WriteLine(toggleOn);
-			Debug.WriteLine(thicknesses[0]);
-			ThicknessAnimation animation = new ThicknessAnimation
-			{
-				From = thicknesses[toggleOn ? 0 : 1],
-				To = thicknesses[toggleOn ? 1 : 0],
-				Duration = TimeSpan.FromSeconds(animationDuration)
-			};
-			bubble.BeginAnimation(MarginProperty, animation);
+			RegistryKey? rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+			rk?.SetValue("KALUS", Process.GetCurrentProcess().MainModule?.FileName ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Kalus.exe"));
 		}
 
-		private void OnSwitchOn(object sender, System.Windows.RoutedEventArgs e)
+		private void RemoveRunOnStartup(object sender, RoutedEventArgs e)
 		{
-			SwitchButtonAnimation(true, (ToggleButton)sender);
-		}
+			RegistryKey? rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+			rk?.DeleteValue("KALUS");
 
-		private void OnSwitchOff(object sender, RoutedEventArgs e)
-		{
-			SwitchButtonAnimation(false, (ToggleButton)sender);
 		}
 	}
 }

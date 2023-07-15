@@ -9,10 +9,7 @@ namespace Kalus.Modules
 {
 	internal static class DataCache
 	{
-		private static readonly string settingsPath = "Configurations/settings.json";
-		private static readonly JObject settings = JObject.Parse(File.ReadAllText(settingsPath));
-
-		private static readonly string pickBanPath = "Picks/PickBan.json";
+		private static readonly string pickBanPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Picks/PickBan.json");
 		private static readonly JObject pickBan = InitializePickBan();
 
 		private static JArray? championsInformation;
@@ -56,26 +53,6 @@ namespace Kalus.Modules
 				return pickBan;
 			}
 		}
-
-		#region Configuration
-		internal static JObject GetSettings()
-		{
-			return settings;
-		}
-
-
-		internal static void SetSetting(string settingName, dynamic newValue)
-		{
-			if (settings.SelectToken(settingName) != null)
-			{
-				settings.SelectToken(settingName)?.Replace(newValue);
-			}
-
-			File.WriteAllText(settingsPath, settings.ToString());
-		}
-
-		#endregion Configuration
-
 
 		#region PickBan
 		internal static void SavePickBan()

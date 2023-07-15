@@ -6,22 +6,15 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <Authors>KurwaClown</Authors>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Configurations\preferences.json" />
-    <None Remove="Configurations\settings.json" />
     <None Remove="Picks\PickBan.json" />
     <None Remove="riotgames.pem" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Configurations\preferences.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configurations\settings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Certificates\riotgames.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -52,7 +45,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-
+  
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 </Project>
