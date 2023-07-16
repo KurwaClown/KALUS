@@ -67,6 +67,16 @@ namespace Kalus.Modules
 					{
 						state = ClientState.NONE;
 						mainWindow.consoleTab.AddLog("Client Found", Utility.CLIENT, LogLevel.INFO);
+
+						if ((bool)Properties.Settings.Default["openWithClient"])
+						{
+							Application.Current.Dispatcher.Invoke(() =>
+							{
+								mainWindow.Show();
+								mainWindow.Activate();
+							});
+						}
+
 						ProcessModule? leagueProcess = Process.GetProcessesByName("LeagueClientUx").First().MainModule;
 						if (leagueProcess == null) return;
 

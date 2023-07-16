@@ -69,6 +69,8 @@ namespace Kalus.UI.Controls.Components
 			_transformToState = ActualHeight / 2;
 			if(Template.FindName("bubble", this) is Ellipse bubble) bubble.RenderTransform = new TranslateTransform(-_transformToState, 0);
 			_defaultBubbleWidth = ((Ellipse)Template.FindName("bubble", this)).ActualWidth;
+
+			ToggleAnimation(this.IsChecked ?? false);
 		}
 
 		internal void OnSwitchOn(object sender, System.Windows.RoutedEventArgs e)
@@ -94,7 +96,6 @@ namespace Kalus.UI.Controls.Components
 		private void ToggleAnimation(bool toggleOn, double animationDuration = 0.2)
 		{
 			if (this.Template.FindName("bubble", this) is not Ellipse bubble || this.Template.FindName("background", this) is not Rectangle background) { return; }
-			//_bubblePosition ??= new BubblePosition(bubble.Margin, new Thickness(this.ActualWidth - bubble.ActualWidth - bubble.Margin.Left, 0, 0, 0));
 
 			DoubleAnimation bubbleTranslateAnimation = new()
 			{
