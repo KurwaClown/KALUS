@@ -1,0 +1,312 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddChampionButton" xml:space="preserve">
+    <value>Ajouter →</value>
+  </data>
+  <data name="AramRepickChampion" xml:space="preserve">
+    <value>Reprendre le champion lâché sur un re-roll non voulu</value>
+  </data>
+  <data name="AramRerollForChampion" xml:space="preserve">
+    <value>Re-roll jusqu'à obtenir un champion voulu</value>
+  </data>
+  <data name="AramTradeForChampion" xml:space="preserve">
+    <value>Echanger pour un champion voulu</value>
+  </data>
+  <data name="BansOption1" xml:space="preserve">
+    <value>Instantané</value>
+  </data>
+  <data name="BansOption2" xml:space="preserve">
+    <value>Pré-sélectionner et attendre</value>
+  </data>
+  <data name="BansOption3" xml:space="preserve">
+    <value>Sélectionner au temps restant</value>
+  </data>
+  <data name="ChampionsListHeader" xml:space="preserve">
+    <value>Liste des Champions</value>
+  </data>
+  <data name="ChampionsTabHeader" xml:space="preserve">
+    <value>Champions</value>
+  </data>
+  <data name="ConsoleTabHeader" xml:space="preserve">
+    <value>Console</value>
+  </data>
+  <data name="ControlPanelChampionPickLabel" xml:space="preserve">
+    <value>Champion Sélectionné</value>
+  </data>
+  <data name="ControlPanelChangeRunes" xml:space="preserve">
+    <value>Changer les runes</value>
+  </data>
+  <data name="ControlPanelGameModeLabel" xml:space="preserve">
+    <value>Mode de jeu</value>
+  </data>
+  <data name="ControlPanelLiteModeButton" xml:space="preserve">
+    <value>Activer/Désactiver le mode léger</value>
+  </data>
+  <data name="ControlPanelRandomSkinButton" xml:space="preserve">
+    <value>Skin Aléatoire</value>
+  </data>
+  <data name="ControlPanelReloadClientButton" xml:space="preserve">
+    <value>Redémarrer le client LoL</value>
+  </data>
+  <data name="ControlPanelRunesLabel" xml:space="preserve">
+    <value>Runes</value>
+  </data>
+  <data name="ControlPanelStatus" xml:space="preserve">
+    <value>Statut</value>
+  </data>
+  <data name="ControlPanelUtility" xml:space="preserve">
+    <value>Action Automatique</value>
+  </data>
+  <data name="EmptyChampionListButton" xml:space="preserve">
+    <value>Vider la liste</value>
+  </data>
+  <data name="FlashPositionOption1" xml:space="preserve">
+    <value>Gauche</value>
+  </data>
+  <data name="FlashPositionOption2" xml:space="preserve">
+    <value>Droite</value>
+  </data>
+  <data name="FlashPositionOption3" xml:space="preserve">
+    <value>Indifférent</value>
+  </data>
+  <data name="NoAvailablePickOption1" xml:space="preserve">
+    <value>Sélection aleatoire dans le role actuel</value>
+  </data>
+  <data name="NoAvailablePickOption2" xml:space="preserve">
+    <value>Sélection aleatoire dans tous les roles actuels</value>
+  </data>
+  <data name="NoAvailablePickOption3" xml:space="preserve">
+    <value>Ne rien faire</value>
+  </data>
+  <data name="OnChampionSelectionOption1" xml:space="preserve">
+    <value>Ne rien faire</value>
+  </data>
+  <data name="OnChampionSelectionOption2" xml:space="preserve">
+    <value>Utiliser la sélection automatique</value>
+  </data>
+  <data name="OnChampionSelectionOption3" xml:space="preserve">
+    <value>Utiliser la sélection automatique avec le champion pré-sélectioné</value>
+  </data>
+  <data name="PicksOption1" xml:space="preserve">
+    <value>Instantané</value>
+  </data>
+  <data name="PicksOption2" xml:space="preserve">
+    <value>Pré-sélectionner et attendre</value>
+  </data>
+  <data name="PicksOption3" xml:space="preserve">
+    <value>Sélectionner au temps restant</value>
+  </data>
+  <data name="PreferenceAram" xml:space="preserve">
+    <value>Aram</value>
+  </data>
+  <data name="PreferenceBans" xml:space="preserve">
+    <value>Bans</value>
+  </data>
+  <data name="PreferenceNoAvailablePick" xml:space="preserve">
+    <value>Pas d'auto sélection disponible</value>
+  </data>
+  <data name="PreferenceOnChampionSelection" xml:space="preserve">
+    <value>Pre-sélection d'un champion</value>
+  </data>
+  <data name="PreferenceOnChampionSelectionDescription" xml:space="preserve">
+    <value>Comportement lors de la pre-sélection d'un champion</value>
+  </data>
+  <data name="PreferencePicks" xml:space="preserve">
+    <value>Sélection de champion</value>
+  </data>
+  <data name="PreferenceRandomSkin" xml:space="preserve">
+    <value>Skin Aléatoire</value>
+  </data>
+  <data name="PreferenceRunes" xml:space="preserve">
+    <value>Runes</value>
+  </data>
+  <data name="PreferencesTabHeader" xml:space="preserve">
+    <value>Préférences</value>
+  </data>
+  <data name="PreferenceSummoners" xml:space="preserve">
+    <value>Sort d'invocateur</value>
+  </data>
+  <data name="RandomSkinAddChromas" xml:space="preserve">
+    <value>Ajouter les chromas au randomisateur</value>
+  </data>
+  <data name="RandomSkinOnPick" xml:space="preserve">
+    <value>Skin aléatoire sur sélection de champion</value>
+  </data>
+  <data name="RemoveChampionButton" xml:space="preserve">
+    <value>← Retirer</value>
+  </data>
+  <data name="RunesOverrideOldestPage" xml:space="preserve">
+    <value>Effacer une page quand il n'y a plus de place</value>
+  </data>
+  <data name="RunesPageNotAsActive" xml:space="preserve">
+    <value>Ne pas rendre la page active</value>
+  </data>
+  <data name="SelectedChampionsListHeader" xml:space="preserve">
+    <value>Champions sélectionnés</value>
+  </data>
+  <data name="SettingCheckInterval" xml:space="preserve">
+    <value>Intervalle de vérification</value>
+  </data>
+  <data name="SettingCloseWithClient" xml:space="preserve">
+    <value>Fermer à la fermeture du client</value>
+  </data>
+  <data name="SettingLocalization" xml:space="preserve">
+    <value>Langage</value>
+  </data>
+  <data name="SettingOpenOnWindowsStart" xml:space="preserve">
+    <value>Ouvrir au démarrage de Windows</value>
+  </data>
+  <data name="SettingOpenWithClient" xml:space="preserve">
+    <value>Ouvrir la fenêtre de KALUS avec le client</value>
+  </data>
+  <data name="SettingRunInBackground" xml:space="preserve">
+    <value>Réduire dans la barre des tâches</value>
+  </data>
+  <data name="SettingsTabHeader" xml:space="preserve">
+    <value>Paramètres</value>
+  </data>
+  <data name="SettingWindowsBehavior" xml:space="preserve">
+    <value>Démarrage/fermeture de Kalus</value>
+  </data>
+  <data name="SummonersAlwaysSnowball" xml:space="preserve">
+    <value>Toujour avoir un boule de neige en Aram</value>
+  </data>
+  <data name="SummonersFlashPosition" xml:space="preserve">
+    <value>Position du Flash :</value>
+  </data>
+  <data name="UtilityAram" xml:space="preserve">
+    <value>Échanger en Aram</value>
+  </data>
+  <data name="UtilityBan" xml:space="preserve">
+    <value>Bannir un champion</value>
+  </data>
+  <data name="UtilityPick" xml:space="preserve">
+    <value>Sélectionner un champion</value>
+  </data>
+  <data name="UtilityReadyCheck" xml:space="preserve">
+    <value>Acceptation de partie</value>
+  </data>
+  <data name="UtilityRunes" xml:space="preserve">
+    <value>Changement des runes</value>
+  </data>
+  <data name="UtilitySummoners" xml:space="preserve">
+    <value>Changement des sorts</value>
+  </data>
+</root>

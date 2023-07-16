@@ -23,73 +23,119 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <StackPanel x:Name="leftPanel" Grid.RowSpan="3" Margin="5,0,0,0">
-            <GroupBox Height="100" Header="Runes">
+            <GroupBox Header="{x:Static properties:UIStrings.PreferenceRunes}">
                 <StackPanel x:Name="runesPreferences">
-                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=runesPageNotAsActive, Mode=TwoWay}" Content="Do not set page as active" Height="15"/>
-                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=runesOverrideOldestPage, Mode=TwoWay}" Content="Erase page when no slot available" Height="15" Margin="0,5,0,0"/>
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=runesPageNotAsActive, Mode=TwoWay}" Margin="0,5,0,0">
+                        <TextBlock Text="{x:Static properties:UIStrings.RunesPageNotAsActive}" TextWrapping="Wrap"></TextBlock>
+                    </components:SaveableCheckbox>
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=runesOverrideOldestPage, Mode=TwoWay}" Margin="0,5,0,0">
+                        <TextBlock Text="{x:Static properties:UIStrings.RunesOverrideOldestPage}" TextWrapping="Wrap"></TextBlock>
+                    </components:SaveableCheckbox>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Height="100" Header="Random Skin">
+            <GroupBox Header="{x:Static properties:UIStrings.PreferenceRandomSkin}">
                 <StackPanel x:Name="randomSkinPreferences">
-                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=randomSkinAddChromas, Mode=TwoWay}" Content="Add chroma skins to randomizer" Height="15" />
-                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=randomSkinOnPick, Mode=TwoWay}" Content="Randomize skin on champion pick " Height="15" Margin="0,5,0,0"/>
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=randomSkinAddChromas, Mode=TwoWay}" Margin="0,5,0,0">
+                        <TextBlock Text="{x:Static properties:UIStrings.RandomSkinAddChromas}" TextWrapping="Wrap"></TextBlock>
+                    </components:SaveableCheckbox>
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=randomSkinOnPick, Mode=TwoWay}" Margin="0,5,0,0">
+                        <TextBlock Text="{x:Static properties:UIStrings.RandomSkinOnPick}" TextWrapping="Wrap"></TextBlock>
+                    </components:SaveableCheckbox>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Height="100" Header="Summoner Spells">
+            <GroupBox Header="{x:Static properties:UIStrings.PreferenceSummoners}">
                 <StackPanel x:Name="summonerPreferences">
-                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=summonersAlwaysSnowball, Mode=TwoWay}" Content="Always have snowball in aram" Height="15" Margin="0,5,0,0"  />
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=summonersAlwaysSnowball, Mode=TwoWay}" Margin="0,5,0,0" >
+                        <TextBlock Text="{x:Static properties:UIStrings.SummonersAlwaysSnowball}" TextWrapping="Wrap"></TextBlock>
+                    </components:SaveableCheckbox>
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Content="Flash position :" HorizontalAlignment="Left" Margin="-3,0,0,0" VerticalAlignment="Center" />
+                        <Label Content="{x:Static properties:UIStrings.SummonersFlashPosition}" HorizontalAlignment="Left" Margin="-3,0,0,0" VerticalAlignment="Center" />
                         <StackPanel x:Name="flashPosition" Width="100">
-                            <StackPanel Orientation="Horizontal">
-                                <components:SaveableRadioButton Content="Left" GroupName="flashPosition" Tag="0" />
-                                <components:SaveableRadioButton Content="Right" GroupName="flashPosition" Tag="1" Margin="5,0,0,0" />
+                            <StackPanel Orientation="Vertical">
+                                <components:SaveableRadioButton GroupName="flashPosition" Tag="0">
+                                    <TextBlock Text="{x:Static properties:UIStrings.FlashPositionOption1}" TextWrapping="Wrap"/>
+                                </components:SaveableRadioButton>
+                                <components:SaveableRadioButton GroupName="flashPosition" Tag="1" >
+                                    <TextBlock Text="{x:Static properties:UIStrings.FlashPositionOption2}" TextWrapping="Wrap"/>
+                                </components:SaveableRadioButton>
+                                <components:SaveableRadioButton GroupName="flashPosition" Tag="2" >
+                                    <TextBlock Text="{x:Static properties:UIStrings.FlashPositionOption3}" TextWrapping="Wrap"/>
+                                </components:SaveableRadioButton>
                             </StackPanel>
-                            <components:SaveableRadioButton Content="Indifferent" GroupName="flashPosition" Tag="2" />
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
         <StackPanel x:Name="middlePanel" Grid.Column="1" Grid.RowSpan="3" Margin="5,0">
-            <GroupBox  Header="Picks" MinHeight="85">
+            <GroupBox  Header="{x:Static properties:UIStrings.PreferencePicks}" MinHeight="85">
                 <StackPanel x:Name="picksPreferences" UseLayoutRounding="False" VerticalAlignment="Top" Tag="picks">
-                    <components:SaveableRadioButton GroupName="pick" Content="Instant" Height="15" Tag="0" />
-                    <components:SaveableRadioButton GroupName="pick" Content="Select and Wait" Height="15" Margin="0,5,0,0" Tag="1" />
-                    <components:SaveableRadioButton GroupName="pick" Content="On time left" Height="15" Margin="0,5,0,0" Tag="2" x:Name="pickOTL"/>
+                    <components:SaveableRadioButton GroupName="pick" Margin="0,5,0,0" Tag="0">
+                        <TextBlock Text="{x:Static properties:UIStrings.PicksOption1}" TextWrapping="Wrap"/>
+                    </components:SaveableRadioButton>
+                    <components:SaveableRadioButton GroupName="pick" Margin="0,5,0,0" Tag="1" >
+                        <TextBlock Text="{x:Static properties:UIStrings.PicksOption2}" TextWrapping="Wrap"/>
+                    </components:SaveableRadioButton>
+                    <components:SaveableRadioButton GroupName="pick" Margin="0,5,0,0" Tag="2" x:Name="pickOTL">
+                        <TextBlock Text="{x:Static properties:UIStrings.PicksOption3}" TextWrapping="Wrap"/>
+                    </components:SaveableRadioButton>
                     <components:SaveableCombobox x:Name="picksTimeLeft" SelectedValue="{Binding Source={x:Static properties:Settings.Default}, Path=pickOTL, Mode=TwoWay}" HorizontalAlignment="Left" IsEnabled="{Binding IsChecked, ElementName=pickOTL}" Margin="20,5,0,0" />
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="No Available Picks" MinHeight="85">
+            <GroupBox Header="{x:Static properties:UIStrings.PreferenceNoAvailablePick}" MinHeight="85">
                 <StackPanel x:Name="noAvailablePreferences" Tag="noPicks">
-                    <components:SaveableRadioButton Tag="1" GroupName="noAvailablePick" Content="Select random from current role" Height="15" />
-                    <components:SaveableRadioButton Tag="2" GroupName="noAvailablePick" Content="Select random from any role" Height="15" Margin="0,5,0,0" />
-                    <components:SaveableRadioButton Tag="0" GroupName="noAvailablePick" Content="Do nothing" Height="15" Margin="0,5,0,5" />
+                    <components:SaveableRadioButton Tag="1" GroupName="noAvailablePick"  Margin="0,5,0,0">
+                        <TextBlock Text="{x:Static properties:UIStrings.NoAvailablePickOption1}" TextWrapping="Wrap"/>
+                    </components:SaveableRadioButton>
+                    <components:SaveableRadioButton Tag="2" GroupName="noAvailablePick" Margin="0,5,0,0" >
+                        <TextBlock Text="{x:Static properties:UIStrings.NoAvailablePickOption2}" TextWrapping="Wrap"/>
+                    </components:SaveableRadioButton>
+                    <components:SaveableRadioButton Tag="0" GroupName="noAvailablePick" Margin="0,5,0,5" >
+                        <TextBlock Text="{x:Static properties:UIStrings.NoAvailablePickOption3}" TextWrapping="Wrap"/>
+                    </components:SaveableRadioButton>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Height="100" Header="On Champion Selection" MinHeight="85">
+            <GroupBox Header="{x:Static properties:UIStrings.PreferenceOnChampionSelection}" MinHeight="85">
                 <StackPanel x:Name="onSelectionPreferences" Tag="selections">
-                    <TextBlock TextWrapping="Wrap" Text="Behavior on champion selection before pick phase" FontSize="9" HorizontalAlignment="Left" Margin="5,0,0,0" />
-                    <components:SaveableRadioButton Tag="0" GroupName="onSelection" Content="Do nothing" Height="15" Margin="0,5,0,0" />
-                    <components:SaveableRadioButton Tag="1" GroupName="onSelection" Content="Still use normal auto pick" Height="15" Margin="0,5,0,0" />
-                    <components:SaveableRadioButton Tag="2" GroupName="onSelection" Content="Use selection for auto pick" Height="15" Margin="0,5,0,0" />
+                    <TextBlock TextWrapping="Wrap" Text="{x:Static properties:UIStrings.PreferenceOnChampionSelectionDescription}" FontSize="9" HorizontalAlignment="Left" Margin="5,0,0,0" />
+                    <components:SaveableRadioButton Tag="0" GroupName="onSelection" Margin="0,5,0,0" >
+                        <TextBlock Text="{x:Static properties:UIStrings.OnChampionSelectionOption1}" TextWrapping="Wrap"/>
+                    </components:SaveableRadioButton>
+                    <components:SaveableRadioButton Tag="1" GroupName="onSelection" Margin="0,5,0,0" >
+                        <TextBlock Text="{x:Static properties:UIStrings.OnChampionSelectionOption2}" TextWrapping="Wrap"/>
+                    </components:SaveableRadioButton>
+                    <components:SaveableRadioButton Tag="2" GroupName="onSelection" Margin="0,5,0,0" >
+                        <TextBlock Text="{x:Static properties:UIStrings.OnChampionSelectionOption3}" TextWrapping="Wrap"/>
+                    </components:SaveableRadioButton>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
         <StackPanel x:Name="rightPanel" Grid.Column="2" Margin="0,0,5,0">
-            <GroupBox Header="Bans">
+            <GroupBox Header="{x:Static properties:UIStrings.PreferenceBans}">
                 <StackPanel x:Name="bansPreferences" Tag="bans">
-                    <components:SaveableRadioButton Tag="0" Content="Instant" GroupName="ban" Height="15" />
-                    <components:SaveableRadioButton Tag="1" Content="Select and Wait" GroupName="ban" Height="15" Margin="0,5,0,0" />
-                    <components:SaveableRadioButton x:Name="bansOTL" Tag="2" Content="On time left" GroupName="ban" Height="15" Margin="0,5,0,0" />
+                    <components:SaveableRadioButton Tag="0" GroupName="ban" >
+                        <TextBlock Text="{x:Static properties:UIStrings.BansOption1}" TextWrapping="Wrap"/>
+                    </components:SaveableRadioButton>
+                    <components:SaveableRadioButton Tag="1" GroupName="ban" Margin="0,5,0,0" >
+                        <TextBlock Text="{x:Static properties:UIStrings.BansOption2}" TextWrapping="Wrap"/>
+                    </components:SaveableRadioButton>
+                    <components:SaveableRadioButton x:Name="bansOTL" Tag="2" GroupName="ban" Margin="0,5,0,0" >
+                        <TextBlock Text="{x:Static properties:UIStrings.BansOption3}" TextWrapping="Wrap"/>
+                    </components:SaveableRadioButton>
                     <components:SaveableCombobox x:Name="bansTimeLeft" SelectedValue="{Binding Source={x:Static properties:Settings.Default}, Path=banOTL, Mode=TwoWay}" HorizontalAlignment="Left" Margin="20,5,0,0" IsEnabled="{Binding IsChecked, ElementName=bansOTL}" />
                 </StackPanel>
             </GroupBox>
-            <GroupBox Height="100" Header="Aram">
+            <GroupBox Header="{x:Static properties:UIStrings.PreferenceAram}">
                 <StackPanel x:Name="aramPreferences">
-                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=aramRerollForChampion, Mode=TwoWay}" Content="Roll until getting a liked champion" Height="15" />
-                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=aramTradeForChampion, Mode=TwoWay}" Content="Trade for liked champion" Height="15" Margin="0,5,0,0" />
-                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=aramRepickChampion, Mode=TwoWay}" Content="Pick back champion on unliked roll" Height="15" Margin="0,5,0,0"  />
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=aramRerollForChampion, Mode=TwoWay}" Margin="0,5,0,0">
+                        <TextBlock Text="{x:Static properties:UIStrings.AramRerollForChampion}" TextWrapping="Wrap"></TextBlock>
+                    </components:SaveableCheckbox>
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=aramTradeForChampion, Mode=TwoWay}" Margin="0,5,0,0" >
+                        <TextBlock Text="{x:Static properties:UIStrings.AramTradeForChampion}" TextWrapping="Wrap"></TextBlock>
+                    </components:SaveableCheckbox>
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=aramRepickChampion, Mode=TwoWay}" Margin="0,5,0,0" >
+                        <TextBlock Text="{x:Static properties:UIStrings.AramRepickChampion}" TextWrapping="Wrap"></TextBlock>
+                    </components:SaveableCheckbox>
                 </StackPanel>
             </GroupBox>
         </StackPanel>

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Kalus.UI.Windows;
 using Forms = System.Windows.Forms;
+using System.Resources;
 
 namespace Kalus
 {
@@ -19,6 +21,8 @@ namespace Kalus
 
 		protected override void OnStartup(StartupEventArgs e)
 		{
+			Debug.WriteLine((string)Kalus.Properties.Settings.Default["localization"]);
+			CultureInfo.CurrentUICulture = new CultureInfo((string)Kalus.Properties.Settings.Default["localization"]);
 
 			mainWindow = new MainWindow();
 

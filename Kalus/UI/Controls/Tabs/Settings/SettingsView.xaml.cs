@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,5 +37,19 @@ namespace Kalus.UI.Controls.Tabs
 			rk?.DeleteValue("KALUS");
 
 		}
-	}
+
+		private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if(sender is ComboBox localization)
+			{
+				//Prevents loop on data binding on start up
+				if ((string)((ComboBoxItem)localization.SelectedItem).Content == CultureInfo.CurrentUICulture.Name)
+					return;
+				Properties.Settings.Default.Save();
+				System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo((string)((ComboBoxItem)localization.SelectedItem).Content);
+				Process.Start(Process.GetCurrentProcess().MainModule.FileName);
+				App.Current.Shutdown();
+			}
+        }
+    }
 }

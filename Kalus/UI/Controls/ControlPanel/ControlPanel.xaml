@@ -15,7 +15,7 @@
             <ColumnDefinition />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <GroupBox x:Name="statusBorder" Header="Status" BorderBrush="#FFFF0303" Grid.ColumnSpan="2" Grid.Column="2" BorderThickness="2,2,2,2" Margin="5,0,0,0">
+        <GroupBox x:Name="statusBorder" Header="{x:Static properties:UIStrings.ControlPanelStatus}" BorderBrush="#FFFF0303" Grid.ColumnSpan="2" Grid.Column="2" BorderThickness="2,2,2,2" Margin="5,0,0,0">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -65,7 +65,7 @@
                             </Path.Fill>
                         </Path>
                     </Grid>
-                    <Label x:Name="runesLbl" Content="Runes" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" />
+                    <Label x:Name="runesLbl" Content="{x:Static properties:UIStrings.ControlPanelRunesLabel}" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" />
                 </Grid>
                 <GridSplitter Height="100" Grid.RowSpan="4" Width="1" Grid.Column="1" />
                 <Grid Grid.Column="2" HorizontalAlignment="Center" Height="116" Grid.RowSpan="4" VerticalAlignment="Center" Width="120">
@@ -79,14 +79,16 @@
                         </Ellipse.Fill>
                     </Ellipse>
                     <GridSplitter Height="1" Width="50" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1" />
-                    <Label x:Name="championLbl" Content="Champ Picked" HorizontalAlignment="Center" VerticalAlignment="Top" FontWeight="UltraBold" FontSize="16" Grid.Row="1" />
                 </Grid>
-                <Label x:Name="gameModeLbl" Content="Game Mode" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" />
+                    <Label x:Name="championLbl" Content="{x:Static properties:UIStrings.ControlPanelChampionPickLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="UltraBold" Grid.Row="4" Grid.Column="2"/>
+                <Label x:Name="gameModeLbl" Content="{x:Static properties:UIStrings.ControlPanelGameModeLabel}" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" />
             </Grid>
         </GroupBox>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="5,0,5,0">
-            <Button Content="Toggle Lite Mode" Click="ToggleLiteMode"></Button>
-            <GroupBox Header="Change Runes">
+            <Button Click="ToggleLiteMode" Padding="3,1,3,1" VerticalContentAlignment="Center">
+                <TextBlock Text="{x:Static properties:UIStrings.ControlPanelLiteModeButton}" TextAlignment="Center" TextWrapping="Wrap"/>
+            </Button>
+            <GroupBox Header="{x:Static properties:UIStrings.ControlPanelRunesLabel}">
                 <Grid Margin="0,5,0,3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -110,17 +112,17 @@
                     </Button>
                 </Grid>
             </GroupBox>
-            <Button x:Name="random_btn" Content="Random Skin" Click="RandomSkinClick" IsEnabled="False" Margin="0,10,0,0" />
-            <Button Content="Reload League Client" Click="ClientRestart" Margin="0,10,0,0" />
+            <Button x:Name="random_btn" Content="{x:Static properties:UIStrings.ControlPanelRandomSkinButton}" Click="RandomSkinClick" IsEnabled="False" Margin="0,10,0,0" />
+            <Button Content="{x:Static properties:UIStrings.ControlPanelReloadClientButton}" Click="ClientRestart" Margin="0,10,0,0" />
         </StackPanel>
-        <GroupBox Header="Automatic Utility" Grid.Column="1" Margin="5,0,0,0">
+        <GroupBox Header="{x:Static properties:UIStrings.ControlPanelUtility}" Grid.Column="1" Margin="5,0,0,0">
             <StackPanel VerticalAlignment="Center"  x:Name="ello">
-                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityReadyCheck, Mode=TwoWay}" LabelText="Ready Check"></controls:UtilityBanner>
-                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityPick, Mode=TwoWay}" LabelText="Pick Champion" Margin="0,3,0,0"></controls:UtilityBanner>
-                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityBan, Mode=TwoWay}" LabelText="Ban Champion" Margin="0,3,0,0"></controls:UtilityBanner>
-                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityAram, Mode=TwoWay}" LabelText="Aram Auto Swap" Margin="0,3,0,0"></controls:UtilityBanner>
-                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityRunes, Mode=TwoWay}" LabelText="Change Runes" Margin="0,3,0,0"></controls:UtilityBanner>
-                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilitySummoners, Mode=TwoWay}" LabelText="Change Summoners" Margin="0,3,0,0"></controls:UtilityBanner>
+                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityReadyCheck, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilityReadyCheck}"></controls:UtilityBanner>
+                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityPick, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilityPick}" Margin="0,3,0,0"></controls:UtilityBanner>
+                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityBan, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilityBan}" Margin="0,3,0,0"></controls:UtilityBanner>
+                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityAram, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilityAram}" Margin="0,3,0,0"></controls:UtilityBanner>
+                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityRunes, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilityRunes}" Margin="0,3,0,0"></controls:UtilityBanner>
+                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilitySummoners, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilitySummoners}" Margin="0,3,0,0"></controls:UtilityBanner>
             </StackPanel>
         </GroupBox>
         <!-- Add other tools here -->

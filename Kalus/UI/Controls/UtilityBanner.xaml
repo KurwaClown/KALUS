@@ -13,7 +13,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Border x:Name="background" Background="White" Grid.ColumnSpan="2" CornerRadius="4" />
-        <Label Content="{Binding LabelText, RelativeSource={RelativeSource AncestorType=UserControl}}" Grid.Column="0" Padding="5,0,0,0"></Label>
-        <components:ToggleSwitch x:Name="toggleSwitch" Grid.Column="1" IsChecked="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+        <TextBlock Text="{Binding LabelText, RelativeSource={RelativeSource AncestorType=UserControl}}" Grid.Column="0" Padding="5,0,0,0" TextWrapping="Wrap"></TextBlock>
+        <components:ToggleSwitch x:Name="toggleSwitch" Grid.Column="1" IsChecked="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=UserControl}}" Margin="3,0" FontSize="10"/>
     </Grid>
 </UserControl>

@@ -83,5 +83,8 @@
     <Setting Name="closeWithClient" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="localization" Type="System.String" Scope="User">
+      <Value Profile="(Default)">en-GB</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

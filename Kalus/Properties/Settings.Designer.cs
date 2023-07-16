@@ -346,5 +346,17 @@ namespace Kalus.Properties {
                 this["closeWithClient"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("en-GB")]
+        public string localization {
+            get {
+                return ((string)(this["localization"]));
+            }
+            set {
+                this["localization"] = value;
+            }
+        }
     }
 }

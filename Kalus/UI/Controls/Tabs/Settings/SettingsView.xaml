@@ -17,16 +17,22 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Vertical">
-            <GroupBox Header="Check Interval">
+            <GroupBox Header="{x:Static properties:UIStrings.SettingCheckInterval}">
                 <components:SaveableSlider x:Name="checkIntervalSlider" Value="{Binding Source={x:Static properties:Settings.Default}, Path=checkInterval, Mode=TwoWay}" AutoToolTipPlacement="TopLeft" Minimum="500" Maximum="5000" TickFrequency="100" IsSnapToTickEnabled="True" LargeChange="500" SmallChange="100"/>
             </GroupBox>
-            <GroupBox Header="KALUS start/close behaviour">
+            <GroupBox Header="{x:Static properties:UIStrings.SettingWindowsBehavior}">
                 <StackPanel>
-                    <components:SaveableCheckbox x:Name="runOnStartupCheckBox" Content="Open on Windows Start" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=openOnWindowsStart, Mode=TwoWay}" Checked="AddRunOnStartup" Unchecked="RemoveRunOnStartup"></components:SaveableCheckbox>
-                    <components:SaveableCheckbox x:Name="runInBackGround" Content="Reduce To System Tray" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=runInBackground, Mode=TwoWay}"></components:SaveableCheckbox>
-                    <components:SaveableCheckbox x:Name="openWithClient" Content="Open KALUS window with client" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=openWithClient, Mode=TwoWay}"></components:SaveableCheckbox>
-                    <components:SaveableCheckbox x:Name="closeWithClient" Content="Close on client exit" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=closeWithClient, Mode=TwoWay}"></components:SaveableCheckbox>
+                    <components:SaveableCheckbox x:Name="runOnStartupCheckBox" Content="{x:Static properties:UIStrings.SettingOpenOnWindowsStart}" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=openOnWindowsStart, Mode=TwoWay}" Checked="AddRunOnStartup" Unchecked="RemoveRunOnStartup" Margin="0,3,0,0"></components:SaveableCheckbox>
+                    <components:SaveableCheckbox x:Name="runInBackGround" Content="{x:Static properties:UIStrings.SettingRunInBackground}" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=runInBackground, Mode=TwoWay}" Margin="0,3,0,0"></components:SaveableCheckbox>
+                    <components:SaveableCheckbox x:Name="openWithClient" Content="{x:Static properties:UIStrings.SettingOpenWithClient}" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=openWithClient, Mode=TwoWay}" Margin="0,3,0,0"></components:SaveableCheckbox>
+                    <components:SaveableCheckbox x:Name="closeWithClient" Content="{x:Static properties:UIStrings.SettingCloseWithClient}" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=closeWithClient, Mode=TwoWay}" Margin="0,3,0,0"></components:SaveableCheckbox>
                 </StackPanel>
+            </GroupBox>
+            <GroupBox Header="{x:Static properties:UIStrings.SettingLocalization}">
+                <ComboBox SelectedValuePath="Content" SelectedValue="{Binding Source={x:Static properties:Settings.Default}, Path=localization, Mode=TwoWay}" SelectionChanged="OnSelectionChanged" Margin="3" Padding="5,3,5,3">
+                    <ComboBoxItem Content="en-GB"></ComboBoxItem>
+                    <ComboBoxItem Content="fr-FR"></ComboBoxItem>
+                </ComboBox>
             </GroupBox>
         </StackPanel>
     </Grid>
