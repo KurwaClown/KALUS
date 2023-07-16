@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Kalus.UI.Windows;
@@ -12,7 +15,6 @@ namespace Kalus
 	public partial class App : Application
 	{
 		private Forms.NotifyIcon? notifyIcon;
-		private readonly string iconPath = "TBD.ico";
 		private MainWindow? mainWindow;
 
 		protected override void OnStartup(StartupEventArgs e)
@@ -21,12 +23,12 @@ namespace Kalus
 			mainWindow = new MainWindow();
 
 			if (!(bool)Kalus.Properties.Settings.Default["runInBackground"]) mainWindow.Show();
-
 			try
 			{
 				notifyIcon = new Forms.NotifyIcon
 					{
-						Icon = new System.Drawing.Icon(iconPath),
+						Icon = Kalus.Properties.Resources.KALUS_Icon,
+						Text = "KALUS",
 						Visible = true
 					};
 
