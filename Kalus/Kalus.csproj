@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Resources.ResourceManager" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +41,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Properties\Enums.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Enums.resx</DependentUpon>
+    </Compile>
     <Compile Update="Properties\Logs.fr-FR.Designer.cs">
       <DependentUpon>Logs.fr-FR.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -78,6 +84,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Properties\Enums.en-GB.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Enums.fr-FR.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Enums.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Enums.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Properties\Logs.fr-FR.resx">
       <LastGenOutput>Logs.fr-FR.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>

@@ -8,9 +8,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using Forms = System.Windows.Forms;
 using System.Windows.Input;
 using Kalus.Modules;
 using Kalus.UI.Controls.Tabs.Console;
+using System.Resources;
 
 namespace Kalus.UI.Controls.Tabs.Console
 {
@@ -69,7 +71,7 @@ namespace Kalus.UI.Controls.Tabs.Console
 
         internal void AddLog(string message, Utility utility, LogLevel level)
         {
-            LogData newLog = new(message, utility, level);
+			LogData newLog = new(message, utility, level);
             Application.Current.Dispatcher.Invoke(() =>
             {
                 Logs.Add(newLog);

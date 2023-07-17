@@ -7,22 +7,21 @@
              mc:Ignorable="d"
 >
 
-<UserControl.Resources>
+    <UserControl.Resources>
         <converters:LogLevelToColor x:Key="LogLevelToColorConverter" />
         <converters:ClientStateToColor x:Key="ClientStateToColorConverter" />
     </UserControl.Resources>
-    <StackPanel Orientation="Horizontal" Background="{Binding Level, Mode=OneTime, Converter={StaticResource LogLevelToColorConverter}, ConverterParameter='BACKGROUND'}">
+    <Grid x:Name="grid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40"></ColumnDefinition>
+            <ColumnDefinition Width="170"></ColumnDefinition>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Border Background="{Binding Level, Mode=OneTime, Converter={StaticResource LogLevelToColorConverter}, ConverterParameter='BACKGROUND'}" CornerRadius="3" Grid.ColumnSpan="3"/>
 
+        <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm'}" Padding="3" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
-        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,5,0,5">
-            <TextBlock x:Name="timestamp"
-                       Text="{Binding Timestamp, StringFormat='dd/MM'}"
-                       Padding="5,0,0,0"
-                       VerticalAlignment="Center" />
-            <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm:ss'}" />
-        </StackPanel>
-
-        <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
+        <StackPanel Orientation="Horizontal" Margin="5" Grid.Column="1">
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,5,0">
                 <Rectangle Fill="{Binding Level, Mode=OneTime, Converter={StaticResource LogLevelToColorConverter}}"
                            Opacity="0.2"
@@ -59,6 +58,8 @@
 
         </StackPanel>
 
+        <GridSplitter Grid.Column="1" Width="1" Background="#FF444444"/>
+
         <TextBlock x:Name="message"
                    Grid.Column="2"
                    Padding="5,0,5,0"
@@ -67,8 +68,9 @@
                    FontSize="13"
                    Foreground="Black"
                    TextWrapping="Wrap"
-                   VerticalAlignment="Center" />
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"/>
 
 
-    </StackPanel>
+    </Grid>
 </UserControl>
