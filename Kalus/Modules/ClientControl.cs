@@ -39,7 +39,7 @@ namespace Kalus.Modules
 				if (!isClientOpen && authenticated)
 				{
 					state = ClientState.NOCLIENT;
-					mainWindow.consoleTab.AddLog("Client has been closed", Utility.CLIENT, LogLevel.WARN);
+					mainWindow.consoleTab.AddLog(Properties.Logs.ClientClosed, Utility.CLIENT, LogLevel.WARN);
 
 					if ((bool)Properties.Settings.Default["closeWithClient"])
 					{
@@ -66,7 +66,7 @@ namespace Kalus.Modules
 					if (isClientOpen)
 					{
 						state = ClientState.NONE;
-						mainWindow.consoleTab.AddLog("Client Found", Utility.CLIENT, LogLevel.INFO);
+						mainWindow.consoleTab.AddLog(Properties.Logs.ClientFound, Utility.CLIENT, LogLevel.INFO);
 
 						if ((bool)Properties.Settings.Default["openWithClient"])
 						{
@@ -86,7 +86,7 @@ namespace Kalus.Modules
 						Auth.SetBasicAuth(filename);
 						mainWindow.controlPanel.ShowLolState(true);
 
-						mainWindow.consoleTab.AddLog("KALUS is ready", Utility.KALUS, LogLevel.INFO);
+						mainWindow.consoleTab.AddLog(Properties.Logs.KALUSReady, Utility.KALUS, LogLevel.INFO);
 					}
 				}
 				Thread.Sleep((int)Properties.Settings.Default["checkInterval"]);
@@ -133,7 +133,7 @@ namespace Kalus.Modules
 							if ((bool)Properties.Settings.Default["utilityReadyCheck"])
 							{
 								await ClientRequest.Accept();
-								mainWindow.consoleTab.AddLog("Accepting Ready Check", Utility.READY, LogLevel.INFO);
+								mainWindow.consoleTab.AddLog(Properties.Logs.ReadyCheck, Utility.READY, LogLevel.INFO);
 							}
 							//Prevent being auto-ready multiple times
 							while (await ClientRequest.GetClientPhase() == "ReadyCheck")

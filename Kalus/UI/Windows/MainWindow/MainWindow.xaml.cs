@@ -63,7 +63,7 @@ namespace Kalus.UI.Windows
 				// Show the error window as a dialog
 				errorWindow.ShowDialog();
 
-				this.consoleTab.AddLog("An error occured : " + exception?.GetType(), Controls.Tabs.Console.Utility.KALUS, Controls.Tabs.Console.LogLevel.ERROR);
+				this.consoleTab.AddLog($"{Properties.Logs.Error} {exception?.GetType()}", Controls.Tabs.Console.Utility.KALUS, Controls.Tabs.Console.LogLevel.ERROR);
 				// Re-enable the MainWindow after the error window is closed
 				this.IsEnabled = true;
 
@@ -94,7 +94,7 @@ namespace Kalus.UI.Windows
 			controlPanel.SetDefaultIcons();
 			controlPanel.SetDefaultLabels();
 
-			this.consoleTab.AddLog("UI Initialized", Controls.Tabs.Console.Utility.KALUS, Controls.Tabs.Console.LogLevel.INFO);
+			this.consoleTab.AddLog(Properties.Logs.UIInitialized, Controls.Tabs.Console.Utility.KALUS, Controls.Tabs.Console.LogLevel.INFO);
 		}
 
 		internal string GetGamemodeName()

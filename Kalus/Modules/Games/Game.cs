@@ -99,24 +99,24 @@ namespace Kalus.Modules.Games
 			if ((bool)Properties.Settings.Default["randomSkinOnPick"])
 			{
 				ClientControl.PickRandomSkin();
-				logMessages.Add("Changing skin randomly on champion pick");
+				logMessages.Add(Properties.Logs.RandomSkin);
 			}
 
 			//Set runes if the the auto rune is toggled
 			if ((bool)Properties.Settings.Default["utilityRunes"] && !isRunePageChanged)
 			{
 				await ChangeRunes();
-				logMessages.Add($"Setting runes for {await ChampionIdtoName(championId)}");
+				logMessages.Add(Properties.Logs.SettingRunes);
 			}
 
 
 			if ((bool)Properties.Settings.Default["utilitySummoners"])
 			{
 				await ChangeSpells();
-				logMessages.Add("Setting summoner's spells");
+				logMessages.Add(Properties.Logs.SettingSummoners);
 			}
 
-			string concatLog = string.Join(" | ", logMessages);
+			string concatLog = $"{string.Join(" | ", logMessages)} {Properties.Logs.PostPickEnd} {await ChampionIdtoName(championId)}";
 
 			mainWindow.consoleTab.AddLog(concatLog, UI.Controls.Tabs.Console.Utility.POSTPICK , UI.Controls.Tabs.Console.LogLevel.INFO);
 

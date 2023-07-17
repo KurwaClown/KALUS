@@ -19,7 +19,7 @@ namespace Kalus.Modules.Games.GameMode
 
 		internal Aram(MainWindow mainWindow) : base(mainWindow)
 		{
-			mainWindow.consoleTab.AddLog("Joined ARAM Game", UI.Controls.Tabs.Console.Utility.GAME, UI.Controls.Tabs.Console.LogLevel.INFO);
+			mainWindow.consoleTab.AddLog(Properties.Logs.JoinedAram, UI.Controls.Tabs.Console.Utility.GAME, UI.Controls.Tabs.Console.LogLevel.INFO);
 
 			OnReroll += LogReroll;
 			OnReroll += ExecutePreferencesOnReroll;
@@ -71,7 +71,7 @@ namespace Kalus.Modules.Games.GameMode
 			int currentRerollsRemaining = sessionInfo!["rerollsRemaining"]!.Value<int>();
 			if (currentRerollsRemaining < rerollsRemaining)
 			{
-				mainWindow.consoleTab.AddLog("User reroll detected", UI.Controls.Tabs.Console.Utility.REROLL, UI.Controls.Tabs.Console.LogLevel.INFO);
+				mainWindow.consoleTab.AddLog(Properties.Logs.RerollDetected, UI.Controls.Tabs.Console.Utility.REROLL, UI.Controls.Tabs.Console.LogLevel.INFO);
 				rerollsRemaining = currentRerollsRemaining;
 				OnReroll.Invoke();
 			}
@@ -92,7 +92,7 @@ namespace Kalus.Modules.Games.GameMode
 				if (aramPick != 0)
 				{
 					await ClientRequest.AramBenchSwap(aramPick);
-					mainWindow.consoleTab.AddLog($"Swapped with {await ChampionIdtoName(aramPick)}", UI.Controls.Tabs.Console.Utility.SWAPPING, UI.Controls.Tabs.Console.LogLevel.INFO);
+					mainWindow.consoleTab.AddLog($"{Properties.Logs.AramSwap} {await ChampionIdtoName(aramPick)}", UI.Controls.Tabs.Console.Utility.SWAPPING, UI.Controls.Tabs.Console.LogLevel.INFO);
 					championId = aramPick;
 					isRunePageChanged = false;
 					await PostPickAction();
@@ -123,7 +123,7 @@ namespace Kalus.Modules.Games.GameMode
 												.FirstOrDefault();
 					if (tradeId.HasValue && tradeId != 0)
 					{
-						mainWindow.consoleTab.AddLog("Sending trade request", UI.Controls.Tabs.Console.Utility.TRADE, UI.Controls.Tabs.Console.LogLevel.INFO);
+						mainWindow.consoleTab.AddLog(Properties.Logs.AramTradeRequest, UI.Controls.Tabs.Console.Utility.TRADE, UI.Controls.Tabs.Console.LogLevel.INFO);
 						await ClientRequest.AramTradeRequest(tradeId.Value);
 						return;
 					}
@@ -144,7 +144,7 @@ namespace Kalus.Modules.Games.GameMode
 			int currentChampionId = await ClientRequest.GetCurrentChampionId();
 			string championName = await ChampionIdtoName(currentChampionId);
 
-			mainWindow.consoleTab.AddLog($"Rerolled to {championName}", UI.Controls.Tabs.Console.Utility.REROLL, UI.Controls.Tabs.Console.LogLevel.INFO);
+			mainWindow.consoleTab.AddLog($"{Properties.Logs.AramReroll}{championName}", UI.Controls.Tabs.Console.Utility.REROLL, UI.Controls.Tabs.Console.LogLevel.INFO);
 		}
 		private async void ExecutePreferencesOnReroll()
 		{
@@ -157,7 +157,7 @@ namespace Kalus.Modules.Games.GameMode
 				if (!aramPicks.Contains(currentChampionId))
 				{
 					await ClientRequest.AramBenchSwap(championId);
-					mainWindow.consoleTab.AddLog($"Reroll was not better than current : picking back", UI.Controls.Tabs.Console.Utility.REROLL, UI.Controls.Tabs.Console.LogLevel.INFO);
+					mainWindow.consoleTab.AddLog(Properties.Logs.AramRetrieveChampion, UI.Controls.Tabs.Console.Utility.REROLL, UI.Controls.Tabs.Console.LogLevel.INFO);
 				}
 			}
 		}
