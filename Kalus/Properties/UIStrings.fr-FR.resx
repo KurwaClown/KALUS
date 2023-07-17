@@ -195,6 +195,15 @@
   <data name="NoAvailablePickOption3" xml:space="preserve">
     <value>Ne rien faire</value>
   </data>
+  <data name="NotifyIconOption1" xml:space="preserve">
+    <value>Afficher</value>
+  </data>
+  <data name="NotifyIconOption2" xml:space="preserve">
+    <value>Reduire</value>
+  </data>
+  <data name="NotifyIconOption3" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
   <data name="OnChampionSelectionOption1" xml:space="preserve">
     <value>Ne rien faire</value>
   </data>
