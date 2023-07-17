@@ -46,9 +46,11 @@ namespace Kalus.UI.Controls.Tabs
 				if ((string)((ComboBoxItem)localization.SelectedItem).Content == CultureInfo.CurrentUICulture.Name)
 					return;
 				Properties.Settings.Default.Save();
+
 				System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo((string)((ComboBoxItem)localization.SelectedItem).Content);
 				System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo((string)((ComboBoxItem)localization.SelectedItem).Content);
-				Process.Start(Process.GetCurrentProcess().MainModule.FileName);
+
+				Process.Start(Process.GetCurrentProcess().MainModule?.FileName!);
 				App.Current.Shutdown();
 			}
         }

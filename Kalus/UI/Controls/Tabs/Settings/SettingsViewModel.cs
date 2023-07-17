@@ -2,16 +2,8 @@
 
 namespace Kalus.UI.Controls.Tabs.Settings
 {
-    internal class SettingsViewModel : INotifyPropertyChanged
+    internal class SettingsViewModel
     {
 
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }
