@@ -23,10 +23,10 @@ namespace Kalus
 
 			if (!(bool)Kalus.Properties.Settings.Default["runInBackground"])
 				mainWindow.Show();
-
 			try
 			{
 				Forms.ContextMenuStrip notifyContextMenu = new();
+
 				notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption1, null, NotifyIconShowWindow);
 				notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption2, null, NotifyIconMinimizeWindow);
 				notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption3, null, NotifyIconCloseKalus);
