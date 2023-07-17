@@ -1,13 +1,8 @@
-﻿using System;
-using System.Diagnostics;
+﻿using Kalus.UI.Windows;
+using System;
 using System.Globalization;
-using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using Kalus.UI.Windows;
 using Forms = System.Windows.Forms;
-using System.Resources;
 
 namespace Kalus
 {
@@ -21,22 +16,30 @@ namespace Kalus
 
 		protected override void OnStartup(StartupEventArgs e)
 		{
-			Debug.WriteLine((string)Kalus.Properties.Settings.Default["localization"]);
 			CultureInfo.CurrentUICulture = new CultureInfo((string)Kalus.Properties.Settings.Default["localization"]);
+			CultureInfo.CurrentCulture = new CultureInfo((string)Kalus.Properties.Settings.Default["localization"]);
 
 			mainWindow = new MainWindow();
 
-			if (!(bool)Kalus.Properties.Settings.Default["runInBackground"]) mainWindow.Show();
+			if (!(bool)Kalus.Properties.Settings.Default["runInBackground"])
+				mainWindow.Show();
+
 			try
 			{
-				notifyIcon = new Forms.NotifyIcon
-					{
-						Icon = Kalus.Properties.Resources.KALUS_Icon,
-						Text = "KALUS",
-						Visible = true
-					};
+				Forms.ContextMenuStrip notifyContextMenu = new();
+				notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption1, null, NotifyIconShowWindow);
+				notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption2, null, NotifyIconMinimizeWindow);
+				notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption3, null, NotifyIconCloseKalus);
 
-			notifyIcon.Click += NotifyIcon_Click;
+				notifyIcon = new Forms.NotifyIcon
+				{
+					Icon = Kalus.Properties.Resources.KALUS_Icon,
+					Text = "KALUS",
+					Visible = true,
+					ContextMenuStrip = notifyContextMenu
+				};
+
+				notifyIcon.Click += NotifyIcon_Click;
 			}
 			catch
 			{
@@ -46,18 +49,38 @@ namespace Kalus
 			base.OnStartup(e);
 		}
 
-
-
-		private void NotifyIcon_Click(object? sender, System.EventArgs e)
+		private void NotifyIcon_Click(object? sender, EventArgs e)
 		{
-			if(mainWindow != null && !mainWindow.IsVisible)
+			if (mainWindow != null && !mainWindow.IsVisible && ((Forms.MouseEventArgs)e).Button == Forms.MouseButtons.Left)
 			{
-				mainWindow!.Show();
+				mainWindow.Show();
 				mainWindow.WindowState = WindowState.Normal;
 				mainWindow.Activate();
 			}
-
 		}
 
+		private void NotifyIconShowWindow(object? sender, System.EventArgs e)
+		{
+			if (mainWindow != null && !mainWindow.IsVisible)
+			{
+				mainWindow.Show();
+				mainWindow.WindowState = WindowState.Normal;
+				mainWindow.Activate();
+			}
+		}
+
+		private void NotifyIconMinimizeWindow(object? sender, System.EventArgs e)
+		{
+			if (mainWindow != null && mainWindow.IsVisible)
+			{
+				mainWindow.Hide();
+			}
+		}
+
+		private void NotifyIconCloseKalus(object? sender, System.EventArgs e)
+		{
+			mainWindow!.Close();
+			this.Shutdown();
+		}
 	}
 }

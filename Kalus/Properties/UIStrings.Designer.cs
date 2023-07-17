@@ -295,6 +295,33 @@ namespace Kalus.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show.
+        /// </summary>
+        public static string NotifyIconOption1 {
+            get {
+                return ResourceManager.GetString("NotifyIconOption1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimize.
+        /// </summary>
+        public static string NotifyIconOption2 {
+            get {
+                return ResourceManager.GetString("NotifyIconOption2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string NotifyIconOption3 {
+            get {
+                return ResourceManager.GetString("NotifyIconOption3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do nothing.
         /// </summary>
         public static string OnChampionSelectionOption1 {
