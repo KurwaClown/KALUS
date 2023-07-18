@@ -78,6 +78,7 @@ namespace Kalus.Modules
 					Aram = Array.Empty<int>()
 				};
 
+				// Serialize the template object to JSON.
 				string json = JsonConvert.SerializeObject(template, Formatting.Indented);
 
 				// Write the JSON to the file.
@@ -85,7 +86,6 @@ namespace Kalus.Modules
 
 			}
 
-			// Serialize the template object to JSON.
 		}
 
 		#region PickBan
