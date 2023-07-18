@@ -37,7 +37,7 @@ namespace Kalus.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool runesOverrideOldestPage {
             get {
                 return ((bool)(this["runesOverrideOldestPage"]));
@@ -49,7 +49,7 @@ namespace Kalus.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool randomSkinAddChromas {
             get {
                 return ((bool)(this["randomSkinAddChromas"]));
@@ -61,7 +61,7 @@ namespace Kalus.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool randomSkinOnPick {
             get {
                 return ((bool)(this["randomSkinOnPick"]));
@@ -85,7 +85,7 @@ namespace Kalus.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool summonersAlwaysSnowball {
             get {
                 return ((bool)(this["summonersAlwaysSnowball"]));
@@ -109,7 +109,7 @@ namespace Kalus.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool aramTradeForChampion {
             get {
                 return ((bool)(this["aramTradeForChampion"]));
@@ -121,7 +121,7 @@ namespace Kalus.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool aramRepickChampion {
             get {
                 return ((bool)(this["aramRepickChampion"]));
