@@ -5,14 +5,20 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <Authors>KurwaClown</Authors>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseWindowsForms>true</UseWindowsForms>
+
     <Title>KALUS</Title>
-    <Description>Streamline processes such as champion selection, rune and summoner spell setup, and much more for League of Legends Client.</Description>
-    <RepositoryUrl>https://github.com/KurwaClown/KALUS</RepositoryUrl>
+    <Version>1.3.1</Version>
+    <Authors>KurwaClown</Authors>
     <RepositoryType>git</RepositoryType>
-    <Version>1.3.0</Version>
+    <RepositoryUrl>https://github.com/KurwaClown/KALUS</RepositoryUrl>
+    <Description>Streamline processes such as champion selection, rune and summoner spell setup, and much more for League of Legends Client.</Description>
+    <IncludeSymbols>False</IncludeSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,6 +45,10 @@
 
   <ItemGroup>
     <Page Include="App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kalus.Updater\Kalus.Updater.csproj" />
   </ItemGroup>
 
   <ItemGroup>
