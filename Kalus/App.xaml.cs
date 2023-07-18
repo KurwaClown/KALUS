@@ -25,21 +25,7 @@ namespace Kalus
 				mainWindow.Show();
 			try
 			{
-				Forms.ContextMenuStrip notifyContextMenu = new();
-
-				notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption1, null, NotifyIconShowWindow);
-				notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption2, null, NotifyIconMinimizeWindow);
-				notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption3, null, NotifyIconCloseKalus);
-
-				notifyIcon = new Forms.NotifyIcon
-				{
-					Icon = Kalus.Properties.Resources.KALUS_Icon,
-					Text = "KALUS",
-					Visible = true,
-					ContextMenuStrip = notifyContextMenu
-				};
-
-				notifyIcon.Click += NotifyIcon_Click;
+				SetNotifyIcon();
 			}
 			catch
 			{
@@ -47,6 +33,25 @@ namespace Kalus
 				MessageBox.Show("There was an issue setting KALUS system tray icon");
 			}
 			base.OnStartup(e);
+		}
+
+		private void SetNotifyIcon()
+		{
+			Forms.ContextMenuStrip notifyContextMenu = new();
+
+			notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption1, null, NotifyIconShowWindow);
+			notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption2, null, NotifyIconMinimizeWindow);
+			notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption3, null, NotifyIconCloseKalus);
+
+			notifyIcon = new Forms.NotifyIcon
+			{
+				Icon = Kalus.Properties.Resources.KALUS_Icon,
+				Text = "KALUS",
+				Visible = true,
+				ContextMenuStrip = notifyContextMenu
+			};
+
+			notifyIcon.Click += NotifyIcon_Click;
 		}
 
 		private void NotifyIcon_Click(object? sender, EventArgs e)
