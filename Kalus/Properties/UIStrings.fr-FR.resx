@@ -295,7 +295,7 @@
     <value>Démarrage/fermeture de Kalus</value>
   </data>
   <data name="SummonersAlwaysSnowball" xml:space="preserve">
-    <value>Toujour avoir un boule de neige en Aram</value>
+    <value>Toujour avoir une boule de neige en Aram</value>
   </data>
   <data name="SummonersFlashPosition" xml:space="preserve">
     <value>Position du Flash :</value>
