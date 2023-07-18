@@ -23,16 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Picks\PickBan.json" />
     <None Remove="riotgames.pem" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Certificates\riotgames.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Picks\PickBan.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 

@@ -1,15 +1,18 @@
 ﻿using Kalus.Modules.Networking;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Kalus.Modules
 {
 	internal static class DataCache
 	{
-		private static readonly string pickBanPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Picks/PickBan.json");
+		private static readonly string picksDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Picks");
+		private static readonly string pickBanPath = Path.Combine(picksDirectory, "PickBan.json");
 		private static readonly JObject pickBan = InitializePickBan();
 
 		private static JArray? championsInformation;
@@ -30,28 +33,59 @@ namespace Kalus.Modules
 
 		#region Files
 
-		internal static JObject InitializePickBan()
+		private static JObject InitializePickBan()
 		{
 			try
 			{
-				return JObject.Parse(File.ReadAllText(pickBanPath));
+				if(!File.Exists(pickBanPath)) CreatePickBanFile();
 			}
-			catch (FileNotFoundException)
+			catch (JsonReaderException)
 			{
-				var pickBan = new JObject();
-
-				pickBan["Draft"] ??= new JObject();  // Initialize "Draft" if it is null
-
-				pickBan["Draft"]!["Pick"] ??= new JObject();  // Initialize "Ban" if it is null
-
-				pickBan["Draft"]!["Ban"] ??= new JObject();  // Initialize "Pick" if it is null
-
-				pickBan["Blind"] ??= new JArray();
-				pickBan["Aram"] ??= new JArray();
-
-				File.WriteAllText(pickBanPath, pickBan.ToString());
-				return pickBan;
+				MessageBox.Show("Error while getting picks and bans, try deleting the Picks folder to correct this error");
+				//Forcing creation of new pickban file
+				CreatePickBanFile();
 			}
+			return JObject.Parse(File.ReadAllText(pickBanPath));
+		}
+
+		private static void CreatePickBanFile()
+		{
+			if (!Directory.Exists(picksDirectory)) Directory.CreateDirectory(picksDirectory);
+			if (!File.Exists(pickBanPath))
+			{
+				object template = new
+				{
+					Draft = new
+					{
+						Pick = new
+						{
+							TOP = Array.Empty<int>(),
+							JUNGLE = Array.Empty<int>(),
+							MIDDLE = Array.Empty<int>(),
+							BOTTOM = Array.Empty<int>(),
+							UTILITY = Array.Empty<int>()
+						},
+						Ban = new
+						{
+							TOP = Array.Empty<int>(),
+							JUNGLE = Array.Empty<int>(),
+							MIDDLE = Array.Empty<int>(),
+							BOTTOM = Array.Empty<int>(),
+							UTILITY = Array.Empty<int>()
+						}
+					},
+					Blind = Array.Empty<int>(),
+					Aram = Array.Empty<int>()
+				};
+
+				string json = JsonConvert.SerializeObject(template, Formatting.Indented);
+
+				// Write the JSON to the file.
+				File.WriteAllText(pickBanPath, json);
+
+			}
+
+			// Serialize the template object to JSON.
 		}
 
 		#region PickBan
