@@ -547,6 +547,15 @@ namespace Kalus.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Minimize to system tray instead of closing.
+        /// </summary>
+        public static string SettingMinimizeInsteadOfClosing {
+            get {
+                return ResourceManager.GetString("SettingMinimizeInsteadOfClosing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open on Windows start.
         /// </summary>
         public static string SettingOpenOnWindowsStart {
@@ -565,7 +574,7 @@ namespace Kalus.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reduce to system tray.
+        ///   Looks up a localized string similar to Reduce to system tray on start-up.
         /// </summary>
         public static string SettingRunInBackground {
             get {

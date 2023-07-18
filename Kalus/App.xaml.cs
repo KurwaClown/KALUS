@@ -79,8 +79,8 @@ namespace Kalus
 
 		private void NotifyIconCloseKalus(object? sender, System.EventArgs e)
 		{
-			mainWindow!.Close();
 			this.Shutdown();
+			Environment.Exit(0);
 		}
 	}
 }

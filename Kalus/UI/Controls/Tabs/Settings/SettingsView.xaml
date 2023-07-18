@@ -26,6 +26,9 @@
                     <components:SaveableCheckbox x:Name="runInBackGround" Content="{x:Static properties:UIStrings.SettingRunInBackground}" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=runInBackground, Mode=TwoWay}" Margin="0,3,0,0"></components:SaveableCheckbox>
                     <components:SaveableCheckbox x:Name="openWithClient" Content="{x:Static properties:UIStrings.SettingOpenWithClient}" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=openWithClient, Mode=TwoWay}" Margin="0,3,0,0"></components:SaveableCheckbox>
                     <components:SaveableCheckbox x:Name="closeWithClient" Content="{x:Static properties:UIStrings.SettingCloseWithClient}" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=closeWithClient, Mode=TwoWay}" Margin="0,3,0,0"></components:SaveableCheckbox>
+                    <components:SaveableCheckbox x:Name="minimizeOnClosing" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=minimizeOnClosing, Mode=TwoWay}" Margin="0,3,0,0">
+                        <TextBlock Text="{x:Static properties:UIStrings.SettingMinimizeInsteadOfClosing}" TextWrapping="Wrap"/>
+                    </components:SaveableCheckbox>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="{x:Static properties:UIStrings.SettingLocalization}">

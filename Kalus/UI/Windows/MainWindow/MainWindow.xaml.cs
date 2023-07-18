@@ -77,8 +77,16 @@ namespace Kalus.UI.Windows
 
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			Application.Current.Shutdown();
-			Environment.Exit(0);
+			if (Settings.Default.minimizeOnClosing)
+			{
+				e.Cancel = true;
+				this.Visibility = Visibility.Hidden;
+			}
+			else
+			{
+				Application.Current.Shutdown();
+				Environment.Exit(0);
+			}
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)

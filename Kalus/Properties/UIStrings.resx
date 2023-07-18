@@ -279,6 +279,9 @@
   <data name="SettingLocalization" xml:space="preserve">
     <value>Language</value>
   </data>
+  <data name="SettingMinimizeInsteadOfClosing" xml:space="preserve">
+    <value>Minimize to system tray instead of closing</value>
+  </data>
   <data name="SettingOpenOnWindowsStart" xml:space="preserve">
     <value>Open on Windows start</value>
   </data>
@@ -286,7 +289,7 @@
     <value>Open KALUS window with client</value>
   </data>
   <data name="SettingRunInBackground" xml:space="preserve">
-    <value>Reduce to system tray</value>
+    <value>Reduce to system tray on start-up</value>
   </data>
   <data name="SettingsTabHeader" xml:space="preserve">
     <value>Settings</value>

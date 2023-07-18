@@ -279,6 +279,9 @@
   <data name="SettingLocalization" xml:space="preserve">
     <value>Langage</value>
   </data>
+  <data name="SettingMinimizeInsteadOfClosing" xml:space="preserve">
+    <value>Réduire dans la barre de tâches à la fermeture</value>
+  </data>
   <data name="SettingOpenOnWindowsStart" xml:space="preserve">
     <value>Ouvrir au démarrage de Windows</value>
   </data>
@@ -286,7 +289,7 @@
     <value>Ouvrir la fenêtre de KALUS avec le client</value>
   </data>
   <data name="SettingRunInBackground" xml:space="preserve">
-    <value>Réduire dans la barre des tâches</value>
+    <value>Réduire dans la barre de tâches au démarrage</value>
   </data>
   <data name="SettingsTabHeader" xml:space="preserve">
     <value>Paramètres</value>
