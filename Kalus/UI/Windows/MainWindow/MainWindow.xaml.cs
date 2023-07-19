@@ -90,7 +90,7 @@ namespace Kalus.UI.Windows
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			Update.CheckForUpdate();
+			UpdateVerifier.CheckForUpdate();
 
 			charactersTab.LoadAndSetCharacterList();
 

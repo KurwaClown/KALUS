@@ -5,13 +5,14 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Kalus.Modules.Networking
 {
-	internal class Update
+	internal class UpdateVerifier
 	{
 		private static readonly string owner = "KurwaClown";
 		private static readonly string repo = "Kalus";
@@ -45,7 +46,7 @@ namespace Kalus.Modules.Networking
 			if (kalusVersion == null)
 				return false;
 
-			Version currentVersion = new("1.2.0");
+			Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version!;
 			Version latestReleaseVersion = new(latestRelease.TagName.Trim('v'));
 
 			return latestReleaseVersion.CompareTo(currentVersion) == 1;

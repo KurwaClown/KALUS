@@ -5,7 +5,7 @@ using Octokit;
 
 namespace Kalus.Updater
 {
-	class Program
+	class Update
 	{
 		private static readonly string owner = "KurwaClown";
 		private static readonly string repo = "Kalus";
@@ -17,8 +17,7 @@ namespace Kalus.Updater
 
 		static void Main(string[] args)
 		{
-			CultureInfo.CurrentCulture = new CultureInfo(args[0]);
-			CultureInfo.CurrentUICulture = new CultureInfo(args[0]);
+			if(args.Length != 0) CultureInfo.CurrentUICulture = new CultureInfo(args[0]);
 			Console.WriteLine(Properties.Resources.FileDownload);
 
 			bool isDownloadSuccesfull = DownloadLatestRelease().GetAwaiter().GetResult();
