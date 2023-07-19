@@ -1,8 +1,7 @@
 ﻿using Kalus.Modules;
+using Kalus.Modules.Networking;
 using Kalus.Properties;
 using System;
-using System.Diagnostics;
-using System.Resources;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -91,6 +90,8 @@ namespace Kalus.UI.Windows
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
+			Update.CheckForUpdate();
+
 			charactersTab.LoadAndSetCharacterList();
 
 			static void populateComboBox(int maxTime, ComboBox comboBox)
@@ -108,6 +109,7 @@ namespace Kalus.UI.Windows
 
 			this.consoleTab.AddLog(Properties.Logs.UIInitialized, Controls.Tabs.Console.Utility.KALUS, Controls.Tabs.Console.LogLevel.INFO);
 		}
+
 
 		internal string GetGamemodeName()
 		{
