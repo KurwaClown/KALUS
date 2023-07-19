@@ -16,12 +16,12 @@ namespace Kalus
 
 		protected override void OnStartup(StartupEventArgs e)
 		{
-			CultureInfo.CurrentUICulture = new CultureInfo((string)Kalus.Properties.Settings.Default["localization"]);
-			CultureInfo.CurrentCulture = new CultureInfo((string)Kalus.Properties.Settings.Default["localization"]);
+			CultureInfo.CurrentUICulture = new CultureInfo((string)Kalus.Properties.Settings.Default.localization);
+			CultureInfo.CurrentCulture = new CultureInfo((string)Kalus.Properties.Settings.Default.localization);
 
 			mainWindow = new MainWindow();
 
-			if (!(bool)Kalus.Properties.Settings.Default["runInBackground"])
+			if (!Kalus.Properties.Settings.Default.runInBackground)
 				mainWindow.Show();
 			try
 			{

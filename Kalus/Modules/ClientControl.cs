@@ -41,7 +41,7 @@ namespace Kalus.Modules
 					state = ClientState.NOCLIENT;
 					mainWindow.consoleTab.AddLog(Properties.Logs.ClientClosed, Utility.CLIENT, LogLevel.WARN);
 
-					if ((bool)Properties.Settings.Default["closeWithClient"])
+					if ((bool)Properties.Settings.Default.closeWithClient)
 					{
 						Application.Current.Dispatcher.Invoke(() =>
 						{
@@ -68,7 +68,7 @@ namespace Kalus.Modules
 						state = ClientState.NONE;
 						mainWindow.consoleTab.AddLog(Properties.Logs.ClientFound, Utility.CLIENT, LogLevel.INFO);
 
-						if ((bool)Properties.Settings.Default["openWithClient"])
+						if ((bool)Properties.Settings.Default.openWithClient)
 						{
 							Application.Current.Dispatcher.Invoke(() =>
 							{
@@ -89,7 +89,7 @@ namespace Kalus.Modules
 						mainWindow.consoleTab.AddLog(Properties.Logs.KALUSReady, Utility.KALUS, LogLevel.INFO);
 					}
 				}
-				Thread.Sleep((int)Properties.Settings.Default["checkInterval"]);
+				Thread.Sleep((int)Properties.Settings.Default.checkInterval);
 			} while (true);
 		}
 
@@ -130,7 +130,7 @@ namespace Kalus.Modules
 						case "ReadyCheck":
 							state = ClientState.READYCHECK;
 							//If the setting to get automatically ready is on : accept the game
-							if ((bool)Properties.Settings.Default["utilityReadyCheck"])
+							if ((bool)Properties.Settings.Default.utilityReadyCheck)
 							{
 								await ClientRequest.Accept();
 								mainWindow.consoleTab.AddLog(Properties.Logs.ReadyCheck, Utility.READY, LogLevel.INFO);
@@ -138,7 +138,7 @@ namespace Kalus.Modules
 							//Prevent being auto-ready multiple times
 							while (await ClientRequest.GetClientPhase() == "ReadyCheck")
 							{
-								Thread.Sleep((int)Properties.Settings.Default["checkInterval"]);
+								Thread.Sleep((int)Properties.Settings.Default.checkInterval);
 							}
 							break;
 						//On champion selection : start and await the end of the champ select handler
@@ -177,7 +177,7 @@ namespace Kalus.Modules
 							break;
 					}
 				}
-				Thread.Sleep((int)Properties.Settings.Default["checkInterval"]);
+				Thread.Sleep((int)Properties.Settings.Default.checkInterval);
 			}
 		}
 
@@ -193,7 +193,7 @@ namespace Kalus.Modules
 														.Select(skin => skin.Value<int>("id"));
 
 
-			if ((bool)Properties.Settings.Default["randomSkinAddChromas"])
+			if ((bool)Properties.Settings.Default.randomSkinAddChromas)
 			{
 				var availableChromasId = currentChampionSkins.SelectMany(skin =>
 				{
@@ -380,7 +380,7 @@ namespace Kalus.Modules
 			{
 				await ClientRequest.CreateNewRunePage(recommendedRunes);
 			}
-			else if ((bool)Properties.Settings.Default["runesOverrideOldestPage"])
+			else if ((bool)Properties.Settings.Default.runesOverrideOldestPage)
 			{
 				await EditOldestRunePage(recommendedRunes);
 			}
@@ -400,7 +400,7 @@ namespace Kalus.Modules
 
 		internal static async void SetSummonerSpells(int[] recommendedSpells)
 		{
-			int flashPosition = (int)Properties.Settings.Default["flashPosition"];
+			int flashPosition = (int)Properties.Settings.Default.flashPosition;
 
 			if (flashPosition != 2 && recommendedSpells.Contains(4))
 			{
