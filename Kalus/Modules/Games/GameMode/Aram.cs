@@ -61,7 +61,7 @@ namespace Kalus.Modules.Games.GameMode
 						mainWindow.controlPanel.EnableChangeRuneButtons(false);
 						return;
 				}
-				Thread.Sleep((int)Properties.Settings.Default.checkInterval);
+				Thread.Sleep(Properties.Settings.Default.checkInterval);
 			}
 		}
 
@@ -85,7 +85,7 @@ namespace Kalus.Modules.Games.GameMode
 				await PostPickAction();
 			}
 
-			if ((bool)Properties.Settings.Default.utilityAram)
+			if (Properties.Settings.Default.utilityAram)
 			{
 				int aramPick = GetBenchChampionPick();
 
@@ -103,7 +103,7 @@ namespace Kalus.Modules.Games.GameMode
 
 			if (tradeSent) return;
 
-			if ((bool)Properties.Settings.Default.aramTradeForChampion)
+			if (Properties.Settings.Default.aramTradeForChampion)
 			{
 				var aramPicks = DataCache.GetAramPick();
 
@@ -132,7 +132,7 @@ namespace Kalus.Modules.Games.GameMode
 
 
 			bool needToReroll = !await IsCurrentChampionInSelection();
-			if ((bool)Properties.Settings.Default.aramRerollForChampion && rerollsRemaining != 0)
+			if (Properties.Settings.Default.aramRerollForChampion && rerollsRemaining != 0)
 			{
 				await ClientRequest.AramReroll();
 				OnReroll.Invoke();
@@ -150,7 +150,7 @@ namespace Kalus.Modules.Games.GameMode
 		{
 
 			int currentChampionId = await ClientRequest.GetCurrentChampionId();
-			if ((bool)Properties.Settings.Default.aramRepickChampion)
+			if (Properties.Settings.Default.aramRepickChampion)
 			{
 				var aramPicks = DataCache.GetAramPick();
 
@@ -211,7 +211,7 @@ namespace Kalus.Modules.Games.GameMode
 
 		protected override async Task ChangeRunes(int recommendationNumber = 0)
 		{
-			bool isSetActive = (bool)Properties.Settings.Default.runesPageNotAsActive;
+			bool isSetActive = Properties.Settings.Default.runesPageNotAsActive;
 
 			string? activeRunesPage = isSetActive ? (await ClientRequest.GetActiveRunePage())?["id"]?.ToString() : "0";
 

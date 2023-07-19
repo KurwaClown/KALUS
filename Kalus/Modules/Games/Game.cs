@@ -96,21 +96,21 @@ namespace Kalus.Modules.Games
 			mainWindow.controlPanel.EnableChangeRuneButtons(true);
 
 			//Random skin on pick
-			if ((bool)Properties.Settings.Default.randomSkinOnPick)
+			if (Properties.Settings.Default.randomSkinOnPick)
 			{
 				ClientControl.PickRandomSkin();
 				logMessages.Add(Properties.Logs.RandomSkin);
 			}
 
 			//Set runes if the the auto rune is toggled
-			if ((bool)Properties.Settings.Default.utilityRunes && !isRunePageChanged)
+			if (Properties.Settings.Default.utilityRunes && !isRunePageChanged)
 			{
 				await ChangeRunes();
 				logMessages.Add(Properties.Logs.SettingRunes);
 			}
 
 
-			if ((bool)Properties.Settings.Default.utilitySummoners)
+			if (Properties.Settings.Default.randomSkinOnPick)
 			{
 				await ChangeSpells();
 				logMessages.Add(Properties.Logs.SettingSummoners);

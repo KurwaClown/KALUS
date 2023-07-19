@@ -77,7 +77,7 @@ namespace Kalus.Modules.Games.GameMode
 						mainWindow.controlPanel.EnableChangeRuneButtons(false);
 						return;
 				}
-				Thread.Sleep((int)Properties.Settings.Default.checkInterval);
+				Thread.Sleep(Properties.Settings.Default.checkInterval);
 			}
 		}
 
@@ -149,14 +149,14 @@ namespace Kalus.Modules.Games.GameMode
 					}
 				}
 
-				if (type == "ban" && (bool)Properties.Settings.Default.utilityBan)
+				if (type == "ban" && Properties.Settings.Default.utilityBan)
 				{
 					int banPick = GetChampionBan();
 					if (banPick == 0) return;
 					await SelectionAction(actionId, banPick, type);
 				}
 
-				if (type == "pick" && (bool)Properties.Settings.Default.utilityPick)
+				if (type == "pick" && Properties.Settings.Default.utilityPick)
 				{
 					championId = await GetChampionPick();
 					int championSelectionId = actions.First(action => action.Value<bool>("isInProgress") && action.Value<int>("actorCellId") == cellId)
@@ -164,7 +164,7 @@ namespace Kalus.Modules.Games.GameMode
 
 					if (championSelectionId != championId && championSelectionId != 0)
 					{
-						switch ((int)Properties.Settings.Default.onSelection)
+						switch (Properties.Settings.Default.onSelection)
 						{
 							default:
 								break;
@@ -183,7 +183,7 @@ namespace Kalus.Modules.Games.GameMode
 
 					if (championId == 0)
 					{
-						switch ((int)Properties.Settings.Default.noAvailablePick)
+						switch (Properties.Settings.Default.noAvailablePick)
 						{
 							default:
 								int randomChampionId = await GetRandomChampionPick();
@@ -299,7 +299,7 @@ namespace Kalus.Modules.Games.GameMode
 
 		private async Task<int> GetRandomChampionPick()
 		{
-			int noPicksPreferences = (int)Properties.Settings.Default.noAvailablePick;
+			int noPicksPreferences = Properties.Settings.Default.noAvailablePick;
 
 			var availableChampions = await ClientRequest.GetAvailableChampionsPick();
 			if (availableChampions == null) return 0;
@@ -345,7 +345,7 @@ namespace Kalus.Modules.Games.GameMode
 
 		protected override async Task ChangeRunes(int recommendationNumber = 0)
 		{
-			bool isSetActive = (bool)Properties.Settings.Default.runesPageNotAsActive;
+			bool isSetActive = Properties.Settings.Default.runesPageNotAsActive;
 
 			string? activeRunesPage = isSetActive ? (await ClientRequest.GetActiveRunePage())?["id"]?.ToString() : "0";
 
