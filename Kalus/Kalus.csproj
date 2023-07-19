@@ -9,7 +9,7 @@
     <UseWindowsForms>true</UseWindowsForms>
 
     <Title>KALUS</Title>
-    <Version>1.3.1</Version>
+    <Version>1.4.0</Version>
     <Authors>KurwaClown</Authors>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/KurwaClown/KALUS</RepositoryUrl>
