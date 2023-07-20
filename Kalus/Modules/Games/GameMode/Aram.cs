@@ -217,7 +217,7 @@ namespace Kalus.Modules.Games.GameMode
 
 			if (activeRunesPage == null) return;
 
-			await ClientControl.SetRunesPage(championId, "NONE", recommendationNumber);
+			await Runes.SetRunesPage(championId, "NONE", recommendationNumber);
 
 			isRunePageChanged = true;
 

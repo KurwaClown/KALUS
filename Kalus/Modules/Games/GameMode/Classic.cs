@@ -86,7 +86,7 @@ namespace Kalus.Modules.Games.GameMode
 		{
 			if (championId != await ClientRequest.GetCurrentChampionId()) champSelectFinalized = false;
 
-			var currentRuneIcons = await ClientControl.GetRunesIcons();
+			var currentRuneIcons = await Runes.GetRunesIcons();
 
 			if (currentRuneIcons != null && mainWindow != null) mainWindow.controlPanel.SetRunesIcons(currentRuneIcons.Item1, currentRuneIcons.Item2); ;
 
@@ -352,7 +352,7 @@ namespace Kalus.Modules.Games.GameMode
 			if (activeRunesPage == null) return;
 
 			if (position == null) return;
-			await ClientControl.SetRunesPage(championId, position, recommendationNumber);
+			await Runes.SetRunesPage(championId, position, recommendationNumber);
 			isRunePageChanged = true;
 
 			if (isSetActive) await ClientRequest.SetActiveRunePage(activeRunesPage);
