@@ -22,6 +22,7 @@ namespace Kalus.Modules
 		internal static string gamePhase = "";
 
 		internal static ClientState state = ClientState.NOCLIENT;
+
 		//Ensure that the Authentication is set
 		//Set it when client gets open or is open at startup
 		//Reset it when it gets closed or is closed at startup
@@ -92,14 +93,6 @@ namespace Kalus.Modules
 				Thread.Sleep(Properties.Settings.Default.checkInterval);
 			} while (true);
 		}
-
-		//Returns if client is open
-		internal static bool IsClientOpen()
-		{
-			//Checks if there is multiple UxRender to make sure the client is fully opened
-			return Process.GetProcessesByName("LeagueClientUxRender").Length > 3;
-		}
-
 
 		//Checks client phase every 5 seconds
 		//Is used as a worker thread for the app thread
@@ -181,6 +174,12 @@ namespace Kalus.Modules
 			}
 		}
 
+		//Returns if client is open
+		internal static bool IsClientOpen()
+		{
+			//Checks if there is multiple UxRender to make sure the client is fully opened
+			return Process.GetProcessesByName("LeagueClientUxRender").Length > 3;
+		}
 
 		#region Random Skin
 
@@ -227,24 +226,7 @@ namespace Kalus.Modules
 
 		#endregion Random Skin
 
-		//Returns if it's the player turn to act
-		//If true output the id of the action and the type (e.g : pick or ban)
-		internal static bool IsCurrentPlayerTurn(IEnumerable<JObject> actions, int cellId, out int? actionId, out string? type)
-		{
-			//Get the player actions that are in progress
-			var currentPlayerAction = actions.Where(action => action.Value<int>("actorCellId") == cellId && action.Value<bool>("isInProgress") == true)
-				.Select(action => action).ToArray();
-
-			bool isCurrentPlayerTurn = currentPlayerAction.Any();
-
-			actionId = isCurrentPlayerTurn ? currentPlayerAction.First().Value<int>("id") : 0;
-			type = isCurrentPlayerTurn ? currentPlayerAction.First()["type"]?.ToString() : string.Empty;
-
-			if (type == null || actionId == null) return false;
-
-			return isCurrentPlayerTurn;
-		}
-
+		//Retrieves the default position of a given champion
 		internal static async Task<string?> GetChampionDefaultPosition(int championId)
 		{
 
@@ -255,6 +237,7 @@ namespace Kalus.Modules
 																	.Value<string>("position");
 		}
 
+		//Retrieves all the champion that can be in the given position
 		internal static async Task<int[]> GetAllChampionForPosition(string position)
 		{
 			return (await DataCache.GetChampionsRunesRecommendation())
@@ -291,7 +274,6 @@ namespace Kalus.Modules
 			;
 		}
 
-
 		internal static async void SetSummonerSpells(int[] recommendedSpells)
 		{
 			int flashPosition = Properties.Settings.Default.flashPosition;
@@ -306,7 +288,6 @@ namespace Kalus.Modules
 
 			await ClientRequest.ChangeSummonerSpells(recommendedSpells);
 		}
-
 
 	}
 }
