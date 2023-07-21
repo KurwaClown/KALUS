@@ -18,6 +18,7 @@ namespace Kalus.Modules
 		private static JArray? championsInformation;
 		private static JArray? championsRunesRecommendation;
 		private static JArray? runesStyleInformation;
+		private static JArray? runesInformation;
 
 		private static string? appRunePageId;
 
@@ -169,11 +170,41 @@ namespace Kalus.Modules
 
 		internal static async Task<JArray?> GetRunesStyleInformation()
 		{
-			runesStyleInformation ??= await ClientRequest.GetRunesStyles();
+			runesStyleInformation ??= await ClientRequest.GetRunesStylesInformation();
 
 			if (runesStyleInformation == null) return null;
 
+			for (int i = 0; i < runesStyleInformation.Count; i++)
+			{
+				JObject trimmedRune = new()
+				{
+					{ "id", runesStyleInformation[i].SelectToken("id") },
+					{ "name", runesStyleInformation[i].SelectToken("name") },
+					{ "iconPath", runesStyleInformation[i].SelectToken("iconPath") }
+				};
+				runesStyleInformation[i] = trimmedRune;
+			}
+
 			return runesStyleInformation;
+		}
+
+		internal static async Task<JArray> GetRunesInformation()
+		{
+			runesInformation ??= await ClientRequest.GetRunesInformation();
+
+			for (int i = 0; i < runesInformation.Count; i++)
+			{
+				JObject trimmedRune = new()
+				{
+					{ "id", runesInformation[i].SelectToken("id") },
+					{ "name", runesInformation[i].SelectToken("name") },
+					{ "recommendationDescriptor", runesInformation[i].SelectToken("recommendationDescriptor") },
+					{ "iconPath", runesInformation[i].SelectToken("iconPath") }
+				};
+				runesInformation[i] = trimmedRune;
+			}
+
+			return runesInformation;
 		}
 
 		internal static async Task<string?> GetAppRunePageId()
@@ -244,6 +275,7 @@ namespace Kalus.Modules
 			championsInformation = null;
 			championsRunesRecommendation = null;
 			runesStyleInformation = null;
+			runesInformation = null;
 
 			appRunePageId = null;
 
