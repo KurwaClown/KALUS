@@ -243,7 +243,7 @@ namespace Kalus.Modules.Networking
 			return champions;
 		}
 
-		internal static async Task<JArray?> GetRunesStyles()
+		internal static async Task<JArray> GetRunesStylesInformation()
 		{
 			var request = Auth.IsAuthSet() ? $"/lol-game-data/assets/v1/perkstyles.json" : "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perkstyles.json";
 			var response = await RequestQueue.Request(HttpMethod.Get, request);
@@ -251,9 +251,18 @@ namespace Kalus.Modules.Networking
 
 			string? perksStyles = perks["styles"]?.ToString();
 
-			if (perksStyles == null) return null;
+			if (perksStyles == null)
+				return new JArray();
 
 			return JArray.Parse(perksStyles);
+		}
+
+		internal static async Task<JArray> GetRunesInformation()
+		{
+			var request = Auth.IsAuthSet() ? $"/lol-game-data/assets/v1/perks.json" : "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perks.json";
+			var response = await RequestQueue.Request(HttpMethod.Get, request);
+
+			return JArray.Parse(response);
 		}
 		#endregion
 

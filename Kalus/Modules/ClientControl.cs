@@ -227,14 +227,14 @@ namespace Kalus.Modules
 		#endregion Random Skin
 
 		//Retrieves the default position of a given champion
-		internal static async Task<string?> GetChampionDefaultPosition(int championId)
+		internal static async Task<string> GetChampionDefaultPosition(int championId)
 		{
 
 			return (await DataCache.GetChampionsRunesRecommendation())
 																	.First(item => item.Value<int>("championId") == championId)
 																	.Value<JArray>("runeRecommendations")?
 																	.First(recommendation => recommendation.Value<string>("position") != "NONE" && recommendation.Value<bool>("isDefaultPosition"))
-																	.Value<string>("position");
+																	.Value<string>("position") ?? "NONE";
 		}
 
 		//Retrieves all the champion that can be in the given position

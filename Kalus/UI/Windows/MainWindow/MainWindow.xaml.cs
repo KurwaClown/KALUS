@@ -21,8 +21,9 @@ namespace Kalus.UI.Windows
 		{
 			InitializeComponent();
 
+#if RELEASE
 			AppDomain.CurrentDomain.UnhandledException += UnhandledException;
-
+#endif
 			Thread authentication = new(() => ClientControl.EnsureAuthentication(this));
 			Thread clientPhase = new(() => ClientControl.ClientPhase(this));
 

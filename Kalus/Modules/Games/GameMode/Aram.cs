@@ -180,7 +180,7 @@ namespace Kalus.Modules.Games.GameMode
 			return 0;
 		}
 
-		private async Task<bool> IsCurrentChampionInSelection()
+		private static async Task<bool> IsCurrentChampionInSelection()
 		{
 			int championId = await ClientRequest.GetCurrentChampionId();
 
@@ -209,8 +209,11 @@ namespace Kalus.Modules.Games.GameMode
 			ClientControl.SetSummonerSpells(spellsId);
 		}
 
-		protected override async Task ChangeRunes(int recommendationNumber = 0)
+		protected override async Task ChangeRunes(int recommendationNumber = -1)
 		{
+			if (recommendationNumber == -1)
+				Runes.SetControlPanelRunesSelection(championId, mainWindow.controlPanel);
+
 			bool isSetActive = Properties.Settings.Default.runesPageNotAsActive;
 
 			string? activeRunesPage = isSetActive ? (await ClientRequest.GetActiveRunePage())?["id"]?.ToString() : "0";

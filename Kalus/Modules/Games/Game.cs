@@ -73,12 +73,14 @@ namespace Kalus.Modules.Games
 
 		protected abstract Task ChangeSpells();
 
-		protected abstract Task ChangeRunes(int recommendationNumber = 0);
+		protected abstract Task ChangeRunes(int recommendationNumber = -1);
 
 		protected async Task PostPickAction()
 		{
 			List<string> logMessages = new List<string>();
 			var imageBytes = await ClientRequest.GetChampionImageById(championId);
+
+
 
 			var champions = await DataCache.GetChampionsInformations();
 
@@ -87,6 +89,8 @@ namespace Kalus.Modules.Games
 			if (championName == null) return;
 
 			if (mainWindow == null) return;
+
+
 
 			//Set the current champion image and name on the UI
 			mainWindow.controlPanel.SetChampionIcon(imageBytes);

@@ -15,7 +15,7 @@ namespace Kalus.Modules.Games.GameMode
 		private readonly bool isDraft;
 
 		private int cellId;
-		private string? position = "NONE";
+		private string position = "NONE";
 		private bool isChampionRandom = false;
 		private bool champSelectFinalized = false;
 		private bool hasPicked = false;
@@ -109,7 +109,6 @@ namespace Kalus.Modules.Games.GameMode
 
 		protected override async Task ChangeSpells()
 		{
-			if (position == null) return;
 			string positionForSpells = position;
 			var runesRecommendation = await ClientControl.GetSpellsRecommendationByPosition(championId, positionForSpells);
 
@@ -264,7 +263,6 @@ namespace Kalus.Modules.Games.GameMode
 		//Get the champion pick for blind or draft game, if any
 		protected virtual async Task<int> GetChampionPick()
 		{
-			if (position == null) return 0;
 			var picks = isDraft ? DataCache.GetDraftPick(position) : DataCache.GetBlindPick();
 
 			if (picks == null) return 0;
@@ -282,7 +280,6 @@ namespace Kalus.Modules.Games.GameMode
 		//Get the champion ban for draft game, if any
 		private int GetChampionBan()
 		{
-			if (position == null) return 0;
 			var bans = DataCache.GetDraftBan(position);
 
 			if (bans == null) return 0;
@@ -307,7 +304,6 @@ namespace Kalus.Modules.Games.GameMode
 			//Random pick by position
 			if (noPicksPreferences == 2)
 			{
-				if (position == null) return 0;
 				var allChampionsByPosition = await ClientControl.GetAllChampionForPosition(position);
 
 				var availablesChampionsForPosition = allChampionsByPosition.Intersect(availableChampions).ToArray();
@@ -343,15 +339,20 @@ namespace Kalus.Modules.Games.GameMode
 										.Select(action => action.Value<int>("championId")).ToArray();
 		}
 
-		protected override async Task ChangeRunes(int recommendationNumber = 0)
+		protected override async Task ChangeRunes(int recommendationNumber = -1)
 		{
+			//-1 is the default value, it is only passed when picking a champion
+			//So here we set up the rune selection combobox only on a champion pick
+
+			if (recommendationNumber == -1)
+				Runes.SetControlPanelRunesSelection(championId, mainWindow.controlPanel);
+
 			bool isSetActive = Properties.Settings.Default.runesPageNotAsActive;
 
 			string? activeRunesPage = isSetActive ? (await ClientRequest.GetActiveRunePage())?["id"]?.ToString() : "0";
 
 			if (activeRunesPage == null) return;
 
-			if (position == null) return;
 			await Runes.SetRunesPage(championId, position, recommendationNumber);
 			isRunePageChanged = true;
 

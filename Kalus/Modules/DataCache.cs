@@ -168,21 +168,24 @@ namespace Kalus.Modules
 			return championsRunesRecommendation;
 		}
 
-		internal static async Task<JArray?> GetRunesStyleInformation()
+		internal static async Task<JArray> GetRunesStyleInformation()
 		{
-			runesStyleInformation ??= await ClientRequest.GetRunesStylesInformation();
-
-			if (runesStyleInformation == null) return null;
-
-			for (int i = 0; i < runesStyleInformation.Count; i++)
+			if(runesStyleInformation == null)
 			{
-				JObject trimmedRune = new()
+
+				runesStyleInformation = await ClientRequest.GetRunesStylesInformation();
+
+
+				for (int i = 0; i < runesStyleInformation.Count; i++)
 				{
-					{ "id", runesStyleInformation[i].SelectToken("id") },
-					{ "name", runesStyleInformation[i].SelectToken("name") },
-					{ "iconPath", runesStyleInformation[i].SelectToken("iconPath") }
-				};
-				runesStyleInformation[i] = trimmedRune;
+					JObject trimmedRune = new()
+					{
+						{ "id", runesStyleInformation[i].SelectToken("id") },
+						{ "name", runesStyleInformation[i].SelectToken("name") },
+						{ "iconPath", runesStyleInformation[i].SelectToken("iconPath") }
+					};
+					runesStyleInformation[i] = trimmedRune;
+				}
 			}
 
 			return runesStyleInformation;
@@ -190,20 +193,24 @@ namespace Kalus.Modules
 
 		internal static async Task<JArray> GetRunesInformation()
 		{
-			runesInformation ??= await ClientRequest.GetRunesInformation();
-
-			for (int i = 0; i < runesInformation.Count; i++)
+			if(runesInformation == null)
 			{
-				JObject trimmedRune = new()
-				{
-					{ "id", runesInformation[i].SelectToken("id") },
-					{ "name", runesInformation[i].SelectToken("name") },
-					{ "recommendationDescriptor", runesInformation[i].SelectToken("recommendationDescriptor") },
-					{ "iconPath", runesInformation[i].SelectToken("iconPath") }
-				};
-				runesInformation[i] = trimmedRune;
-			}
 
+				runesInformation = await ClientRequest.GetRunesInformation();
+
+				for (int i = 0; i < runesInformation.Count; i++)
+				{
+					JObject trimmedRune = new()
+					{
+						{ "id", runesInformation[i].SelectToken("id") },
+						{ "name", runesInformation[i].SelectToken("name") },
+						{ "recommendationDescriptor", runesInformation[i].SelectToken("recommendationDescriptor") },
+						{ "iconPath", runesInformation[i].SelectToken("iconPath") }
+					};
+					runesInformation[i] = trimmedRune;
+				}
+
+			}
 			return runesInformation;
 		}
 
@@ -222,6 +229,12 @@ namespace Kalus.Modules
 			}
 
 			return appRunePageId;
+		}
+
+		internal static async Task<string?> GetChampionName(int championId)
+		{
+			var champion = await GetChampionsInformations();
+			return champion.Where(champion => champion.Value<int>("id") == championId).Select(champion => champion["name"]?.ToString()).First();
 		}
 
 		internal static async Task<byte[]> GetDefaultChampionIcon()
