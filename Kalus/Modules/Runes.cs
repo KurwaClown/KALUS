@@ -85,7 +85,7 @@ namespace Kalus.Modules
 		}
 
 		//Get the recommended champion runes for a champion depending on its position
-		internal static async Task<JToken?> GetChampRunesByPosition(int champId, string position)
+		private static async Task<JToken?> GetChampRunesByPosition(int champId, string position)
 		{
 			var runesRecommendation = await GetAllRecommendedRunesForChampion(champId);
 
@@ -100,13 +100,13 @@ namespace Kalus.Modules
 			return champRunesByPosition[0];
 		}
 
-		internal static async Task<JToken?> GetChampRunesBySelectionIndex(int championId, int recommendationNumber)
+		private static async Task<JToken?> GetChampRunesBySelectionIndex(int championId, int recommendationNumber)
 		{
 			return (await GetAllRecommendedRunesForChampion(championId))[recommendationNumber];
 		}
 
 		//Format the champion runes for the rune request
-		internal static string FormatChampRunes(JToken runes, string champion)
+		private static string FormatChampRunes(JToken runes, string champion)
 		{
 			string position = runes["position"]?.ToString() ?? "NONE";
 
@@ -126,7 +126,7 @@ namespace Kalus.Modules
 		}
 
 		//Check if we can create a new page
-		internal static async Task<bool> CanCreateNewPage()
+		private static async Task<bool> CanCreateNewPage()
 		{
 			var inventory = await ClientRequest.GetRunesInventory();
 			if (inventory == null)
