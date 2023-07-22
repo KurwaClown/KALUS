@@ -97,7 +97,7 @@ namespace Kalus.Modules.Games
 			mainWindow.controlPanel.SetChampionName(championName);
 			//Toggle the random skin button on
 			mainWindow.controlPanel.EnableRandomSkinButton(true);
-			mainWindow.controlPanel.EnableChangeRuneButtons(true);
+			mainWindow.controlPanel.EnableChangeRuneCombobox(true);
 
 			//Random skin on pick
 			if (Properties.Settings.Default.randomSkinOnPick)
@@ -125,6 +125,7 @@ namespace Kalus.Modules.Games
 			mainWindow.consoleTab.AddLog(concatLog, UI.Controls.Tabs.Console.Utility.POSTPICK , UI.Controls.Tabs.Console.LogLevel.INFO);
 
 		}
+
 
 		//Get sessions actions
 		internal IEnumerable<JObject>? GetSessionActions()

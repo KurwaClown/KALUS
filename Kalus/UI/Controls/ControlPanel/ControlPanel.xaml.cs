@@ -26,12 +26,17 @@ namespace Kalus.UI.Controls
 			InitializeComponent();
 		}
 
-		private void ChangeRunes(object sender, RoutedEventArgs e)
-		{
-			int recommendationNumber = int.Parse((sender as Button)!.Content.ToString() ?? "1") - 1;
-			runeChange?.Invoke(recommendationNumber);
-		}
 
+		private void ChangeRunes(object sender, SelectionChangedEventArgs e)
+		{
+			if(sender is ComboBox runesCombobox)
+			{
+				int selectedItem = runesCombobox.SelectedIndex;
+
+				runeChange?.Invoke(selectedItem);
+
+			}
+		}
 
 		private void RandomSkinClick(object sender, RoutedEventArgs e)
 		{
@@ -48,13 +53,12 @@ namespace Kalus.UI.Controls
 			Dispatcher.Invoke(() => random_btn.IsEnabled = isEnabled);
 		}
 
-		internal void EnableChangeRuneButtons(bool isEnabled)
+		internal void EnableChangeRuneCombobox(bool isEnabled)
 		{
 			Dispatcher.Invoke(() =>
 			{
-				runes_btn_1.IsEnabled = isEnabled;
-				runes_btn_2.IsEnabled = isEnabled;
-				runes_btn_3.IsEnabled = isEnabled;
+				runesSelection.Items.Clear();
+				runesSelection.IsEnabled = isEnabled;
 			});
 		}
 
@@ -169,5 +173,7 @@ namespace Kalus.UI.Controls
 
 			}
         }
-    }
+
+
+	}
 }

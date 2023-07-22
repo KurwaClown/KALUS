@@ -68,7 +68,7 @@ namespace Kalus.Modules
 					controlPanel.runesSelection.Items.Add(new ComboBoxItem
 					{
 						Content = $"{position} : {mainRuneDescription}",
-						ToolTip = $"{mainRuneName} | {subStyleName}" 
+						ToolTip = $"{mainRuneName} | {subStyleName}"
 					});
 				});
 
@@ -106,8 +106,13 @@ namespace Kalus.Modules
 		}
 
 		//Format the champion runes for the rune request
-		internal static string FormatChampRunes(JToken runes, string champion, string position)
+		internal static string FormatChampRunes(JToken runes, string champion)
 		{
+			string position = runes["position"]?.ToString() ?? "NONE";
+
+			if (position == "NONE") position = "ARAM";
+			if (position == "UTILITY") position = "SUPPORT";
+
 			//Create a template for the request body
 			string runesTemplate = $"{{\"current\": true,\"name\": \"KALUS - {champion} - {position}\",\"primaryStyleId\": 0,\"subStyleId\": 0, \"selectedPerkIds\": []}}";
 			JObject runesObject = JObject.Parse(runesTemplate);
@@ -145,7 +150,7 @@ namespace Kalus.Modules
 			if (runesRecommendation == null)
 				return;
 
-			string formattedRunes = FormatChampRunes(runesRecommendation, championName, position);
+			string formattedRunes = FormatChampRunes(runesRecommendation, championName);
 
 			await EditRunesPage(appPageId, formattedRunes);
 		}

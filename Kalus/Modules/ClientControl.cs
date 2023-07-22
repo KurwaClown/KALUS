@@ -112,9 +112,13 @@ namespace Kalus.Modules
 							continue;
 						case "None":
 							state = ClientState.NONE;
+							mainWindow.controlPanel.EnableRandomSkinButton(false);
+							mainWindow.controlPanel.EnableChangeRuneCombobox(false);
 							break;
 						case "Lobby":
 							state = ClientState.LOBBY;
+							mainWindow.controlPanel.EnableRandomSkinButton(false);
+							mainWindow.controlPanel.EnableChangeRuneCombobox(false);
 							break;
 						case "Matchmaking":
 							state = ClientState.MATCHMAKING;
@@ -150,7 +154,7 @@ namespace Kalus.Modules
 							string gameMode = mainWindow.GetGamemodeName();
 							mainWindow.controlPanel.SetGameModeIcon(gameMode, true);
 							mainWindow.controlPanel.EnableRandomSkinButton(false);
-							mainWindow.controlPanel.EnableChangeRuneButtons(false);
+							mainWindow.controlPanel.EnableChangeRuneCombobox(false);
 							break;
 						//If not in any of the above game phase
 						default:
@@ -166,7 +170,7 @@ namespace Kalus.Modules
 							}
 
 							mainWindow.controlPanel.EnableRandomSkinButton(false);
-							mainWindow.controlPanel.EnableChangeRuneButtons(false);
+							mainWindow.controlPanel.EnableChangeRuneCombobox(false);
 							break;
 					}
 				}

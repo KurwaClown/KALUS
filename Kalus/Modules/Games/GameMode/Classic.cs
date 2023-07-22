@@ -74,7 +74,7 @@ namespace Kalus.Modules.Games.GameMode
 					case "GAME_STARTING":
 					case "":
 						mainWindow.controlPanel.EnableRandomSkinButton(false);
-						mainWindow.controlPanel.EnableChangeRuneButtons(false);
+						mainWindow.controlPanel.EnableChangeRuneCombobox(false);
 						return;
 				}
 				Thread.Sleep(Properties.Settings.Default.checkInterval);
