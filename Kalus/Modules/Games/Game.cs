@@ -114,7 +114,7 @@ namespace Kalus.Modules.Games
 			}
 
 
-			if (Properties.Settings.Default.randomSkinOnPick)
+			if (Properties.Settings.Default.utilitySummoners)
 			{
 				await ChangeSpells();
 				logMessages.Add(Properties.Logs.SettingSummoners);
