@@ -245,7 +245,7 @@ namespace Kalus.Modules.Networking
 
 		internal static async Task<JArray> GetRunesStylesInformation()
 		{
-			var request = Auth.IsAuthSet() ? $"/lol-game-data/assets/v1/perkstyles.json" : "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perkstyles.json";
+			var request = "/lol-game-data/assets/v1/perkstyles.json";
 			var response = await RequestQueue.Request(HttpMethod.Get, request);
 			var perks = JObject.Parse(response);
 
@@ -259,7 +259,7 @@ namespace Kalus.Modules.Networking
 
 		internal static async Task<JArray> GetRunesInformation()
 		{
-			var request = Auth.IsAuthSet() ? $"/lol-game-data/assets/v1/perks.json" : "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perks.json";
+			var request = "/lol-game-data/assets/v1/perks.json";
 			var response = await RequestQueue.Request(HttpMethod.Get, request);
 
 			return JArray.Parse(response);
