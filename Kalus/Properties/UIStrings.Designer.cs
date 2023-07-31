@@ -205,11 +205,20 @@ namespace Kalus.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Runes.
+        ///   Looks up a localized string similar to Inventory.
         /// </summary>
         public static string ControlPanelRunesLabel {
             get {
                 return ResourceManager.GetString("ControlPanelRunesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set Spells.
+        /// </summary>
+        public static string ControlPanelSetSpellsLabel {
+            get {
+                return ResourceManager.GetString("ControlPanelSetSpellsLabel", resourceCulture);
             }
         }
         

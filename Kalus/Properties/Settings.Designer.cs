@@ -370,5 +370,17 @@ namespace Kalus.Properties {
                 this["minimizeOnClosing"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool setSummonerOnSelection {
+            get {
+                return ((bool)(this["setSummonerOnSelection"]));
+            }
+            set {
+                this["setSummonerOnSelection"] = value;
+            }
+        }
     }
 }

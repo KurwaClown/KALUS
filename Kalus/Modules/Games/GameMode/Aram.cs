@@ -24,7 +24,7 @@ namespace Kalus.Modules.Games.GameMode
 			OnReroll += LogReroll;
 			OnReroll += ExecutePreferencesOnReroll;
 
-			this.mainWindow.controlPanel.runeChange = this.ChangeRunes;
+			this.mainWindow.controlPanel.inventoryChange = this.ChangeInventoryBySelection;
 		}
 
 		//Handler of the champion selections
@@ -196,17 +196,17 @@ namespace Kalus.Modules.Games.GameMode
 													.ToList();
 		}
 
-		protected override async Task ChangeSpells()
+		protected override async Task ChangeSpells(int recommendationNumber = -1)
 		{
-			var runesRecommendation = await ClientControl.GetSpellsRecommendationByPosition(championId, "NONE");
+			var runesRecommendation = recommendationNumber == -1 ? await SummonerSpells.GetSpellsRecommendationByPosition(championId, "NONE") : await SummonerSpells.GetSpellsRecommendationBySelectionIndex(championId, recommendationNumber);
 			if (runesRecommendation == null) return;
 			int[]? spellsId = runesRecommendation.ToObject<int[]>();
 
 			if (spellsId == null) return;
 
-			if (!spellsId.Contains(32)) spellsId[1] = 32;
+			if (!spellsId.Contains(32) && Properties.Settings.Default.summonersAlwaysSnowball) spellsId[1] = 32;
 
-			ClientControl.SetSummonerSpells(spellsId);
+			SummonerSpells.SetSummonerSpells(spellsId);
 		}
 
 		protected override async Task ChangeRunes(int recommendationNumber = -1)

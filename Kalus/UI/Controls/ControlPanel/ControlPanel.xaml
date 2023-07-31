@@ -90,7 +90,10 @@
                 <TextBlock Text="{x:Static properties:UIStrings.ControlPanelLiteModeButton}" TextAlignment="Center" TextWrapping="Wrap"/>
             </Button>
             <GroupBox Header="{x:Static properties:UIStrings.ControlPanelRunesLabel}">
-                <ComboBox x:Name="runesSelection" SelectionChanged="ChangeRunes" IsEnabled="False"/>
+                <StackPanel>
+                    <ComboBox x:Name="runesSelection" SelectionChanged="ChangeRunes" IsEnabled="False" />
+                    <Components:SaveableCheckbox Content="{x:Static properties:UIStrings.ControlPanelSetSpellsLabel}" Margin="0,5,0,0" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=setSummonerOnSelection, Mode=TwoWay}"/>
+                </StackPanel>
             </GroupBox>
             <Button x:Name="random_btn" Content="{x:Static properties:UIStrings.ControlPanelRandomSkinButton}" Click="RandomSkinClick" IsEnabled="False" Margin="0,10,0,0" />
             <Button Content="{x:Static properties:UIStrings.ControlPanelReloadClientButton}" Click="ClientRestart" Margin="0,10,0,0" />

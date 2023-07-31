@@ -255,43 +255,5 @@ namespace Kalus.Modules
 							.ToArray();
 		}
 
-		//Get the recommended champion spells for a champion depending on its position and the game mode
-		internal static async Task<JToken?> GetSpellsRecommendationByPosition(int champId, string position)
-		{
-			var runesRecommendation = await Runes.GetRecommendedRunesById(champId);
-
-			if (runesRecommendation == null)
-				return null;
-
-			IEnumerable<JToken>? champRunesByPosition = null;
-
-			if (position != "")
-				champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"]?.ToString() == position);
-
-			if (champRunesByPosition == null)
-				return null;
-
-			if (position == "" || !champRunesByPosition.Any())
-				champRunesByPosition = runesRecommendation.Where(recommendation => recommendation["position"]?.ToString() != "NONE");
-
-			return champRunesByPosition.Select(recommendation => recommendation["summonerSpellIds"]).First();
-			;
-		}
-
-		internal static async void SetSummonerSpells(int[] recommendedSpells)
-		{
-			int flashPosition = Properties.Settings.Default.flashPosition;
-
-			if (flashPosition != 2 && recommendedSpells.Contains(4))
-			{
-				if (Array.IndexOf(recommendedSpells, 4) != flashPosition)
-				{
-					(recommendedSpells[1], recommendedSpells[0]) = (recommendedSpells[0], recommendedSpells[1]);
-				}
-			}
-
-			await ClientRequest.ChangeSummonerSpells(recommendedSpells);
-		}
-
 	}
 }

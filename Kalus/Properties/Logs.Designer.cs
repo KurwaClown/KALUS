@@ -97,6 +97,15 @@ namespace Kalus.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Changing inventory with new selection.
+        /// </summary>
+        public static string ChangingInventory {
+            get {
+                return ResourceManager.GetString("ChangingInventory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Client has been closed.
         /// </summary>
         public static string ClientClosed {

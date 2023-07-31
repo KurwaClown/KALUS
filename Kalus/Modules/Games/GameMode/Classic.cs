@@ -25,7 +25,7 @@ namespace Kalus.Modules.Games.GameMode
 		internal Classic(MainWindow mainWindow, string gameType) : base(mainWindow)
 		{
 			this.mainWindow = mainWindow;
-			this.mainWindow.controlPanel.runeChange = this.ChangeRunes;
+			this.mainWindow.controlPanel.inventoryChange = this.ChangeInventoryBySelection;
 
 			this.gameType = gameType;
 			isDraft = gameType == "Draft";
@@ -107,15 +107,15 @@ namespace Kalus.Modules.Games.GameMode
 			}
 		}
 
-		protected override async Task ChangeSpells()
+		protected override async Task ChangeSpells(int recommendationNumber = -1)
 		{
 			string positionForSpells = position;
-			var runesRecommendation = await ClientControl.GetSpellsRecommendationByPosition(championId, positionForSpells);
+			var runesRecommendation = recommendationNumber == -1 ? await SummonerSpells.GetSpellsRecommendationByPosition(championId, positionForSpells) : await SummonerSpells.GetSpellsRecommendationBySelectionIndex(championId, recommendationNumber);
 
 			if (runesRecommendation == null) return;
 
 			var spellsId = runesRecommendation.ToObject<int[]>();
-			if (spellsId != null) ClientControl.SetSummonerSpells(spellsId);
+			if (spellsId != null) SummonerSpells.SetSummonerSpells(spellsId);
 		}
 
 		//Act on pick phase
