@@ -163,10 +163,13 @@
     <value>Skin Aléatoire</value>
   </data>
   <data name="ControlPanelReloadClientButton" xml:space="preserve">
-    <value>Redémarrer le client LoL</value>
+    <value>Réinitialiser le client LoL</value>
   </data>
   <data name="ControlPanelRunesLabel" xml:space="preserve">
-    <value>Runes</value>
+    <value>Inventaire</value>
+  </data>
+  <data name="ControlPanelSetSpellsLabel" xml:space="preserve">
+    <value>Changer les sorts</value>
   </data>
   <data name="ControlPanelStatus" xml:space="preserve">
     <value>Statut</value>

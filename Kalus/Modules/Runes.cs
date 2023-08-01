@@ -18,7 +18,7 @@ namespace Kalus.Modules
 		/// </summary>
 		/// <param name="championId">The id of the champion</param>
 		/// <returns>All the runes recommendation for a champion</returns>
-		private static async Task<JArray> GetAllRecommendedRunesForChampion(int championId)
+		internal static async Task<JArray> GetAllRecommendedRunesForChampion(int championId)
 		{
 			JArray runesRecommendation = await DataCache.GetChampionsRunesRecommendation();
 
@@ -100,18 +100,6 @@ namespace Kalus.Modules
 
 			}
 		}
-		/// <summary>
-		/// Retrieves the first runes recommendation found
-		/// </summary>
-		/// <param name="championId">The champion Id</param>
-		/// <returns>A JToken containing the runes reccomendation</returns>
-		internal static async Task<JToken?> GetRecommendedRunesById(int championId)
-		{
-			JArray championsRunes = await GetAllRecommendedRunesForChampion(championId);
-
-			return championsRunes.First();
-		}
-
 
 		/// <summary>
 		/// Retrieves the recommended champion runes depending on a position
@@ -119,7 +107,7 @@ namespace Kalus.Modules
 		/// <param name="championId">The champion Id</param>
 		/// <param name="position">The position to look for in the recommendation</param>
 		/// <returns>A JToken of the runes recommendation</returns>
-		private static async Task<JToken?> GetChampRunesByPosition(int championId, string position)
+		internal static async Task<JToken?> GetChampRunesByPosition(int championId, string position)
 		{
 			var runesRecommendation = await GetAllRecommendedRunesForChampion(championId);
 
@@ -146,7 +134,7 @@ namespace Kalus.Modules
 		}
 
 		/// <summary>
-		/// Format the runes recommendation into the content for the modify runes request 
+		/// Format the runes recommendation into the content for the modify runes request
 		/// </summary>
 		/// <param name="runes">A Jtoken of the runes recommendation</param>
 		/// <param name="championName">The name of the champion</param>

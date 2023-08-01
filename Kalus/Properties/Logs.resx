@@ -129,6 +129,9 @@
   <data name="AramTradeRequest" xml:space="preserve">
     <value>Sending trade request</value>
   </data>
+  <data name="ChangingInventory" xml:space="preserve">
+    <value>Changing inventory with new selection</value>
+  </data>
   <data name="ClientClosed" xml:space="preserve">
     <value>Client has been closed</value>
   </data>

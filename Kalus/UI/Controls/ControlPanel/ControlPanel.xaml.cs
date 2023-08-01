@@ -17,9 +17,9 @@ namespace Kalus.UI.Controls
 	/// </summary>
 	public partial class ControlPanel : UserControl
 	{
-		internal delegate Task RuneChange(int recommendationNumber = 0);
+		internal delegate Task InventoryChange(int recommendationNumber = -1);
 
-		internal RuneChange? runeChange;
+		internal InventoryChange? inventoryChange;
 
 		public ControlPanel()
 		{
@@ -33,7 +33,7 @@ namespace Kalus.UI.Controls
 			{
 				int selectedItem = runesCombobox.SelectedIndex;
 
-				runeChange?.Invoke(selectedItem);
+				inventoryChange?.Invoke(selectedItem);
 
 			}
 		}

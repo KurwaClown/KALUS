@@ -5,16 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:properties="clr-namespace:Kalus.Properties"
              xmlns:controls="clr-namespace:Kalus.UI.Controls"
-             xmlns:components="clr-namespace:Kalus.UI.Controls.Components"
              mc:Ignorable="d"
              d:Background="White"
              d:DesignHeight="150" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
             <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="175"/>
+            <ColumnDefinition Width="350"/>
         </Grid.ColumnDefinitions>
         <GroupBox x:Name="statusBorder" Header="{x:Static properties:UIStrings.ControlPanelStatus}" BorderBrush="#FFFF0303" Grid.ColumnSpan="2" Grid.Column="2" BorderThickness="2,2,2,2" Margin="5,0,0,0">
             <Grid>
@@ -30,59 +28,53 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Image x:Name="gameModeIcon" Grid.RowSpan="3" Width="80" Height="80" />
+                <GridSplitter Grid.Row="2" Height="1" Width="50" HorizontalAlignment="Center" VerticalAlignment="Bottom"  />
+                <Label x:Name="gameModeLbl" Content="{x:Static properties:UIStrings.ControlPanelGameModeLabel}" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" />
+                
                 <GridSplitter Height="100" Grid.RowSpan="4" Width="1" />
-                <Grid x:Name="stylesIcon" Grid.Column="1" Grid.RowSpan="4">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="3*" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid HorizontalAlignment="Center" Height="81" VerticalAlignment="Center" Width="94">
-                        <Ellipse x:Name="mainStyle" StrokeThickness="6" Stroke="#FF333333" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="50" MinHeight="50" MaxWidth="100" MaxHeight="100" Height="{Binding ActualWidth, ElementName=mainStyle, Mode=OneWay}" Width="70" Panel.ZIndex="1">
-                            <Ellipse.Fill>
-                                <ImageBrush x:Name="mainStyleIcon" Stretch="None" ViewboxUnits="RelativeToBoundingBox">
-                                    <ImageBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleX="1.2" ScaleY="1.2" />
-                                            <SkewTransform CenterX="0.5" CenterY="0.5" />
-                                            <RotateTransform CenterX="0.5" CenterY="0.5" />
-                                            <TranslateTransform />
-                                        </TransformGroup>
-                                    </ImageBrush.RelativeTransform>
-                                </ImageBrush>
-                            </Ellipse.Fill>
-                        </Ellipse>
-                        <Path Stroke="{Binding Stroke, ElementName=mainStyle, Mode=TwoWay}" StrokeThickness="4" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="Fill" Margin="54,41,0,0" Data="M20,20 A30,30,0,1,1,0,50">
-                            <Path.Fill>
-                                <ImageBrush x:Name="subStyleIcon" Stretch="None">
-                                    <ImageBrush.RelativeTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleX="0.7" ScaleY="0.7" />
-                                            <SkewTransform CenterX="0.5" CenterY="0.5" />
-                                            <RotateTransform CenterX="0.5" CenterY="0.5" />
-                                            <TranslateTransform />
-                                        </TransformGroup>
-                                    </ImageBrush.RelativeTransform>
-                                </ImageBrush>
-                            </Path.Fill>
-                        </Path>
-                    </Grid>
-                    <Label x:Name="runesLbl" Content="{x:Static properties:UIStrings.ControlPanelRunesLabel}" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" />
-                </Grid>
-                <GridSplitter Height="100" Grid.RowSpan="4" Width="1" Grid.Column="1" />
-                <Grid Grid.Column="2" HorizontalAlignment="Center" Height="116" Grid.RowSpan="4" VerticalAlignment="Center" Width="120">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="3*" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Ellipse StrokeThickness="8" Stroke="#FF333333" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="50" MinHeight="50" MaxWidth="100" MaxHeight="100" Height="80" Width="80" Grid.RowSpan="1">
+                
+                <Grid Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse x:Name="mainStyle" StrokeThickness="6" Stroke="#FF333333" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="50" MinHeight="50" MaxWidth="100" MaxHeight="100" Height="{Binding ActualWidth, ElementName=mainStyle, Mode=OneWay}" Width="70" Panel.ZIndex="1">
                         <Ellipse.Fill>
-                            <ImageBrush x:Name="characterIcon" />
+                            <ImageBrush x:Name="mainStyleIcon" Stretch="None" ViewboxUnits="RelativeToBoundingBox">
+                                <ImageBrush.RelativeTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleX="1.2" ScaleY="1.2" />
+                                        <SkewTransform CenterX="0.5" CenterY="0.5" />
+                                        <RotateTransform CenterX="0.5" CenterY="0.5" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </ImageBrush.RelativeTransform>
+                            </ImageBrush>
                         </Ellipse.Fill>
                     </Ellipse>
-                    <GridSplitter Height="1" Width="50" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1" />
+                    <Path Stroke="{Binding Stroke, ElementName=mainStyle, Mode=TwoWay}" StrokeThickness="4" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="Fill" Margin="54,41,0,0" Data="M20,20 A30,30,0,1,1,0,50">
+                        <Path.Fill>
+                            <ImageBrush x:Name="subStyleIcon" Stretch="None">
+                                <ImageBrush.RelativeTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleX="0.7" ScaleY="0.7" />
+                                        <SkewTransform CenterX="0.5" CenterY="0.5" />
+                                        <RotateTransform CenterX="0.5" CenterY="0.5" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </ImageBrush.RelativeTransform>
+                            </ImageBrush>
+                        </Path.Fill>
+                    </Path>
                 </Grid>
-                    <Label x:Name="championLbl" Content="{x:Static properties:UIStrings.ControlPanelChampionPickLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="UltraBold" Grid.Row="4" Grid.Column="2"/>
-                <Label x:Name="gameModeLbl" Content="{x:Static properties:UIStrings.ControlPanelGameModeLabel}" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" />
+                <GridSplitter Grid.Column="1" Grid.Row="2" Height="1" Width="50" HorizontalAlignment="Center" VerticalAlignment="Bottom"  />
+                <Label Grid.Column="1" Grid.Row="4" x:Name="runesLbl" Content="{x:Static properties:UIStrings.ControlPanelRunesLabel}" HorizontalAlignment="Center"  VerticalAlignment="Center" />
+                
+                <GridSplitter Height="100" Grid.RowSpan="4" Width="1" Grid.Column="1" />
+
+                <Ellipse Grid.Column="2" Grid.RowSpan="3" StrokeThickness="8" Stroke="#FF333333" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="50" MinHeight="50" MaxWidth="100" MaxHeight="100" Height="80" Width="80">
+                    <Ellipse.Fill>
+                        <ImageBrush x:Name="characterIcon" />
+                    </Ellipse.Fill>
+                </Ellipse>
+                <GridSplitter Grid.Column="2" Grid.Row="2" Height="1" Width="50" HorizontalAlignment="Center" VerticalAlignment="Bottom"  />
+                <Label x:Name="championLbl" Content="{x:Static properties:UIStrings.ControlPanelChampionPickLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="UltraBold" Grid.Row="4" Grid.Column="2"/>
             </Grid>
         </GroupBox>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="5,0,5,0">
@@ -90,21 +82,31 @@
                 <TextBlock Text="{x:Static properties:UIStrings.ControlPanelLiteModeButton}" TextAlignment="Center" TextWrapping="Wrap"/>
             </Button>
             <GroupBox Header="{x:Static properties:UIStrings.ControlPanelRunesLabel}">
-                <ComboBox x:Name="runesSelection" SelectionChanged="ChangeRunes" IsEnabled="False"/>
+                <StackPanel>
+                    <ComboBox x:Name="runesSelection" SelectionChanged="ChangeRunes" IsEnabled="False" />
+                    <Components:SaveableCheckbox Content="{x:Static properties:UIStrings.ControlPanelSetSpellsLabel}" Margin="0,5,0,0" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=setSummonerOnSelection, Mode=TwoWay}"/>
+                </StackPanel>
             </GroupBox>
             <Button x:Name="random_btn" Content="{x:Static properties:UIStrings.ControlPanelRandomSkinButton}" Click="RandomSkinClick" IsEnabled="False" Margin="0,10,0,0" />
             <Button Content="{x:Static properties:UIStrings.ControlPanelReloadClientButton}" Click="ClientRestart" Margin="0,10,0,0" />
         </StackPanel>
         <GroupBox Header="{x:Static properties:UIStrings.ControlPanelUtility}" Grid.Column="1" Margin="5,0,0,0">
-            <StackPanel VerticalAlignment="Center"  x:Name="ello">
-                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityReadyCheck, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilityReadyCheck}"></controls:UtilityBanner>
-                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityPick, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilityPick}" Margin="0,3,0,0"></controls:UtilityBanner>
-                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityBan, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilityBan}" Margin="0,3,0,0"></controls:UtilityBanner>
-                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityAram, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilityAram}" Margin="0,3,0,0"></controls:UtilityBanner>
-                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityRunes, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilityRunes}" Margin="0,3,0,0"></controls:UtilityBanner>
-                <controls:UtilityBanner IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilitySummoners, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilitySummoners}" Margin="0,3,0,0"></controls:UtilityBanner>
-            </StackPanel>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <controls:UtilityBanner Grid.Row="0" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityReadyCheck, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilityReadyCheck}"></controls:UtilityBanner>
+                <controls:UtilityBanner Grid.Row="1" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityPick, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilityPick}" Margin="0,3,0,0"></controls:UtilityBanner>
+                <controls:UtilityBanner Grid.Row="2" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityBan, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilityBan}" Margin="0,3,0,0"></controls:UtilityBanner>
+                <controls:UtilityBanner Grid.Row="3" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityAram, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilityAram}" Margin="0,3,0,0"></controls:UtilityBanner>
+                <controls:UtilityBanner Grid.Row="4" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilityRunes, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilityRunes}" Margin="0,3,0,0"></controls:UtilityBanner>
+                <controls:UtilityBanner Grid.Row="5" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=utilitySummoners, Mode=TwoWay}" LabelText="{x:Static properties:UIStrings.UtilitySummoners}" Margin="0,3,0,0"></controls:UtilityBanner>
+            </Grid>
         </GroupBox>
-        <!-- Add other tools here -->
     </Grid>
 </UserControl>

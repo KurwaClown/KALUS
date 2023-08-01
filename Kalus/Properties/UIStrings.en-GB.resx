@@ -166,7 +166,10 @@
     <value>Reload League Client</value>
   </data>
   <data name="ControlPanelRunesLabel" xml:space="preserve">
-    <value>Runes</value>
+    <value>Inventory</value>
+  </data>
+  <data name="ControlPanelSetSpellsLabel" xml:space="preserve">
+    <value>Set Spells</value>
   </data>
   <data name="ControlPanelStatus" xml:space="preserve">
     <value>Status</value>

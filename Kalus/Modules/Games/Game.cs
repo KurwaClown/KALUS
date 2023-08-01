@@ -71,7 +71,21 @@ namespace Kalus.Modules.Games
 		//Act on finalization
 		protected abstract Task Finalization();
 
-		protected abstract Task ChangeSpells();
+		protected async Task ChangeInventoryBySelection(int recommendationNumber)
+		{
+			mainWindow.consoleTab.AddLog(Properties.Logs.ChangingInventory, UI.Controls.Tabs.Console.Utility.POSTPICK, UI.Controls.Tabs.Console.LogLevel.INFO);
+
+
+			await ChangeRunes(recommendationNumber);
+
+			if (Properties.Settings.Default.setSummonerOnSelection)
+			{
+				await ChangeSpells(recommendationNumber);
+			}
+
+		}
+
+		protected abstract Task ChangeSpells(int recommendationNumber = -1);
 
 		protected abstract Task ChangeRunes(int recommendationNumber = -1);
 
@@ -80,8 +94,6 @@ namespace Kalus.Modules.Games
 			List<string> logMessages = new List<string>();
 			var imageBytes = await ClientRequest.GetChampionImageById(championId);
 
-
-
 			var champions = await DataCache.GetChampionsInformations();
 
 			string? championName = champions.Where(champion => champion.Value<int>("id") == championId).Select(champion => champion["name"]?.ToString()).FirstOrDefault();
@@ -89,8 +101,6 @@ namespace Kalus.Modules.Games
 			if (championName == null) return;
 
 			if (mainWindow == null) return;
-
-
 
 			//Set the current champion image and name on the UI
 			mainWindow.controlPanel.SetChampionIcon(imageBytes);
@@ -113,8 +123,7 @@ namespace Kalus.Modules.Games
 				logMessages.Add(Properties.Logs.SettingRunes);
 			}
 
-
-			if (Properties.Settings.Default.randomSkinOnPick)
+			if (Properties.Settings.Default.utilitySummoners)
 			{
 				await ChangeSpells();
 				logMessages.Add(Properties.Logs.SettingSummoners);
