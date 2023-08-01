@@ -10,10 +10,12 @@
     <Grid MouseEnter="MouseEnterBackground" MouseLeave="MouseLeaveBackground">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="50"/>
         </Grid.ColumnDefinitions>
         <Border x:Name="background" Background="White" Grid.ColumnSpan="2" CornerRadius="4" />
-        <TextBlock Text="{Binding LabelText, RelativeSource={RelativeSource AncestorType=UserControl}}" Grid.Column="0" Padding="5,0,0,0" TextWrapping="Wrap"></TextBlock>
-        <components:ToggleSwitch x:Name="toggleSwitch" Grid.Column="1" IsChecked="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=UserControl}}" Margin="3,0" FontSize="10"/>
+        <Viewbox Grid.Column="0" HorizontalAlignment="Left" Height="{Binding ActualHeight, ElementName=toggleSwitch, Mode=OneWay}" >
+            <TextBlock Text="{Binding LabelText, RelativeSource={RelativeSource AncestorType=UserControl}}" Padding="5,0,0,0" TextWrapping="Wrap" HorizontalAlignment="Left"></TextBlock>
+        </Viewbox>
+        <components:ToggleSwitch x:Name="toggleSwitch" Grid.Column="1" IsChecked="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=UserControl}}" Margin="3,0" FontSize="10" HorizontalAlignment="Right"/>
     </Grid>
 </UserControl>
