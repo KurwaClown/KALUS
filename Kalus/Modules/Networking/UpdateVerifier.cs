@@ -19,8 +19,8 @@ namespace Kalus.Modules.Networking
 
 		private static readonly GitHubClient client = new(new ProductHeaderValue("Kalus"));
 
-		private static readonly string kalusPath = Path.Combine(Environment.CurrentDirectory, "Kalus.exe");
-		private static readonly string updaterPath = Path.Combine(Environment.CurrentDirectory, "Kalus.Updater.exe");
+		private static readonly string kalusPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Kalus.exe");
+		private static readonly string updaterPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Kalus.Updater.exe");
 
 		internal static void CheckForUpdate()
 		{

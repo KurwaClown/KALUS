@@ -10,7 +10,7 @@ namespace Kalus.Updater
 		private static readonly string owner = "KurwaClown";
 		private static readonly string repo = "Kalus";
 
-		private static readonly string pathToKalus = Path.Combine(Environment.CurrentDirectory, "Kalus.exe");
+		private static readonly string pathToKalus = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Kalus.exe");
 		private static readonly string tempDownloadPath = Path.Combine(Path.GetTempPath(), "KalusLatestRelease.zip");
 
 		private static readonly GitHubClient client = new(new ProductHeaderValue("Kalus"));
@@ -84,7 +84,7 @@ namespace Kalus.Updater
 
 			foreach (ZipArchiveEntry entry in filesToReplace)
 			{
-				string oldFilePath = Path.Combine(Environment.CurrentDirectory, entry.FullName);
+				string oldFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, entry.FullName);
 
 				entry.ExtractToFile(oldFilePath, true);
 			}
