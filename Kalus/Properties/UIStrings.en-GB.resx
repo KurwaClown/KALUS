@@ -327,4 +327,7 @@
   <data name="NotifyIconOption4" xml:space="preserve">
     <value>Toggle Aram Swap</value>
   </data>
+  <data name="SummonersAlwaysFlash" xml:space="preserve">
+    <value>Always have Flash</value>
+  </data>
 </root>

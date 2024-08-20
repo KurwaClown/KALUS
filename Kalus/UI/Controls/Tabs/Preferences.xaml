@@ -43,12 +43,15 @@
                     </components:SaveableCheckbox>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="{x:Static properties:UIStrings.PreferenceSummoners}">
+            <GroupBox Header="{x:Static properties:UIStrings.PreferenceSummoners}" Height="114">
                 <StackPanel x:Name="summonerPreferences">
                     <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=summonersAlwaysSnowball, Mode=TwoWay}" Margin="0,5,0,0" >
                         <TextBlock Text="{x:Static properties:UIStrings.SummonersAlwaysSnowball}" TextWrapping="Wrap"></TextBlock>
                     </components:SaveableCheckbox>
-                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <components:SaveableCheckbox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=summonersAlwaysFlash, Mode=TwoWay}" Margin="0,5,0,0" >
+                        <TextBlock Text="{x:Static properties:UIStrings.SummonersAlwaysFlash}" TextWrapping="Wrap"></TextBlock>
+                    </components:SaveableCheckbox>
+                    <StackPanel Orientation="Horizontal">
                         <Label Content="{x:Static properties:UIStrings.SummonersFlashPosition}" HorizontalAlignment="Left" Margin="-3,0,0,0" VerticalAlignment="Center" />
                         <StackPanel x:Name="flashPosition" Width="100">
                             <StackPanel Orientation="Vertical">

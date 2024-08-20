@@ -204,8 +204,10 @@ namespace Kalus.Modules.Games.GameMode
 
 			if (spellsId == null) return;
 
-			if (!spellsId.Contains(32) && Properties.Settings.Default.summonersAlwaysSnowball) spellsId[1] = 32;
-
+			if (!spellsId.Contains((int)SummonerSpells.Summonners.SNOWBALL) && Properties.Settings.Default.summonersAlwaysSnowball)
+			{
+				spellsId[1] = (int)SummonerSpells.Summonners.SNOWBALL;
+			}
 			SummonerSpells.SetSummonerSpells(spellsId);
 		}
 

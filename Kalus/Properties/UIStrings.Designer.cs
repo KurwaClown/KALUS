@@ -619,6 +619,15 @@ namespace Kalus.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Always have Flash.
+        /// </summary>
+        public static string SummonersAlwaysFlash {
+            get {
+                return ResourceManager.GetString("SummonersAlwaysFlash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Always have snowball in Aram.
         /// </summary>
         public static string SummonersAlwaysSnowball {

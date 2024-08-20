@@ -11,6 +11,22 @@ namespace Kalus.Modules
 	internal static class SummonerSpells
 	{
 
+		public enum Summonners
+		{
+			CLEANSE = 1,
+			EXHAUST = 3,
+			FLASH = 4,
+			GHOST = 6,
+			HEAL = 7,
+			SMITE = 11,
+			TELEPORT = 12,
+			CLARITY = 13,
+			IGNITE = 14,
+			BARRIER = 21,
+			SNOWBALL = 32,
+			SNOWBALL_URF = 39
+		}
+
 		//Get the recommended champion spells for a champion depending on its position and the game mode
 		internal static async Task<JToken?> GetSpellsRecommendationByPosition(int championId, string position)
 		{
@@ -35,12 +51,19 @@ namespace Kalus.Modules
 		{
 			int flashPosition = Properties.Settings.Default.flashPosition;
 
-			if (flashPosition != 2 && recommendedSpells.Contains(4))
+			//If the spells already contains a flash
+			if (recommendedSpells.Contains((int)Summonners.FLASH))
 			{
-				if (Array.IndexOf(recommendedSpells, 4) != flashPosition)
+				// If the flash has a given position and is not in the right position we swap position
+				if (flashPosition != 2 && Array.IndexOf(recommendedSpells, (int)Summonners.FLASH) != flashPosition)
 				{
-					(recommendedSpells[1], recommendedSpells[0]) = (recommendedSpells[0], recommendedSpells[1]);
+						(recommendedSpells[1], recommendedSpells[0]) = (recommendedSpells[0], recommendedSpells[1]);
 				}
+			}
+			// If the spells doesn't contain a flash and the user wants to always have flash
+			else if (Properties.Settings.Default.summonersAlwaysFlash)
+			{
+				recommendedSpells[flashPosition != 2 ? flashPosition : 0] = (int)Summonners.FLASH;
 			}
 
 			await ClientRequest.ChangeSummonerSpells(recommendedSpells);

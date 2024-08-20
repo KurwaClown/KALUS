@@ -327,4 +327,7 @@
   <data name="NotifyIconOption4" xml:space="preserve">
     <value>Activer/Désactiver échange en Aram</value>
   </data>
+  <data name="SummonersAlwaysFlash" xml:space="preserve">
+    <value>Toujour avoir un Flash</value>
+  </data>
 </root>

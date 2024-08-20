@@ -18,7 +18,7 @@
             <RowDefinition />
             <RowDefinition Height="160" />
         </Grid.RowDefinitions>
-        <TabControl Margin="5,5,5,5" x:Name="mainTabControl" Height="390" Width="700">
+        <TabControl Margin="10,5,10,5" x:Name="mainTabControl" Height="390" Width="700">
             <TabItem Header="{x:Static properties:UIStrings.ConsoleTabHeader}">
                 <console:ConsoleView x:Name="consoleTab" x:FieldModifier="public"/>
             </TabItem>
