@@ -13,6 +13,7 @@ namespace Kalus
 	{
 		private Forms.NotifyIcon? notifyIcon;
 		private MainWindow? mainWindow;
+		private Forms.ContextMenuStrip notifyContextMenu = new();
 
 		protected override void OnStartup(StartupEventArgs e)
 		{
@@ -37,12 +38,11 @@ namespace Kalus
 
 		private void SetNotifyIcon()
 		{
-			Forms.ContextMenuStrip notifyContextMenu = new();
-
 			notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption1, null, NotifyIconShowWindow);
 			notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption2, null, NotifyIconMinimizeWindow);
 			notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption3, null, NotifyIconCloseKalus);
-
+			notifyContextMenu.Items.Add(Kalus.Properties.UIStrings.NotifyIconOption4, null, NotifyIconUtilityAram);
+			SetNotifyIconAramUtilityTooltip();
 			notifyIcon = new Forms.NotifyIcon
 			{
 				Icon = Kalus.Properties.Resources.KALUS_Icon,
@@ -52,6 +52,11 @@ namespace Kalus
 			};
 
 			notifyIcon.Click += NotifyIcon_Click;
+		}
+
+		private void SetNotifyIconAramUtilityTooltip(int index = 3)
+		{
+			notifyContextMenu.Items[index].ToolTipText = Kalus.Properties.Settings.Default.utilityAram ? "ON" : "OFF";
 		}
 
 		private void NotifyIcon_Click(object? sender, EventArgs e)
@@ -86,6 +91,12 @@ namespace Kalus
 		{
 			this.Shutdown();
 			Environment.Exit(0);
+		}
+
+		private void NotifyIconUtilityAram(object? sender, System.EventArgs e)
+		{
+			Kalus.Properties.Settings.Default.utilityAram = !Kalus.Properties.Settings.Default.utilityAram;
+			SetNotifyIconAramUtilityTooltip();
 		}
 	}
 }

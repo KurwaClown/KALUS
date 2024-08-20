@@ -331,6 +331,15 @@ namespace Kalus.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Toggle Aram Swap.
+        /// </summary>
+        public static string NotifyIconOption4 {
+            get {
+                return ResourceManager.GetString("NotifyIconOption4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do nothing.
         /// </summary>
         public static string OnChampionSelectionOption1 {

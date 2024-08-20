@@ -324,4 +324,7 @@
   <data name="UtilitySummoners" xml:space="preserve">
     <value>Changement des sorts</value>
   </data>
+  <data name="NotifyIconOption4" xml:space="preserve">
+    <value>Activer/Désactiver échange en Aram</value>
+  </data>
 </root>

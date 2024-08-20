@@ -324,4 +324,7 @@
   <data name="UtilitySummoners" xml:space="preserve">
     <value>Change Summoners</value>
   </data>
+  <data name="NotifyIconOption4" xml:space="preserve">
+    <value>Toggle Aram Swap</value>
+  </data>
 </root>
